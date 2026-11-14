@@ -18,7 +18,7 @@ Focus: constraints before technology. Every technology named here records the as
 | Q2.9 | C | (this session) | **No Kubernetes in V1.** The SRE platform is deployed with **Docker** only. Scale later when load needs it. | Trigger for moving to an orchestrator — Dhanush, Layer 13 | 2.3, 2.6 |
 | Q2.10 | C | (this session) | **Modular monolith**, one repository, with clear module boundaries. Microservices would add deployment, monitoring and logging complexity that V1 does not need. A module can be deployed on its own later if its load needs it. | Module boundaries — Dhanush, Layer 6 | 2.3, 2.6 |
 | Q2.11 | C | (this session) | **No custom model.** Not enough data or past behaviour to learn from. General models plus retrieval (RAG) are good enough. Revisit when we have enough learned incidents about our own systems. | Trigger to revisit — Irfan, Layer 10 | 2.5, 2.6 |
-| Q2.12 | C | (this session) | **Hard constraint: incident data must not go to a new external party (e.g. an external model API); organization-approved hosted tools are allowed (review H3).** So V1 runs models **inside our own infrastructure on our own GPUs** (self-hosted open-weight models). No external model API. Keep the GPU footprint small for V1 (sized to the bounded per-incident loop). Small models (decision gate, embeddings) run on CPU. Claude first advised buying a hosted API; the data rule overrides that. | GPU sizing and which open-weight models (main agent + a different reviewer model, A1) — Irfan, Layer 10. Closed by review H3 (hosted tools allowed) | 2.4, 2.5, 2.7 |
+| Q2.12 | C | (this session) | *(Revised in Layer 6 on 2026-11-14: cloud model providers by configuration, off by default — see "Revised by Layer 6" below.)* **Hard constraint: incident data must not go to a new external party (e.g. an external model API); organization-approved hosted tools are allowed (review H3).** So V1 runs models **inside our own infrastructure on our own GPUs** (self-hosted open-weight models). No external model API. Keep the GPU footprint small for V1 (sized to the bounded per-incident loop). Small models (decision gate, embeddings) run on CPU. Claude first advised buying a hosted API; the data rule overrides that. | GPU sizing and which open-weight models (main agent + a different reviewer model, A1) — Irfan, Layer 10. Closed by review H3 (hosted tools allowed) | 2.4, 2.5, 2.7 |
 | Q2.13 | C | (this session) | **Multi-tenancy is a non-goal.** It would add: tenant isolation and full data isolation, access control per tenant, more workload and model cost, rate limits, noisy-neighbour problems, queueing, and priority service for premium users. | None | 2.6 |
 | Q2.14 | C | (this session) | The **agent has no access to the production environment** and holds no production credentials. Production changes happen only through the CI/CD pipeline after human approval. *(Confirmed:)* the disposable environment is a set of Docker containers built per incident from the same image and config, loaded with synthetic fixtures, with no network route and no credentials to production, destroyed when the incident closes. | Sandbox design — Rinisha, Layer 11 (sandbox architecture) | 2.3 |
 | Q2.15 | C | (this session) | Infrastructure is bounded by **fixed, existing hardware**: V1 uses GPUs the organization already has. No new infrastructure spend for V1. | None (assumed reserved: L2-A12) | 2.4 |
@@ -51,6 +51,12 @@ Focus: constraints before technology. Every technology named here records the as
 ## Where Claude and ChatGPT disagreed
 _Pending: ChatGPT pass not done yet (review finding H2)._
 
+
+## Revised by Layer 6 (2026-11-14)
+
+| Item | Change | Source |
+|---|---|---|
+| Q2.12 data rule (2.1), 2.5 model hosting | "No external model API" replaced. V1 still runs self-hosted models. The model interface supports cloud providers (Anthropic, OpenAI-compatible) by configuration only, off by default. Enabled only by a platform admin through a reviewed configuration change (audited); this counts as organization approval of the provider. Key in the secret store (name only in config); provider host on the outbound allow list; redaction before every call; no automatic cloud fallback; reviewer model must differ from the main model. Builds on Q2.22 (endpoint configurable). | Team decision, L6 log Q6.12 |
 
 ## Review fixes applied (2026-11-13 review, team approved)
 

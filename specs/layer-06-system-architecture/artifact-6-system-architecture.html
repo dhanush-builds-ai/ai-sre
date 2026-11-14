@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 6 - System Architecture</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px}
+.sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
+.qs{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.tw{overflow-x:auto}
+.reg{min-width:1000px;font-size:13.5px}
+.reg td:first-child{white-space:nowrap;font-weight:600}
+.reg tr.grp td{background:var(--accent-bg);color:var(--accent);font-weight:600}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
+.fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
+.fig svg{display:block;min-width:720px;width:100%;height:auto}
+.cap{color:var(--muted);font-size:14px;margin:4px 0 0}
+.note{border-left:4px solid var(--human);background:var(--human-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+.no{border-left:4px solid var(--bad);background:var(--bad-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+ul,ol{padding-left:22px}li{margin:2px 0}
+.checks{list-style:none;padding-left:0}
+.L{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.F{background:var(--fix-bg);color:var(--fix);border:1px solid var(--fix)}
+.D{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent)}
+.A{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.R{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.Rl{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.Rm{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.Rh{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+svg text{fill:var(--fg);font-family:system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
+svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
+svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .zb{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zt{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zo{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
+svg .ac{fill:var(--muted)}
+svg .halo text{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-weight:700}
+@media print{body{background:#fff}.fig{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Artifact 6 - System Architecture Document</h1>
+<p class="sub">Building an AI SRE &middot; Layer 6: System Architecture &middot; <b>Built from.</b> Artifacts 4 and 5 (and the standing decisions of Artifacts 1 and 2).</p>
+<table>
+<tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Dhanush (owner, from Manish), Chirag, Manish, Rinisha, Irfan</td></tr>
+</table>
+<p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code>. Focus of this layer: derive the architecture from responsibilities. Parts A and B of the log named components by responsibility. Part C then selected a technology for each component. Labels:
+<span class="L F">Fixed requirement</span> comes from an earlier artifact (source given).
+<span class="L D">Decision</span> was made in this layer, with a rationale in the log.
+<span class="L A">Assumption</span> is provisional, with an owner and a validation condition (see Appendix).</p>
+
+<h3>Required sections</h3>
+<table>
+<tr><th>Required section</th><th>Questions this section answers</th><th>Done</th></tr>
+<tr><td>6.1 Context diagram</td><td>Q6.9, Q6.12, Q6.14, Q6.19, Q6.34</td><td>&#9745;</td></tr>
+<tr><td>6.2 Container/process diagram</td><td>Q6.1 to Q6.4, Q6.8, Q6.26, Q6.35, Q6.38</td><td>&#9745;</td></tr>
+<tr><td>6.3 Component diagram</td><td>Q6.3, Q6.6, Q6.9 to Q6.22, Q6.34, Q6.36</td><td>&#9745;</td></tr>
+<tr><td>6.4 Technology selection</td><td>Q6.23 to Q6.33</td><td>&#9745;</td></tr>
+<tr><td>6.5 Architecture Decision Records (ADRs)</td><td>Q6.5, Q6.7, Q6.8, Q6.12, Q6.23 to Q6.28, Q6.30</td><td>&#9745;</td></tr>
+<tr><td>6.6 Component ownership</td><td>Q6.9 to Q6.22</td><td>&#9745;</td></tr>
+<tr><td>6.7 Trust boundaries</td><td>Q6.17 to Q6.19, Q6.37, Q6.38, Q6.39</td><td>&#9745;</td></tr>
+<tr><td>6.8 Alternatives and trade-offs</td><td>Q6.5 to Q6.7, Q6.26, Q6.28, Q6.33</td><td>&#9745;</td></tr>
+</table>
+
+<!-- ============ 6.1 ============ -->
+<h2><span class="sec">6.1</span>Context diagram</h2>
+<p class="qs">Answers: Q6.9, Q6.12, Q6.14, Q6.19, Q6.34</p>
+<p>The context diagram shows the platform as one box. It shows who and what the platform talks to. The platform reads from many systems. It changes production only through the CI/CD pipeline or the config store, and only with a signed human approval (A2 2.3, A5 SC-15).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 440" role="img" aria-label="Context diagram of the AI SRE platform and its neighbours">
+<defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="20" y="40" width="200" height="56" rx="6" class="hum"/><text x="120" y="63">On-call engineer, approver</text><text x="120" y="80" class="lbl">CLI, HTTP API</text>
+<rect x="20" y="150" width="200" height="56" rx="6" class="hum"/><text x="120" y="173">Platform admin</text><text x="120" y="190" class="lbl">configuration (reviewed PR)</text>
+<rect x="20" y="260" width="200" height="56" rx="6" class="box"/><text x="120" y="283">Monitoring</text><text x="120" y="300" class="lbl">alert webhook (signed)</text>
+<rect x="420" y="20" width="140" height="50" rx="6" class="box"/><text x="490" y="42">Single sign-on</text><text x="490" y="58" class="lbl">organization OIDC</text>
+<rect x="590" y="20" width="140" height="50" rx="6" class="box"/><text x="660" y="42">Secret store</text><text x="660" y="58" class="lbl">platform credentials</text>
+<rect x="400" y="150" width="350" height="130" rx="10" class="uc"/><text x="575" y="195" class="md" font-weight="600">AI SRE platform</text><text x="575" y="218" class="lbl">API, worker, executor, sandbox runner</text><text x="575" y="236" class="lbl">PostgreSQL, Temporal</text>
+<rect x="400" y="350" width="170" height="56" rx="6" class="box"/><text x="485" y="373">Self-hosted models</text><text x="485" y="390" class="lbl">OpenAI-compatible server</text>
+<rect x="590" y="350" width="160" height="56" rx="6" class="bad" stroke-dasharray="6 4"/><text x="670" y="373">Cloud model APIs</text><text x="670" y="390" class="lbl">config: disabled</text>
+<rect x="900" y="30" width="220" height="50" rx="6" class="okb"/><text x="1010" y="52">CI/CD pipeline</text><text x="1010" y="68" class="lbl">redeploy, deploy merged fix</text>
+<rect x="900" y="100" width="220" height="50" rx="6" class="okb"/><text x="1010" y="122">Config store</text><text x="1010" y="138" class="lbl">restore a version</text>
+<rect x="900" y="185" width="220" height="50" rx="6" class="box"/><text x="1010" y="207">Git host</text><text x="1010" y="223" class="lbl">read code, push branch, open PR</text>
+<rect x="900" y="270" width="220" height="56" rx="6" class="box"/><text x="1010" y="292">Evidence sources</text><text x="1010" y="309" class="lbl">logs, metrics, traces, error tracker</text>
+<rect x="900" y="355" width="220" height="50" rx="6" class="box"/><text x="1010" y="377">Chat, pager</text><text x="1010" y="393" class="lbl">notifications</text>
+</g>
+<g class="ln">
+<path d="M220,68 H310 V165 H400" marker-end="url(#c1)"/>
+<path d="M220,195 H400" marker-end="url(#c1)"/>
+<path d="M220,288 H310 V250 H400" marker-end="url(#c1)"/>
+<path d="M490,70 V150" marker-end="url(#c1)"/>
+<path d="M660,70 V150" marker-end="url(#c1)"/>
+<path d="M485,280 V350" marker-end="url(#c1)"/>
+<path d="M670,280 V350" stroke-dasharray="6 4" marker-end="url(#c1)"/>
+<path d="M750,165 H820 V55 H900" marker-end="url(#c1)"/>
+<path d="M820,125 H900" marker-end="url(#c1)"/>
+<path d="M750,210 H900" marker-end="url(#c1)" marker-start="url(#c1)"/>
+<path d="M900,298 H830 V245 H750" marker-end="url(#c1)"/>
+<path d="M750,265 H800 V380 H900" marker-end="url(#c1)"/>
+</g>
+<g class="lbl halo">
+<text x="240" y="62">incidents, approvals, stop</text>
+<text x="240" y="189">settings</text>
+<text x="240" y="282">alerts</text>
+<text x="812" y="95" text-anchor="end">write only:</text><text x="812" y="109" text-anchor="end">executor</text>
+<text x="770" y="204">read, branch, PR</text>
+<text x="842" y="292">read only</text>
+<text x="500" y="320">inference</text>
+<text x="680" y="320">off by default</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 1. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
+<table>
+<tr><th>Neighbour</th><th>What crosses</th><th>Direction</th><th>Label</th></tr>
+<tr><td>On-call engineer, approver</td><td>Incidents, approvals, stop and take-over, timeline queries</td><td>In</td><td><span class="L F">Fixed</span> A2 2.3 (CLI, HTTP API, no dashboard)</td></tr>
+<tr><td>Monitoring</td><td>Signed alert webhook (Q6.9)</td><td>In</td><td><span class="L F">Fixed</span> A2 2.1; A5 SC-02</td></tr>
+<tr><td>Evidence sources, Git host</td><td>Read-only queries (Q6.14). A branch and a pull request for a fix.</td><td>Out (read)</td><td><span class="L F">Fixed</span> A5 SC-06, SC-07</td></tr>
+<tr><td>CI/CD pipeline, config store</td><td>Approved actions from the executor only (Q6.19)</td><td>Out (write)</td><td><span class="L F">Fixed</span> A2 2.3, A4 FR-12</td></tr>
+<tr><td>Self-hosted models</td><td>Redacted prompts, structured outputs (Q6.12)</td><td>Out and back</td><td><span class="L F">Fixed</span> A2 2.5</td></tr>
+<tr><td>Cloud model APIs</td><td>Nothing unless a platform admin enables a provider (Q6.12)</td><td>Off</td><td><span class="L D">Decision</span> revises A2 2.1, 2.5</td></tr>
+<tr><td>Chat, pager</td><td>Notifications and escalations, also when the database is down</td><td>Out</td><td><span class="L D">Decision</span> (A4 NFR-03)</td></tr>
+</table>
+
+<!-- ============ 6.2 ============ -->
+<h2><span class="sec">6.2</span>Container/process diagram</h2>
+<p class="qs">Answers: Q6.1 to Q6.4, Q6.8, Q6.26, Q6.35, Q6.38</p>
+<p>The platform is one repository and one image. It runs as <b>four process types</b>: API, worker, executor and sandbox runner (Q6.8, Q6.38). Each process is a separate container. The processes do not call each other. They share work only through PostgreSQL and the Temporal task queues (Q6.8).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 580" role="img" aria-label="Container diagram: four platform processes, PostgreSQL, Temporal and external systems">
+<defs><marker id="c2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="10" y="50" width="150" height="46" rx="6" class="hum"/><text x="85" y="70">Engineer</text><text x="85" y="86" class="lbl">CLI (Typer)</text>
+<rect x="10" y="115" width="150" height="46" rx="6" class="box"/><text x="85" y="135">Monitoring</text><text x="85" y="151" class="lbl">webhook</text>
+<rect x="200" y="60" width="190" height="80" rx="6" class="uc"/><text x="295" y="88" font-weight="600">API</text><text x="295" y="106" class="lbl">FastAPI, Pydantic</text><text x="295" y="122" class="lbl">intake, approvals, queries</text>
+<rect x="450" y="60" width="190" height="80" rx="6" class="fx"/><text x="545" y="88" font-weight="600">PostgreSQL</text><text x="545" y="106" class="lbl">incidents, waiting queue,</text><text x="545" y="122" class="lbl">audit record; Temporal DB</text>
+<rect x="700" y="60" width="190" height="80" rx="6" class="uc"/><text x="795" y="88" font-weight="600">Executor</text><text x="795" y="106" class="lbl">only writer to production</text><text x="795" y="122" class="lbl">task queue "executor"</text>
+<rect x="950" y="55" width="190" height="42" rx="6" class="okb"/><text x="1045" y="81">CI/CD pipeline</text>
+<rect x="950" y="105" width="190" height="42" rx="6" class="okb"/><text x="1045" y="131">Config store</text>
+<rect x="200" y="250" width="190" height="80" rx="6" class="uc"/><text x="295" y="278" font-weight="600">Worker</text><text x="295" y="296" class="lbl">admission loop, workflows,</text><text x="295" y="312" class="lbl">agent steps, inference gateway</text>
+<rect x="450" y="250" width="190" height="80" rx="6" class="box"/><text x="545" y="278" font-weight="600">Temporal server</text><text x="545" y="296" class="lbl">durable workflows,</text><text x="545" y="312" class="lbl">timers, task queues</text>
+<rect x="700" y="250" width="190" height="80" rx="6" class="uc"/><text x="795" y="278" font-weight="600">Sandbox runner</text><text x="795" y="296" class="lbl">only container with Docker</text><text x="795" y="312" class="lbl">task queue "sandbox"</text>
+<rect x="10" y="260" width="150" height="60" rx="6" class="box"/><text x="85" y="283">Evidence sources</text><text x="85" y="299" class="lbl">and Git host</text>
+<rect x="200" y="440" width="190" height="70" rx="6" class="box"/><text x="295" y="468" font-weight="600">Model server</text><text x="295" y="486" class="lbl">self-hosted, OpenAI-compatible</text>
+<rect x="10" y="440" width="150" height="70" rx="6" class="bad" stroke-dasharray="6 4"/><text x="85" y="468">Cloud model APIs</text><text x="85" y="486" class="lbl">config: disabled</text>
+<rect x="450" y="440" width="190" height="70" rx="6" class="fx"/><text x="545" y="468" font-weight="600">Artifact volume</text><text x="545" y="486" class="lbl">logs, diffs, test output</text>
+<rect x="700" y="440" width="190" height="70" rx="6" class="bad"/><text x="795" y="468" font-weight="600">Sandboxes</text><text x="795" y="486" class="lbl">one per incident, no network</text>
+</g>
+<g class="ln">
+<path d="M160,73 H200" marker-end="url(#c2)"/>
+<path d="M160,138 H180 V120 H200" marker-end="url(#c2)"/>
+<path d="M390,100 H450" marker-end="url(#c2)"/>
+<path d="M700,100 H640" marker-end="url(#c2)"/>
+<path d="M890,76 H950" marker-end="url(#c2)"/>
+<path d="M890,120 H920 V126 H950" marker-end="url(#c2)"/>
+<path d="M370,250 L470,140" marker-end="url(#c2)"/>
+<path d="M545,250 V140" marker-end="url(#c2)"/>
+<path d="M390,290 H450" marker-end="url(#c2)" marker-start="url(#c2)"/>
+<path d="M700,290 H640" marker-end="url(#c2)" marker-start="url(#c2)"/>
+<path d="M745,140 L620,250" marker-start="url(#c2)" marker-end="url(#c2)"/>
+<path d="M200,290 H160" marker-end="url(#c2)"/>
+<path d="M295,330 V440" marker-end="url(#c2)"/>
+<path d="M230,330 L130,440" stroke-dasharray="6 4" marker-end="url(#c2)"/>
+<path d="M370,330 L480,440" marker-end="url(#c2)"/>
+<path d="M795,330 V440" marker-end="url(#c2)"/>
+</g>
+<g class="lbl halo">
+<text x="420" y="92" text-anchor="middle">save +</text><text x="420" y="118" text-anchor="middle">queued</text>
+<text x="670" y="92" text-anchor="middle">intent,</text><text x="670" y="118" text-anchor="middle">audit</text>
+<text x="300" y="200">next queued:</text><text x="300" y="214">severity, age</text>
+<text x="553" y="200">own DB</text>
+<text x="420" y="282" text-anchor="middle">start,</text><text x="420" y="308" text-anchor="middle">poll</text>
+<text x="670" y="282" text-anchor="middle">poll</text>
+<text x="690" y="200">poll</text>
+<text x="165" y="282">read</text>
+<text x="303" y="390">inference</text>
+<text x="190" y="400">off</text>
+<text x="440" y="390">blobs</text>
+<text x="803" y="390">create, run, destroy</text>
+</g>
+<text x="20" y="560" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). This is not a product dashboard (A2 2.3).</text>
+</svg>
+</div>
+<p class="cap">Figure 2. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
+<div class="fig">
+<svg viewBox="0 0 1150 400" role="img" aria-label="Sequence diagram of incident A from alert to the first workflow step">
+<defs><marker id="c4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="25" y="20" width="130" height="40" rx="6" class="box"/><text x="90" y="45">Monitoring</text>
+<rect x="215" y="20" width="130" height="40" rx="6" class="uc"/><text x="280" y="45">API (intake)</text>
+<rect x="405" y="20" width="130" height="40" rx="6" class="fx"/><text x="470" y="45">PostgreSQL</text>
+<rect x="595" y="20" width="130" height="40" rx="6" class="uc"/><text x="660" y="45">Admission loop</text>
+<rect x="785" y="20" width="130" height="40" rx="6" class="box"/><text x="850" y="45">Temporal</text>
+<rect x="975" y="20" width="150" height="40" rx="6" class="uc"/><text x="1050" y="45">Workflow (worker)</text>
+</g>
+<g class="ln" stroke-dasharray="3 4"><path d="M90,60 V385"/><path d="M280,60 V385"/><path d="M470,60 V385"/><path d="M660,60 V385"/><path d="M850,60 V385"/><path d="M1050,60 V385"/></g>
+<g class="ln">
+<path d="M90,95 H280" marker-end="url(#c4)"/>
+<path d="M280,125 h30 v18 h-30" marker-end="url(#c4)"/>
+<path d="M280,170 H470" marker-end="url(#c4)"/>
+<path d="M280,200 H90" marker-end="url(#c4)"/>
+<path d="M660,235 H470" marker-end="url(#c4)"/>
+<path d="M660,270 H850" marker-end="url(#c4)"/>
+<path d="M850,305 H1050" marker-end="url(#c4)"/>
+<path d="M1050,345 H470" marker-end="url(#c4)"/>
+</g>
+<g class="lbl halo">
+<text x="100" y="88">1 alert: shop-api 500s (signed)</text>
+<text x="318" y="138">2 check signature, validate, group</text>
+<text x="290" y="163">3 INSERT incident A, status queued</text>
+<text x="100" y="193">4 202 accepted, incident ID</text>
+<text x="480" y="228">5 running &lt; 3? next by severity, age</text>
+<text x="670" y="263">6 start workflow, ID = incident A</text>
+<text x="860" y="298">7 task on queue "incident"</text>
+<text x="480" y="338">8 step 1 done: checkpoint, audit entry</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 3. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
+<h3>Processes and their responsibilities</h3>
+<table>
+<tr><th>Process</th><th>Synchronous work</th><th>Asynchronous work</th><th>Scale</th><th>Label</th></tr>
+<tr><td>API</td><td>Authenticate, validate, group duplicates, save the incident with status "queued" in one transaction, reply "accepted" with the incident ID (A4 Q4.19: p95 &le; 30 s). Approvals, stop, queries.</td><td>None</td><td>1 to n copies (stateless)</td><td><span class="L D">Decision</span> Q6.1, Q6.2</td></tr>
+<tr><td>Worker</td><td>None</td><td>Admission loop; incident workflows; evidence, diagnosis, review, verification; inference gateway; notifier</td><td>1 to n copies; the running limit is global (3, configurable)</td><td><span class="L D">Decision</span> Q6.3, Q6.4</td></tr>
+<tr><td>Executor</td><td>None</td><td>Approved actions only: redeploy, config restore (A5 SC-14 to SC-16)</td><td>1 copy</td><td><span class="L D">Decision</span> Q6.3, Q6.19</td></tr>
+<tr><td>Sandbox runner</td><td>None</td><td>Create, run and destroy one sandbox for each incident; return a test report</td><td>1 copy</td><td><span class="L D">Decision</span> Q6.38</td></tr>
+</table>
+<h3>Admission: how the queue works</h3>
+<ol>
+<li>Intake saves the incident with status "queued". The save and the queue entry are one transaction (Q6.1).</li>
+<li>The admission loop counts the running incidents. If the count is less than the limit (3, configurable), it selects the next "queued" incident by severity, then by age (A4 NFR-07).</li>
+<li>It starts a Temporal workflow. The workflow ID is the incident ID. A second start of the same incident does nothing.</li>
+<li>If 20 incidents wait, a new incident goes to humans and is not dropped (A4 QR-07).</li>
+<li>Recovery work comes before fix-phase work. Layer 8 designs how the workflows do this.</li>
+</ol>
+<div class="note"><b>No Celery, no RQ (Q6.26).</b> Temporal already has durable task queues. A second queue would add a broker and a second record of what is running.</div>
+
+<!-- ============ 6.3 ============ -->
+<h2><span class="sec">6.3</span>Component diagram</h2>
+<p class="qs">Answers: Q6.3, Q6.6, Q6.9 to Q6.22, Q6.34, Q6.36</p>
+<p>A component is a module with one responsibility. Each component is named by its responsibility, not by a product (Part B). Modules talk only through public interfaces. An automated import check enforces the rules (Q6.6). The names match Artifact 5.</p>
+<div class="fig">
+<svg viewBox="0 0 1150 600" role="img" aria-label="Component diagram: modules inside the four processes and the shared modules">
+<defs><marker id="c3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<rect x="15" y="30" width="250" height="230" rx="8" class="zt"/>
+<rect x="285" y="30" width="590" height="420" rx="8" class="zt"/>
+<rect x="895" y="30" width="240" height="120" rx="8" class="zt"/>
+<rect x="895" y="170" width="240" height="120" rx="8" class="zt"/>
+<rect x="15" y="470" width="1120" height="110" rx="8" class="zo"/>
+<g class="md" font-weight="600"><text x="25" y="50">API process</text><text x="295" y="50">Worker process</text><text x="905" y="50">Executor process</text><text x="905" y="190">Sandbox runner process</text><text x="25" y="490">Shared modules (used by every process)</text></g>
+<g text-anchor="middle" class="sm">
+<rect x="35" y="70" width="210" height="44" rx="6" class="uc"/><text x="140" y="89">Intake</text><text x="140" y="104" class="lbl">Q6.9</text>
+<rect x="35" y="130" width="210" height="44" rx="6" class="uc"/><text x="140" y="149">Approval gate</text><text x="140" y="164" class="lbl">Q6.18; signs approvals</text>
+<rect x="35" y="190" width="210" height="44" rx="6" class="uc"/><text x="140" y="209">Notifier</text><text x="140" y="224" class="lbl">also in the worker; no DB needed</text>
+<rect x="305" y="70" width="250" height="44" rx="6" class="uc"/><text x="430" y="89">Workflow orchestrator</text><text x="430" y="104" class="lbl">Q6.11; admission loop</text>
+<rect x="305" y="140" width="250" height="44" rx="6" class="uc"/><text x="430" y="159">Evidence collector (tool layer)</text><text x="430" y="174" class="lbl">Q6.14; adapters, redaction</text>
+<rect x="305" y="210" width="250" height="44" rx="6" class="uc"/><text x="430" y="229">Knowledge retriever</text><text x="430" y="244" class="lbl">Q6.13; BM25</text>
+<rect x="305" y="280" width="250" height="44" rx="6" class="uc"/><text x="430" y="299">Diagnoser</text><text x="430" y="314" class="lbl">Q6.15</text>
+<rect x="305" y="350" width="250" height="44" rx="6" class="uc"/><text x="430" y="369">Critic</text><text x="430" y="384" class="lbl">Q6.16; different model</text>
+<rect x="605" y="70" width="250" height="44" rx="6" class="uc"/><text x="730" y="89">Policy gate</text><text x="730" y="104" class="lbl">fixed rules, patch checks</text>
+<rect x="605" y="140" width="250" height="44" rx="6" class="uc"/><text x="730" y="159">Verifier</text><text x="730" y="174" class="lbl">Q6.20; plain code</text>
+<rect x="605" y="250" width="250" height="44" rx="6" class="uc"/><text x="730" y="269">Inference gateway</text><text x="730" y="284" class="lbl">Q6.12; budget, retries, halt</text>
+<rect x="605" y="330" width="120" height="44" rx="6" class="box"/><text x="665" y="349">OpenAI-compat.</text><text x="665" y="364" class="lbl">adapter: on</text>
+<rect x="735" y="330" width="120" height="44" rx="6" class="box" stroke-dasharray="6 4"/><text x="795" y="349">Anthropic</text><text x="795" y="364" class="lbl">adapter: off</text>
+<rect x="605" y="395" width="120" height="40" rx="6" class="box"/><text x="665" y="419">Self-hosted</text>
+<rect x="735" y="395" width="120" height="40" rx="6" class="bad" stroke-dasharray="6 4"/><text x="795" y="419">Cloud (off)</text>
+<rect x="915" y="70" width="200" height="56" rx="6" class="uc"/><text x="1015" y="93">Executor</text><text x="1015" y="110" class="lbl">Q6.19; checks signature, hash</text>
+<rect x="915" y="210" width="200" height="56" rx="6" class="uc"/><text x="1015" y="233">Sandbox runner</text><text x="1015" y="250" class="lbl">Q6.17; test report only</text>
+<rect x="35" y="510" width="200" height="50" rx="6" class="fx"/><text x="135" y="532">Incident store</text><text x="135" y="548" class="lbl">Q6.10</text>
+<rect x="255" y="510" width="200" height="50" rx="6" class="fx"/><text x="355" y="532">Audit log</text><text x="355" y="548" class="lbl">append-only, hash-chained</text>
+<rect x="475" y="510" width="200" height="50" rx="6" class="fx"/><text x="575" y="532">Ownership directory</text><text x="575" y="548" class="lbl">owner, on-call, repo, pipeline</text>
+<rect x="695" y="510" width="200" height="50" rx="6" class="fx"/><text x="795" y="532">Artifact store</text><text x="795" y="548" class="lbl">Q6.21; pointer + hash in DB</text>
+<rect x="915" y="510" width="200" height="50" rx="6" class="fx"/><text x="1015" y="532">Platform telemetry</text><text x="1015" y="548" class="lbl">Q6.22; OpenTelemetry</text>
+</g>
+<g class="ln">
+<path d="M430,114 V140" marker-end="url(#c3)"/>
+<path d="M305,170 H295 V302 H305" marker-end="url(#c3)"/>
+<path d="M430,254 V280" marker-end="url(#c3)"/>
+<path d="M430,324 V350" marker-end="url(#c3)"/>
+<path d="M555,302 H580 V272 H605" marker-end="url(#c3)"/>
+<path d="M555,372 H590 V285 H605" marker-end="url(#c3)"/>
+<path d="M555,92 H605" marker-end="url(#c3)"/>
+<path d="M665,294 V330" marker-end="url(#c3)"/>
+<path d="M795,294 V330" stroke-dasharray="6 4" marker-end="url(#c3)"/>
+<path d="M665,374 V395" marker-end="url(#c3)"/>
+<path d="M795,374 V395" stroke-dasharray="6 4" marker-end="url(#c3)"/>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 4. Component diagram. Each dashed outline is a process (deploy unit). Each box is a module (code package). Every model call goes through the inference gateway. The dashed adapters and providers are off by default (Q6.36).</p>
+<table>
+<tr><th>Component</th><th>Responsibility</th><th>Process</th><th>Q</th><th>Label</th></tr>
+<tr><td>Intake</td><td>Authenticate the caller, validate, group duplicates, save and queue in one transaction, reply</td><td>API</td><td>Q6.9</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Incident store</td><td>The only module that writes incidents, hypotheses, decisions and approvals</td><td>Shared</td><td>Q6.10</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Workflow orchestrator</td><td>Admission loop, checkpoints, resume, limits, recovery before fix work</td><td>Worker</td><td>Q6.11</td><td><span class="L F">Fixed</span> A4 NFR-02, NFR-07</td></tr>
+<tr><td>Inference gateway</td><td>The only path to a model: budget, timeout, retry, malformed-output retries, halt and escalate; adapters by configuration</td><td>Worker</td><td>Q6.12</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Knowledge retriever</td><td>Search runbooks and past incidents; return passages with a source</td><td>Worker</td><td>Q6.13</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Evidence collector (tool layer)</td><td>One adapter for each source, parallel, timeout per source, "missing" on failure, redaction, provenance</td><td>Worker</td><td>Q6.14</td><td><span class="L F">Fixed</span> A4 FR-04, A5 SC-06, SC-09</td></tr>
+<tr><td>Diagnoser</td><td>Fixed rules first, then model reasoning with the rubric; ranked hypotheses or "inconclusive"</td><td>Worker</td><td>Q6.15</td><td><span class="L F">Fixed</span> A4 FR-05 to FR-08</td></tr>
+<tr><td>Critic</td><td>Review with a different model in a new context; its verdict is a signal only</td><td>Worker</td><td>Q6.16</td><td><span class="L F">Fixed</span> A1 1.5, A5 SC-12</td></tr>
+<tr><td>Sandbox runner</td><td>Run AI-generated code against tests in a hardened sandbox; return the report</td><td>Sandbox runner</td><td>Q6.17</td><td><span class="L F">Fixed</span> A5 SC-17</td></tr>
+<tr><td>Approval gate</td><td>Approver rights, timeouts, backup approver, M11 rule, signed approval bound to a hash</td><td>API</td><td>Q6.18</td><td><span class="L F">Fixed</span> A5 SC-03, SC-04, SC-14</td></tr>
+<tr><td>Executor</td><td>The only writer to production, through the pipeline or the config store</td><td>Executor</td><td>Q6.19</td><td><span class="L F">Fixed</span> A5 SC-15, SC-16</td></tr>
+<tr><td>Verifier</td><td>Read the alert's signals directly and compare them to the baseline</td><td>Worker</td><td>Q6.20</td><td><span class="L F">Fixed</span> A4 FR-13, A5 SC-18</td></tr>
+<tr><td>Artifact store</td><td>Keep large logs, diffs and test outputs; the database keeps a pointer and a hash</td><td>Shared (volume)</td><td>Q6.21</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Platform telemetry</td><td>Metrics, logs and traces of the platform itself</td><td>Shared</td><td>Q6.22</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Audit log</td><td>Append-only, hash-chained record of every operation</td><td>Shared</td><td>Q6.9 to Q6.22</td><td><span class="L F">Fixed</span> A4 FR-15, A5 SC-19</td></tr>
+<tr><td>Policy gate</td><td>Fixed escalation rules and patch policy checks</td><td>Worker</td><td>Q6.9 to Q6.22</td><td><span class="L F">Fixed</span> A1 1.5, A5 SC-13</td></tr>
+<tr><td>Notifier</td><td>Page and escalate humans; works when the database is down</td><td>API and worker</td><td>Q6.9 to Q6.22</td><td><span class="L F">Fixed</span> A4 NFR-03</td></tr>
+<tr><td>Ownership directory</td><td>Service to owner, on-call, repository, pipeline, dependencies</td><td>Shared</td><td>Q6.9 to Q6.22</td><td><span class="L F">Fixed</span> A2 Q2.6, A5 SC-03, SC-05</td></tr>
+</table>
+
+<!-- ============ 6.4 ============ -->
+<h2><span class="sec">6.4</span>Technology selection</h2>
+<p class="qs">Answers: Q6.23 to Q6.33</p>
+<p>Each technology serves a component from section 6.3. The team evaluated the worksheet's candidate stack row by row. Each row is also an ADR in section 6.5.</p>
+<table>
+<tr><th>Responsibility</th><th>Candidate</th><th>Team decision</th><th>Component</th><th>Q</th></tr>
+<tr><td>Backend API</td><td>FastAPI</td><td>Accept</td><td>Intake, approval gate</td><td>Q6.23</td></tr>
+<tr><td>Validation</td><td>Pydantic</td><td>Accept</td><td>Intake; model output schemas</td><td>Q6.23</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td><td>Accept (<span class="L F">Fixed</span> A2 Q2.21)</td><td>Incident store, audit log, waiting queue</td><td>Q6.24</td></tr>
+<tr><td>ORM</td><td>SQLAlchemy</td><td>Accept</td><td>Incident store</td><td>Q6.24</td></tr>
+<tr><td>Migrations</td><td>Alembic</td><td>Accept; expand first, contract later</td><td>Incident store</td><td>Q6.25</td></tr>
+<tr><td>Workflow engine</td><td>Temporal</td><td>Accept; waiting queue stays in PostgreSQL</td><td>Workflow orchestrator</td><td>Q6.26</td></tr>
+<tr><td>Model providers</td><td>Claude and Tinker</td><td><b>Replace:</b> self-hosted open-weight models behind an OpenAI-compatible server; Anthropic adapter present, off by default. Tinker is a fine-tuning service, and A2 excludes fine-tuned models in V1.</td><td>Inference gateway</td><td>Q6.27, Q6.28</td></tr>
+<tr><td>Retrieval</td><td>BM25</td><td>Accept; PostgreSQL full-text search or in the process</td><td>Knowledge retriever</td><td>Q6.29</td></tr>
+<tr><td>Execution</td><td>Restricted sandbox</td><td>Accept: hardened Docker container (A5 SC-17)</td><td>Sandbox runner</td><td>Q6.30</td></tr>
+<tr><td>Metrics</td><td>Prometheus</td><td>Accept</td><td>Platform telemetry</td><td>Q6.31</td></tr>
+<tr><td>Dashboard</td><td>Grafana</td><td>Accept, for the platform's operators only</td><td>Platform telemetry</td><td>Q6.31</td></tr>
+<tr><td>Tracing</td><td>OpenTelemetry</td><td>Accept</td><td>Platform telemetry</td><td>Q6.31</td></tr>
+<tr><td>Development environment</td><td>Docker Compose</td><td>Accept</td><td>All processes</td><td>Q6.32</td></tr>
+<tr><td>Dependency management</td><td>uv</td><td>Accept</td><td>All processes</td><td>Q6.32</td></tr>
+</table>
+<h3>Other selections (not in the candidate table)</h3>
+<table>
+<tr><th>Responsibility</th><th>Selection</th><th>Label</th></tr>
+<tr><td>CLI</td><td>Typer, a thin client over the HTTP API</td><td><span class="L D">Decision</span> Q6.23</td></tr>
+<tr><td>Model adapters</td><td>Own internal schema; two thin adapters on the official <code>openai</code> and <code>anthropic</code> SDKs</td><td><span class="L D">Decision</span> Q6.28</td></tr>
+<tr><td>Artifact store</td><td>A filesystem Docker volume in V1</td><td><span class="L A">Assumption</span> L6-A3</td></tr>
+<tr><td>Secret store</td><td>HashiCorp Vault, or the organization's existing store</td><td><span class="L A">Assumption</span> L5-A2</td></tr>
+<tr><td>Single sign-on</td><td>The organization's OIDC provider</td><td><span class="L A">Assumption</span> L5-A1</td></tr>
+<tr><td>Notifier</td><td>Posts directly to the chat or pager webhook</td><td><span class="L D">Decision</span> (A4 NFR-03)</td></tr>
+</table>
+<h3>Avoid in V1 (Q6.33)</h3>
+<table>
+<tr><th>Technology</th><th>Why not now</th><th>Evidence that justifies it later</th></tr>
+<tr><td>Kubernetes</td><td>A2 excludes it. Docker Compose is enough for 4 processes.</td><td>More than one host, or automatic scaling is needed</td></tr>
+<tr><td>Kafka, Redis, Celery, RQ</td><td>Temporal and PostgreSQL already queue the work.</td><td>A measured event volume that PostgreSQL cannot handle</td></tr>
+<tr><td>A separate vector database</td><td>BM25 first (Layer 10).</td><td>Retrieval tests show that keyword search misses relevant runbooks</td></tr>
+<tr><td>A service mesh, one service for each module</td><td>Network failures, more deploy and monitor work (Q6.5).</td><td>A module needs different scale, much more memory, harms other parts, or needs its own security boundary</td></tr>
+</table>
+
+<!-- ============ 6.5 ============ -->
+<h2><span class="sec">6.5</span>Architecture Decision Records (ADRs)</h2>
+<p class="qs">Answers: Q6.5, Q6.7, Q6.8, Q6.12, Q6.23 to Q6.28, Q6.30</p>
+<p>Each ADR has a status. "Accepted" means the team decided it in Layer 6. A later layer can replace an ADR only with a new ADR that names the old one.</p>
+<div class="tw"><table class="reg">
+<tr><th>ADR</th><th>Context</th><th>Decision</th><th>Consequences</th><th>Status</th><th>Q</th></tr>
+<tr><td>ADR-01</td><td>A small team must ship fast and keep clear boundaries (A2 Q2.10).</td><td>Modular monolith: one repository, one image, four process types (API, worker, executor, sandbox runner). Not microservices.</td><td>One release and one set of migrations. A module becomes its own service only with evidence (Q6.5).</td><td>Accepted</td><td>Q6.5, Q6.7, Q6.8</td></tr>
+<tr><td>ADR-02</td><td>An investigation takes minutes; the request must not stay open.</td><td>The API saves and queues in one transaction and replies at once. Workers do all long work.</td><td>Acknowledgement fits p95 &le; 30 s (A4 Q4.19). No incident is lost between save and queue.</td><td>Accepted</td><td>Q6.1, Q6.2</td></tr>
+<tr><td>ADR-03</td><td>Workflows must survive crashes and wait up to 24 h for approval (A4 NFR-02, QR-05).</td><td>Temporal for workflows. PostgreSQL holds the waiting queue; an admission loop starts workflows (ID = incident ID). No Celery or RQ.</td><td>One more server (Temporal), with its state in the same PostgreSQL server. Layer 8 designs the workflows.</td><td>Accepted</td><td>Q6.26</td></tr>
+<tr><td>ADR-04</td><td>Records and transactions; several engineers change the schema.</td><td>PostgreSQL, SQLAlchemy, Alembic. Migrations expand first and contract later.</td><td>Old and new containers can run together during a deploy.</td><td>Accepted</td><td>Q6.24, Q6.25</td></tr>
+<tr><td>ADR-05</td><td>HTTP endpoints and strict input validation.</td><td>FastAPI and Pydantic; a Typer CLI over the same API.</td><td>One code path for the CLI and the API.</td><td>Accepted</td><td>Q6.23</td></tr>
+<tr><td>ADR-06</td><td>V1 uses self-hosted models. The team also wants cloud providers without code changes.</td><td>One inference gateway with an internal schema and two adapters (OpenAI-compatible, Anthropic). Self-hosted on; cloud off by default. Enabling a cloud provider follows A5 SC-24.</td><td><b>Revises A2</b> (no external model API). Two adapters to maintain. No automatic fallback.</td><td>Accepted</td><td>Q6.12, Q6.27, Q6.28</td></tr>
+<tr><td>ADR-07</td><td>AI-generated code must run in isolation; Docker access is close to root on the host.</td><td>A separate sandbox runner container, the only one with Docker access. Hardened containers (A5 SC-17).</td><td>The worker cannot reach the host. gVisor is the upgrade (Layer 11).</td><td>Accepted</td><td>Q6.30, Q6.38</td></tr>
+<tr><td>ADR-08</td><td>Only one component may change production (A5 SC-15).</td><td>A separate executor container, a Temporal worker on its own task queue. It holds the only write credentials.</td><td>A fault in the worker cannot use write credentials.</td><td>Accepted</td><td>Q6.3, Q6.19</td></tr>
+<tr><td>ADR-09</td><td>Runbook retrieval in V1.</td><td>BM25 keyword search; no vector database.</td><td>No new service. Layer 10 confirms the method.</td><td>Accepted</td><td>Q6.29</td></tr>
+<tr><td>ADR-10</td><td>Operators must see the platform's health.</td><td>OpenTelemetry, Prometheus, Grafana (operators only). Docker Compose and uv for development.</td><td>No product dashboard is added (A2 2.3).</td><td>Accepted</td><td>Q6.31, Q6.32</td></tr>
+</table></div>
+
+<!-- ============ 6.6 ============ -->
+<h2><span class="sec">6.6</span>Component ownership</h2>
+<p class="qs">Answers: Q6.9 to Q6.22</p>
+<p>The owner designs the component in the layer named and approves changes to it. The rule is the same as for assumptions: the owner is the person who works the layer that designs it.</p>
+<table>
+<tr><th>Component</th><th>Process</th><th>Owner</th><th>Designed in</th></tr>
+<tr><td>Intake, incident store, ownership directory, artifact store, audit log</td><td>API; shared</td><td>Dhanush</td><td>Layer 7 (data, APIs, events)</td></tr>
+<tr><td>Workflow orchestrator, admission loop, notifier</td><td>Worker</td><td>Dhanush</td><td>Layer 8 (workflows)</td></tr>
+<tr><td>Evidence collector, diagnoser, critic, escalation rules in the policy gate</td><td>Worker</td><td>Dhanush</td><td>Layer 9 (agent)</td></tr>
+<tr><td>Inference gateway, knowledge retriever</td><td>Worker</td><td>Irfan</td><td>Layer 10 (inference, retrieval)</td></tr>
+<tr><td>Approval gate, executor, sandbox runner, verifier, patch rules in the policy gate</td><td>API, executor, sandbox runner, worker</td><td>Rinisha</td><td>Layer 11 (safe remediation)</td></tr>
+<tr><td>Platform telemetry</td><td>All</td><td>Dhanush</td><td>Layer 12-A (self-observability)</td></tr>
+<tr><td>Security controls on all components</td><td>All</td><td>Chirag</td><td>Layer 5 (reviews each design)</td></tr>
+</table>
+
+<!-- ============ 6.7 ============ -->
+<h2><span class="sec">6.7</span>Trust boundaries</h2>
+<p class="qs">Answers: Q6.17 to Q6.19, Q6.37, Q6.38, Q6.39</p>
+<p>The trust zones come from Artifact 5 (Figure 1, TB-1 to TB-6). This section places them on the containers. A container that runs untrusted code or holds a production credential is a separate container (Q6.5 rule).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 460" role="img" aria-label="Deployment diagram with trust zones and credential holders">
+<defs><marker id="c6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<rect x="170" y="30" width="560" height="410" rx="8" class="zt"/>
+<rect x="750" y="30" width="390" height="190" rx="8" class="zb"/>
+<rect x="750" y="250" width="390" height="190" rx="8" class="zo"/>
+<g class="md" font-weight="600"><text x="180" y="22">Trusted core (Docker host)</text><text x="760" y="22">Untrusted compute</text><text x="760" y="244">Outside the platform</text></g>
+<g text-anchor="middle" class="sm">
+<rect x="10" y="80" width="145" height="70" rx="6" class="hum"/><text x="82" y="105">Engineers,</text><text x="82" y="120">approvers,</text><text x="82" y="135">monitoring</text>
+<rect x="190" y="80" width="160" height="70" rx="6" class="uc"/><text x="270" y="105" font-weight="600">API</text><text x="270" y="122" class="lbl">key: approval signing key</text>
+<rect x="370" y="80" width="160" height="70" rx="6" class="uc"/><text x="450" y="105" font-weight="600">Worker</text><text x="450" y="122" class="lbl">key: read-only</text><text x="450" y="136" class="lbl">integration tokens</text>
+<rect x="550" y="80" width="160" height="70" rx="6" class="uc"/><text x="630" y="105" font-weight="600">Sandbox runner</text><text x="630" y="122" class="lbl">key: Docker access</text><text x="630" y="136" class="lbl">(only container)</text>
+<rect x="190" y="260" width="160" height="70" rx="6" class="fx"/><text x="270" y="290" font-weight="600">PostgreSQL</text>
+<rect x="370" y="260" width="160" height="70" rx="6" class="box"/><text x="450" y="290" font-weight="600">Temporal</text>
+<rect x="550" y="260" width="160" height="70" rx="6" class="uc"/><text x="630" y="285" font-weight="600">Executor</text><text x="630" y="302" class="lbl">key: pipeline and</text><text x="630" y="316" class="lbl">config-store write tokens</text>
+<rect x="770" y="70" width="160" height="60" rx="6" class="bad"/><text x="850" y="96">Sandboxes</text><text x="850" y="112" class="lbl">no network, dummy creds</text>
+<rect x="960" y="150" width="160" height="60" rx="6" class="bad"/><text x="1040" y="176">Model server</text><text x="1040" y="192" class="lbl">output is untrusted</text>
+<rect x="770" y="285" width="160" height="60" rx="6" class="okb"/><text x="850" y="311">Pipeline,</text><text x="850" y="326">config store</text>
+<rect x="960" y="285" width="160" height="60" rx="6" class="box"/><text x="1040" y="311">Evidence sources,</text><text x="1040" y="326">Git host</text>
+<rect x="770" y="370" width="160" height="50" rx="6" class="bad" stroke-dasharray="6 4"/><text x="850" y="393">Cloud model APIs</text><text x="850" y="408" class="lbl">off by default</text>
+<rect x="960" y="370" width="160" height="50" rx="6" class="box"/><text x="1040" y="393">SSO, secret store</text>
+</g>
+<g class="ln">
+<path d="M155,115 H190" marker-end="url(#c6)"/>
+<path d="M270,150 V260" marker-end="url(#c6)"/>
+<path d="M450,150 V260" marker-end="url(#c6)" marker-start="url(#c6)"/>
+<path d="M530,295 H550" marker-end="url(#c6)" marker-start="url(#c6)"/>
+<path d="M710,100 H770" marker-end="url(#c6)"/>
+<path d="M450,80 V55 H1040 V150" marker-end="url(#c6)"/>
+<path d="M530,140 H540 V235 H1040 V285" marker-end="url(#c6)"/>
+<path d="M710,315 H770" marker-end="url(#c6)"/>
+</g>
+<g><circle cx="172" cy="100" r="11" class="tb"/><text x="172" y="104" text-anchor="middle" class="tbt">1,5</text>
+<circle cx="900" cy="235" r="11" class="tb"/><text x="900" y="239" text-anchor="middle" class="tbt">2</text>
+<circle cx="740" cy="55" r="11" class="tb"/><text x="740" y="59" text-anchor="middle" class="tbt">3</text>
+<circle cx="740" cy="100" r="11" class="tb"/><text x="740" y="104" text-anchor="middle" class="tbt">4</text>
+<circle cx="740" cy="315" r="11" class="tb"/><text x="740" y="319" text-anchor="middle" class="tbt">6</text></g>
+</svg>
+</div>
+<p class="cap">Figure 5. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
+<div class="fig">
+<svg viewBox="0 0 1150 470" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
+<defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="20" y="20" width="130" height="40" rx="6" class="uc"/><text x="85" y="45">Sandbox runner</text>
+<rect x="180" y="20" width="130" height="40" rx="6" class="uc"/><text x="245" y="45">Workflow (worker)</text>
+<rect x="340" y="20" width="130" height="40" rx="6" class="uc"/><text x="405" y="45">Policy gate</text>
+<rect x="500" y="20" width="130" height="40" rx="6" class="uc"/><text x="565" y="45">Critic</text>
+<rect x="660" y="20" width="130" height="40" rx="6" class="uc"/><text x="725" y="45">Approval gate</text>
+<rect x="820" y="20" width="130" height="40" rx="6" class="hum"/><text x="885" y="45">Human approver</text>
+<rect x="980" y="20" width="150" height="40" rx="6" class="uc"/><text x="1055" y="45">Executor</text>
+</g>
+<g class="ln" stroke-dasharray="3 4"><path d="M85,60 V450"/><path d="M245,60 V450"/><path d="M405,60 V450"/><path d="M565,60 V450"/><path d="M725,60 V450"/><path d="M885,60 V450"/><path d="M1055,60 V450"/></g>
+<g class="ln">
+<path d="M85,95 H245" marker-end="url(#c5)"/>
+<path d="M245,135 H405" marker-end="url(#c5)"/>
+<path d="M405,170 H245" marker-end="url(#c5)"/>
+<path d="M245,205 H565" marker-end="url(#c5)"/>
+<path d="M565,240 H245" marker-end="url(#c5)"/>
+<path d="M245,275 H725" marker-end="url(#c5)"/>
+<path d="M725,305 H885" marker-end="url(#c5)"/>
+<path d="M885,335 H725" marker-end="url(#c5)"/>
+<path d="M725,365 H245" marker-end="url(#c5)"/>
+<path d="M245,395 H1055" marker-end="url(#c5)"/>
+</g>
+<g class="lbl halo">
+<text x="95" y="88">1 test report only</text>
+<text x="255" y="128">2 patch, evidence</text>
+<text x="255" y="163">3 pass (fixed rules)</text>
+<text x="255" y="198">4 review in a new context</text>
+<text x="255" y="233">5 verdict (signal only)</text>
+<text x="255" y="268">6 request approval: evidence, contradicting evidence, action, hash</text>
+<text x="735" y="298">7 show request</text>
+<text x="735" y="328">8 approve (login)</text>
+<text x="255" y="358">9 signed approval, bound to the hash</text>
+<text x="255" y="388">10 task on queue "executor": action + signed approval</text>
+<text x="1045" y="425" text-anchor="end">11 check signature, hash, expiry, single use; then pipeline or config store</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 6. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
+<table>
+<tr><th>Container</th><th>Zone</th><th>Holds</th><th>Network reach</th><th>A5 boundary</th></tr>
+<tr><td>API</td><td>Trusted</td><td>Approval signing key</td><td>Clients in; PostgreSQL; chat and pager</td><td>TB-1, TB-5</td></tr>
+<tr><td>Worker</td><td>Trusted (model output inside it is untrusted data)</td><td>Read-only integration tokens</td><td>PostgreSQL, Temporal, model server, evidence sources, Git host (branch and PR)</td><td>TB-2, TB-3</td></tr>
+<tr><td>Executor</td><td>Trusted</td><td>Pipeline and config-store write tokens</td><td>PostgreSQL, Temporal, pipeline, config store only</td><td>TB-6</td></tr>
+<tr><td>Sandbox runner</td><td>Trusted</td><td>Docker access</td><td>Temporal, the sandbox network only</td><td>TB-4</td></tr>
+<tr><td>Sandboxes</td><td>Untrusted</td><td>Dummy credentials</td><td>None</td><td>TB-4</td></tr>
+<tr><td>Model server</td><td>Untrusted output</td><td>Nothing</td><td>Worker only</td><td>TB-3</td></tr>
+</table>
+<div class="note"><b>Docker access method</b> (socket proxy or rootless Docker) is open for Layer 11 (Rinisha).</div>
+
+<!-- ============ 6.8 ============ -->
+<h2><span class="sec">6.8</span>Alternatives and trade-offs</h2>
+<p class="qs">Answers: Q6.5 to Q6.7, Q6.26, Q6.28, Q6.33</p>
+<div class="tw"><table class="reg">
+<tr><th>Decision</th><th>Alternative</th><th>Why rejected</th><th>Trade-off we accept</th><th>Revisit when</th></tr>
+<tr><td>Modular monolith (ADR-01)</td><td>One service for each module</td><td>Network failures between modules, a deploy and monitor job for each, transactions across services, version drift, more work for 5 people (Q6.5)</td><td>A bad module can affect others in the same process</td><td>A module needs different scale, much more memory, stalls others, or needs a security boundary</td></tr>
+<tr><td>Modular monolith (ADR-01)</td><td>One process for everything</td><td>Long work would block requests (Q6.1); write and Docker credentials would sit next to model output</td><td>Four containers to run</td><td>—</td></tr>
+<tr><td>Temporal (ADR-03)</td><td>PostgreSQL queue with our own state machine</td><td>We would build timers, resume, retries and cancellation ourselves</td><td>One more server to run</td><td>Temporal operation costs more than it saves at V1 load</td></tr>
+<tr><td>Temporal (ADR-03)</td><td>Celery or RQ</td><td>A second queue and a broker; weak durability for 24 h waits</td><td>—</td><td>—</td></tr>
+<tr><td>Own thin adapters (ADR-06)</td><td>A large multi-provider library</td><td>A large dependency for two adapters</td><td>We maintain two adapters</td><td>More than two provider APIs are needed</td></tr>
+<tr><td>Self-hosted first (ADR-06)</td><td>Cloud model as the default</td><td>Data rule: no unapproved external party (A2 2.1)</td><td>GPU sizing and model quality risk (L2-A8)</td><td>Layer 10 shows the self-hosted models are not good enough</td></tr>
+<tr><td>BM25 (ADR-09)</td><td>A vector database</td><td>A new service before we know keyword search fails</td><td>Lower recall on paraphrased runbooks</td><td>Retrieval tests show misses (Layer 10)</td></tr>
+<tr><td>Filesystem artifact store</td><td>Object storage (MinIO, S3)</td><td>A new service for one host</td><td>No access from a second host</td><td>More than one Docker host</td></tr>
+</table></div>
+
+<h2>Acceptance checks before submission</h2>
+<ul class="checks">
+<li>&#9745; Every required section above is present and complete.</li>
+<li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
+<li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
+</ul>
+<table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
+
+<!-- ============ Appendix ============ -->
+<h2>Appendix: supporting records from the conversation log</h2>
+<p>These records are not template sections. They hold the evidence for the acceptance checks above.</p>
+<h3>Assumptions (all provisional)</h3>
+<table>
+<tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
+<tr><td>L6-A1</td><td>Temporal, with its state in PostgreSQL, runs reliably at V1 load (3 running incidents, queue of 20) on one host</td><td>Dhanush</td><td>Layer 8 (workflow fault tests)</td></tr>
+<tr><td>L6-A2</td><td>An OpenAI-compatible inference server can serve the chosen open-weight main and reviewer models</td><td>Irfan</td><td>Layer 10 (model choice)</td></tr>
+<tr><td>L6-A3</td><td>A filesystem volume is enough for the artifact store in V1 (size and retention)</td><td>Dhanush</td><td>Layer 7 (retention), Layer 12 (capacity)</td></tr>
+<tr><td>L5-A1</td><td>The organization has single sign-on with MFA that the CLI and the API can use</td><td>Dhanush</td><td>Layer 6 selection made (OIDC); validate with the identity team before Layer 13</td></tr>
+<tr><td>L5-A2</td><td>A secret store that meets A5 SC-23 exists or can be run for V1</td><td>Dhanush</td><td>Layer 6 selection made (Vault or existing); validate before Layer 13</td></tr>
+<tr><td>L5-A7</td><td>Each V1 alert source can sign its webhooks or send a per-source secret token</td><td>Dhanush</td><td>When the V1 monitoring tool is fixed (Layer 7 interfaces)</td></tr>
+</table>
+<h3>Consistency with Artifacts 1, 2, 4 and 5</h3>
+<table>
+<tr><th>Earlier artifact says</th><th>Artifact 6 decides</th><th>Status</th></tr>
+<tr><td>A2 2.1, 2.5 (original): no external model API.</td><td>ADR-06: cloud providers by configuration, off by default; rules in A5 SC-24.</td><td><b>Explicit decision</b> (Q6.12). A2, A5 and AGENTS.md were updated on 2026-11-14.</td></tr>
+<tr><td>A2 Q2.10: modular monolith.</td><td>ADR-01: four process types from one image.</td><td>Consistent. Adds the process split.</td></tr>
+<tr><td>A4 NFR-02, NFR-07, QR-07: checkpoints, concurrency, queue limit.</td><td>ADR-03: Temporal plus a PostgreSQL waiting queue and an admission loop.</td><td>Consistent. Layer 8 designs the details.</td></tr>
+<tr><td>A4 NFR-03: notify humans when the database is down.</td><td>Notifier posts directly to the chat or pager webhook.</td><td>Consistent.</td></tr>
+<tr><td>A5 trust zones and component names (executor, approval gate, tool layer, verifier, sandbox runner, audit store).</td><td>Section 6.3 uses the same names; section 6.7 places the zones on containers.</td><td>Consistent (review R9).</td></tr>
+<tr><td>A5 SC-17: hardened sandbox.</td><td>ADR-07: a separate sandbox runner container holds the only Docker access.</td><td>Consistent. Strengthens SC-17.</td></tr>
+</table>
+<h3>Open items</h3>
+<table>
+<tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
+<tr><td>Data model, interfaces, grouping key, per-source timeouts, retention</td><td>Dhanush</td><td>Layer 7</td></tr>
+<tr><td>Workflow design, recovery before fix work inside Temporal, notifier path</td><td>Dhanush</td><td>Layer 8</td></tr>
+<tr><td>Model names, inference server, GPU sizing, retrieval method</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>Docker access method, approval channel, executor design</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>Confirm A5 additions AB-19, SC-24, ST-17</td><td>Chirag</td><td>A5 walk-through</td></tr>
+</table>
+<h3>Where Claude and ChatGPT disagreed</h3>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2). Claude advised against Celery or RQ (Q6.26); the team agreed.</p>
+</main>
+</body>
+</html>

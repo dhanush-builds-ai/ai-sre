@@ -288,6 +288,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>AB-16</td><td>AI-generated code escapes the sandbox</td><td>TA-5</td><td>SF-7</td><td>Access to the host and the platform</td><td>SC-17</td><td>Q5.25</td></tr>
 <tr><td>AB-17</td><td>Many submissions, or an injected loop, use up the GPU budget</td><td>TA-2, TA-1</td><td>SF-1, SF-2</td><td>Real incidents wait in the queue</td><td>SC-03, SC-21</td><td>Q5.6</td></tr>
 <tr><td>AB-18</td><td>An authenticated engineer tries to change a service they do not own</td><td>TA-2</td><td>SF-1</td><td>A change to the wrong service</td><td>SC-03, SC-05</td><td>Q5.22</td></tr>
+<tr><td>AB-19</td><td>Incident data goes to a cloud model provider that the organization did not approve (a quiet configuration change, or an automatic fallback)</td><td>TA-8</td><td>Inference gateway configuration</td><td>Incident data leaves the organization</td><td>SC-08, SC-09, SC-24</td><td>Q5.16</td></tr>
 </table></div>
 
 <!-- ============ 5.6 ============ -->
@@ -395,6 +396,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>SC-21</td><td>Budgets and limits for each incident: time, tool calls, GPU-minutes, tokens; queue limit with overflow to humans.</td><td><span class="L F">Fixed</span> A4 NFR-05, NFR-06, QR-06, QR-07</td><td>Orchestration</td><td>Q5.6</td><td>AB-17</td></tr>
 <tr><td>SC-22</td><td>Human approval of every production change, recovery verification on the alert signals, and an undo path for every change.</td><td><span class="L F">Fixed</span> A1 1.5, A4 FR-11 to FR-13</td><td>Approval gate, verifier</td><td>Q5.4</td><td>AB-03</td></tr>
 <tr><td>SC-23</td><td>Platform credentials. One read-only service account for each integration, with least privilege. Short-lived tokens come from the secret store. The secret store encrypts at rest, has an access policy for each credential, audits every read, and supports rotation. Depends on L5-A2.</td><td><span class="L D">Decision</span></td><td>Secret store, tool layer</td><td>Q5.13</td><td>AB-02, AB-09</td></tr>
+<tr><td>SC-24</td><td>Cloud model providers (added after Layer 6, Q6.12). Off by default. Only a platform admin enables one, through a reviewed configuration change, with an audit entry. The API key is in the secret store (SC-23); the configuration holds its name only. The provider host is added to the outbound allow list (SC-08). Redaction (SC-09) runs before every model call. No automatic fallback to a cloud provider. The platform does not start if the reviewer model equals the main model.</td><td><span class="L D">Decision</span></td><td>Inference gateway, network rules</td><td>Q5.16</td><td>AB-19</td></tr>
 </table></div>
 
 <!-- ============ 5.7 ============ -->
@@ -460,6 +462,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>ST-14</td><td>Sandbox isolation</td><td>Code in the sandbox tries an outbound connection, a write to the root file system, the Docker socket, real credentials, and a fork bomb.</td><td>All fail. The sandbox is gone after incident close.</td><td>Fault test</td><td>SC-17</td><td>Q5.25</td></tr>
 <tr><td>ST-15</td><td>Audit integrity</td><td>The platform database role tries UPDATE and DELETE on the audit record. A database administrator edits one entry directly.</td><td>UPDATE and DELETE are denied. The hash-chain check reports the edited entry. Every step of a fixture A run has an entry with an actor.</td><td>Audit check</td><td>SC-19</td><td>Q5.20, Q5.28</td></tr>
 <tr><td>ST-16</td><td>Verifier independence</td><td>Fixture A. A stub model reports "recovered" while the error rate stays at 98%.</td><td>The incident is not marked "Recovered".</td><td>Fixture test</td><td>SC-18</td><td>Q5.19</td></tr>
+<tr><td>ST-17</td><td>Cloud provider off by default</td><td>Default configuration. Stop the self-hosted models during a fixture A run. In a second run, set the reviewer model equal to the main model.</td><td>No connection to any cloud provider host. The incident is escalated (no fallback). The platform refuses to start with equal models.</td><td>Fault test</td><td>SC-24</td><td>Q5.16</td></tr>
 </table></div>
 
 <!-- ============ Acceptance ============ -->
@@ -519,6 +522,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>A2 2.3: the user interface is a CLI and an HTTP API, with no dashboard.</td><td>Q5.21 asks about a dashboard. SC-01 applies the same identity rules to the CLI and the API.</td><td><b>Explicit decision.</b> No dashboard is added.</td></tr>
 <tr><td>A2 2.3: no production access and no production credentials for the agent; writes only through the pipeline or the config store.</td><td>SC-06, SC-07, SC-15, SC-23: mediated read access, no shell, no SQL, no URL fetch; the executor is the only writer.</td><td>Consistent. Adds detail.</td></tr>
 <tr><td>A2 2.3: the sandbox has no network route and no credentials to production.</td><td>SC-17 adds hardening settings.</td><td>Consistent.</td></tr>
+<tr><td>A2 2.1, 2.5 (revised by Layer 6, 2026-11-14): cloud model providers by configuration, off by default.</td><td>SC-24 and AB-19, ST-17: who may enable it, key, egress, redaction, no automatic fallback.</td><td>Consistent with the revised A2.</td></tr>
 <tr><td>A1 E8: never read secret values; compare fingerprints; remove secrets and personal data from evidence.</td><td>SC-09: the fingerprint is a keyed hash; redaction also runs on model output; fail closed.</td><td>Consistent. Strengthens E8.</td></tr>
 <tr><td>A3: incidents A, B, C are the fixtures.</td><td>Section 5.8 tests use them (ST-01, ST-07, ST-08, ST-10, ST-16).</td><td>Consistent.</td></tr>
 <tr><td>A4 FR-11, FR-12, FR-13, FR-15, NFR-03, NFR-08, QR-04, QR-05.</td><td>Used as fixed requirements in SC-11, SC-12, SC-14, SC-15, SC-18, SC-19, SC-22.</td><td>Consistent. No value changed.</td></tr>

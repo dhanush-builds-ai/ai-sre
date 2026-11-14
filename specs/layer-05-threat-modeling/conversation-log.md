@@ -75,3 +75,7 @@ _Pending: ChatGPT pass not done yet (H2)._
 ## Review fixes (2026-11-14)
 
 Consumer review by Dhanush (Layer 6 owner): [specs/reviews/2026-11-14-a5-review.md](../reviews/2026-11-14-a5-review.md). Approved and applied: R1 keep known IDs in redaction; R2 webhook token fallback, replay window, L5-A7; R4 Layer 6/7 owners → Dhanush; R5 policy-check order recorded; R6 M11 also narrows A4 FR-11, no-other-approver path; R7 SC-06 split, secret-store requirements moved to new SC-23 (Decision).
+
+## Changes from Layer 6 (2026-11-14)
+
+The team revised the A2 model rule (L6 log Q6.12): the inference gateway supports cloud model providers (Anthropic, OpenAI-compatible) by configuration only, off by default. Added to A5: **AB-19** (incident data to an unapproved provider), **SC-24** (Decision: only a platform admin enables a provider through a reviewed config change, audited; key in the secret store; host on the egress allow list; redaction before every call; no automatic fallback; platform refuses to start if the reviewer model equals the main model), **ST-17** (off-by-default and no-fallback test). Owner Chirag to confirm in the A5 walk-through.

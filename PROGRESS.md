@@ -14,8 +14,8 @@ _Last updated: 2026-11-14_
 | 3 | SRE Fundamentals | Dhanush (from Chirag) | Done — review fixes applied; ChatGPT pass pending (H2) | [log](specs/layer-03-sre-fundamentals/conversation-log.md) | [A3](specs/layer-03-sre-fundamentals/artifact-3-incident-and-evidence-catalog.html) | |
 | 4 | Requirements | Dhanush (from Chirag) | Done — ChatGPT pass pending (H2) | [log](specs/layer-04-requirements/conversation-log.md) | [A4](specs/layer-04-requirements/artifact-4-requirements-specification.html) | 34 requirements, 5 provisional milestones |
 | 5 | Threat Modeling | Chirag | Done — ChatGPT pass pending (H2); consumer review by Dhanush done, fixes applied (2026-11-14) | [log](specs/layer-05-threat-modeling/conversation-log.md) | [A5](specs/layer-05-threat-modeling/artifact-5-threat-model.html) | 18 abuse cases, 23 controls, 16 security tests. Closes M11 (author may approve the revert, not the fix), NFR-08 method (rules-only redaction, fail closed), A1 E8 check, secret store requirements |
-| 6 | System Architecture | Dhanush (from Manish) | In progress — Part A done, Part B in discussion | [log](specs/layer-06-system-architecture/conversation-log.md) | | Picks the SSO and secret store products (L5-A1, L5-A2) |
-| 7 | Data, APIs and Events | Dhanush (from Manish) | Not started | | | Needs A4, A6 |
+| 6 | System Architecture | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-06-system-architecture/conversation-log.md) | [A6](specs/layer-06-system-architecture/artifact-6-system-architecture.html) | 4 processes (API, worker, executor, sandbox runner), 18 components, 10 ADRs. Temporal + PostgreSQL waiting queue. Revised A2 model rule: cloud providers by config, off by default |
+| 7 | Data, APIs and Events | Dhanush (from Manish) | Not started — inputs ready (A4, A6) | | | |
 | 8 | Workflows and State Machines | Dhanush | Not started — prep allowed (Sections A, D) | | | Needs A6, A7 |
 | 9 | Agent Architecture | Dhanush | Not started | | | Needs A3, A7, A8 |
 | 10 | Inference and Retrieval | Irfan | Not started | | | Needs A2, A9 |
@@ -68,4 +68,5 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Executor, reconcile, patch policy rules, branch protection, "author" for multi-commit deploys (A5 SC-04, SC-13 to SC-16, SC-20) | Rinisha | Layer 11 |
 | Point A1 1.2 / 1.5 self-approval text to the A5 M11 decision (SC-04) | Chirag | Before submission |
 | Team walk-through of A5 decisions (work-split rule 4; review R8) | Chirag | Before Layer 11 |
+| Confirm A5 additions from Layer 6: AB-19, SC-24, ST-17 (cloud model providers) | Chirag | A5 walk-through |
 | Rebalance load: Dhanush owns L3, L4, L6–L9 (311 Qs); Manish has no layer; Chirag owns L5 | Team | Before Layer 7 |

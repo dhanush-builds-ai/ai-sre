@@ -79,7 +79,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Organizations</td><td>One engineering organization. One ownership list and one on-call schedule.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Infrastructure</td><td>Cloud and private infrastructure are both supported. The demo runs on <b>internal (private) infrastructure</b>.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>How the platform reaches infrastructure</td><td>Only through the existing CI/CD pipeline, or by restoring a config version in the config store (both after approval). The platform never touches infrastructure directly. So the type of infrastructure does not change the platform.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Data location</td><td>Incident data must not go to a new external party, for example an external model API.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12)</span></td></tr>
+<tr><td>Data location</td><td>Incident data must not go to an external party that the organization has not approved. A cloud model provider is approved only when a platform admin enables it (see "Model hosting"). Default: no cloud model provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12), revised in Layer 6, 2026-11-14</span></td></tr>
 <tr><td>Hosted tools</td><td>Tools that the organization already uses and approved can be internal <b>or hosted</b> (monitoring, Git, CI/CD, error tracker, chat). The platform reaches a hosted tool through allow-listed inbound and outbound network rules. Nothing else in the platform changes. The data is already in that tool by the organization&rsquo;s choice.</td><td><span class="L D">Decision</span> <span class="qs">review H3</span></td></tr>
 </table>
 
@@ -98,7 +98,7 @@ svg .ac{fill:var(--muted)}
 <rect x="640" y="320" width="170" height="50" rx="6" class="box"/><text x="725" y="349">Config store</text>
 <rect x="640" y="440" width="170" height="60" rx="6" class="okb"/><text x="725" y="464">Production services</text><text x="725" y="480" class="lbl">Python, can be distributed</text>
 <rect x="40" y="440" width="180" height="60" rx="6" class="box"/><text x="130" y="464">Sandbox</text><text x="130" y="480" class="lbl">Docker, per incident</text>
-<rect x="855" y="440" width="130" height="60" rx="6" class="bad"/><text x="920" y="464">External</text><text x="920" y="480">model APIs</text>
+<rect x="855" y="440" width="130" height="60" rx="6" class="bad"/><text x="920" y="464">Cloud model APIs</text><text x="920" y="480" class="lbl">off by default</text>
 </g>
 <g class="ln">
 <path d="M220,100 L340,222" marker-end="url(#c1)"/>
@@ -127,7 +127,7 @@ svg .ac{fill:var(--muted)}
 <text x="660" y="560" fill="var(--bad)">blocked: new external party</text>
 </g>
 </svg>
-<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed.</p>
+<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
 </div>
 
 <h3>Integrations</h3>
@@ -228,7 +228,7 @@ svg .ac{fill:var(--muted)}
 
 <table>
 <tr><th>Item</th><th>V1 position</th><th>Label</th></tr>
-<tr><td>Model hosting</td><td>Self-hosted open-weight models on our own GPUs. <b>No external model API</b>, because incident data must not go to a new external party.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: data rule</span></td></tr>
+<tr><td>Model hosting</td><td>V1 runs self-hosted open-weight models on our own GPUs. The model interface also supports cloud providers (Anthropic API and OpenAI-compatible APIs) <b>by configuration only</b>: enable or disable, endpoint, key name, model names. No code change. <b>Off by default.</b> Rules: (1) only a platform admin enables it, through a reviewed configuration change, with an audit entry; enabling it is the organization approval of that provider; (2) the API key is kept in the secret store, and the configuration holds only its name; (3) the provider host is added to the outbound allow list; (4) redaction runs before every model call; (5) no automatic fallback to a cloud provider; (6) the reviewer model must differ from the main model, or the platform does not start.</td><td><span class="L D">Decision</span> <span class="qs">revised in Layer 6, 2026-11-14 (Q6.12); replaces "no external model API"</span></td></tr>
 <tr><td>Models</td><td>One main model for the agent. A <b>different</b> model for the reviewer (Artifact 1). The decision model and the embedding model run on CPU.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Custom model</td><td>No custom model. We do not have enough data or past incidents to learn from. General models plus retrieval (RAG) are good enough. Revisit when we have enough learned incidents.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Model interface</td><td>All model access goes through one model interface. A change of model is then a configuration change.</td><td><span class="L D">Decision</span></td></tr>
@@ -249,7 +249,7 @@ svg .ac{fill:var(--muted)}
 </g>
 <g class="ln"><path d="M150,75 H188" marker-end="url(#f1)"/><path d="M410,75 H468" marker-end="url(#f1)"/><path d="M300,125 V136" marker-end="url(#f1)"/></g>
 <g class="lbl"><text x="420" y="68">yes (high availability)</text><text x="308" y="134">no</text></g>
-<text x="660" y="80" class="lbl">No CPU fallback. No outside provider.</text>
+<text x="660" y="80" class="lbl">No CPU fallback. No automatic cloud fallback.</text>
 </svg>
 <p class="cap">Figure 3. Flowchart for an inference failure. Escalation is plain system logic. It does not need a model.</p>
 </div>
@@ -258,7 +258,7 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>Assumption</th><th>What breaks if it is false</th></tr>
 <tr><td>The data rule (it can become stricter and forbid hosted tools too)</td><td>All integrations must be internal.</td></tr>
-<tr><td>L2-A8: self-hosted models are good enough</td><td>The agent design (Layer 9) must change, for example to a narrower agent or more fixed workflows. A cloud model is not an option.</td></tr>
+<tr><td>L2-A8: self-hosted models are good enough</td><td>The agent design (Layer 9) must change, for example to a narrower agent or more fixed workflows. Or the organization enables a cloud provider by configuration (2.5).</td></tr>
 <tr><td>L2-A10: the GPUs have enough capacity</td><td>Concurrency, queueing, and latency.</td></tr>
 <tr><td>L2-A2: the pipeline can redeploy an earlier version</td><td>The full recovery-first flow.</td></tr>
 <tr><td>B1: the sandbox can reproduce the problem</td><td>The fix phase.</td></tr>
@@ -277,7 +277,7 @@ svg .ac{fill:var(--muted)}
 <li><b>Kubernetes.</b> V1 uses Docker.</li>
 <li><b>Microservices for the platform.</b> V1 is a modular monolith.</li>
 <li><b>A custom or fine-tuned model.</b></li>
-<li><b>External model APIs.</b> Incident data must not go to a new external party.</li>
+<li><b>Automatic fallback to a cloud model API</b>, and any cloud model API that the organization has not enabled. (The adapters exist; they are off by default.)</li>
 <li><b>A CPU fallback for the main or reviewer model.</b> The platform escalates instead.</li>
 </ol></div>
 
@@ -356,7 +356,7 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>Artifact 1 says</th><th>Artifact 2 adds</th><th>Status</th></tr>
 <tr><td>The platform applies an approved revert or fix (1.5).</td><td>The platform does this only through the CI/CD pipeline or a config-store version restore, after approval. The agent has no production access.</td><td>Refinement. No conflict.</td></tr>
-<tr><td>The reviewer uses a different model (1.5).</td><td>Both models are self-hosted. So we host two models.</td><td>Consistent. GPU sizing must include both.</td></tr>
+<tr><td>The reviewer uses a different model (1.5).</td><td>Both models are self-hosted by default. So we host two models. If a cloud provider is enabled, the platform still checks that the two models differ.</td><td>Consistent. GPU sizing must include both.</td></tr>
 <tr><td>A non-production copy proves a fix (B1).</td><td>The copy is a per-incident Docker sandbox with synthetic fixtures.</td><td>Refinement. No conflict.</td></tr>
 <tr><td>Loop limits for time, steps, and cost (B3).</td><td>Provisional values: phase 1 5 minutes, investigation 20 minutes, 30 tool calls, 10 GPU-minutes.</td><td>Provisional values; tune by experiment.</td></tr>
 <tr><td>Cost per incident is an outcome measure (1.6).</td><td>The hardware is fixed, so the cost is measured as GPU time per incident.</td><td>Explicit decision.</td></tr>
