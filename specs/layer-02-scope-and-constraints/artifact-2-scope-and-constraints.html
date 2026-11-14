@@ -127,8 +127,8 @@ svg .ac{fill:var(--muted)}
 <text x="660" y="560" fill="var(--bad)">blocked: new external party</text>
 </g>
 </svg>
-<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
 </div>
+<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
 
 <h3>Integrations</h3>
 <table>
@@ -201,8 +201,8 @@ svg .ac{fill:var(--muted)}
 </g>
 <text x="30" y="368" class="lbl">The agent never talks to production. Only the pipeline deploys code; the config store restores a config version. If any step fails, the write stops and the incident escalates.</text>
 </svg>
-<p class="cap">Figure 2. Sequence diagram of the write path. Every write passes a review, policy checks, and human approval before the pipeline deploys it.</p>
 </div>
+<p class="cap">Figure 2. Sequence diagram of the write path. Every write passes a review, policy checks, and human approval before the pipeline deploys it.</p>
 
 <!-- ============ 2.4 ============ -->
 <h2><span class="sec">2.4</span>Budget constraints</h2>
@@ -251,8 +251,8 @@ svg .ac{fill:var(--muted)}
 <g class="lbl"><text x="420" y="68">yes (high availability)</text><text x="308" y="134">no</text></g>
 <text x="660" y="80" class="lbl">No CPU fallback. No automatic cloud fallback.</text>
 </svg>
-<p class="cap">Figure 3. Flowchart for an inference failure. Escalation is plain system logic. It does not need a model.</p>
 </div>
+<p class="cap">Figure 3. Flowchart for an inference failure. Escalation is plain system logic. It does not need a model.</p>
 
 <h3>Assumptions that can change the architecture (Q2.22)</h3>
 <table>

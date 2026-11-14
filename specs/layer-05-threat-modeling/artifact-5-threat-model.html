@@ -202,8 +202,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 </g>
 <text x="20" y="425" class="lbl">Red dashed = untrusted zone. Blue dashed = trusted core. Grey dashed = outside the platform. Red circle = trust boundary TB-1 to TB-6. Every component also writes to the audit store (lines not drawn).</text>
 </svg>
-<p class="cap">Figure 1. Component diagram with trust zones. The model and the sandbox sit inside the platform but in an untrusted zone. Only the executor crosses into the pipeline and the config store, and only with a signed approval.</p>
 </div>
+<p class="cap">Figure 1. Component diagram with trust zones. The model and the sandbox sit inside the platform but in an untrusted zone. Only the executor crosses into the pipeline and the config store, and only with a signed approval.</p>
 
 <h3>Trust level of each component (Q5.12)</h3>
 <table>
@@ -265,8 +265,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <g class="lbl"><text x="100" y="192">blocked by</text><text x="290" y="192">blocked by</text><text x="480" y="192">blocked by</text><text x="670" y="192">blocked by</text><text x="860" y="192">blocked by</text><text x="1050" y="192">blocked by</text></g>
 <text x="10" y="295" class="lbl">White = attack step. Blue = control (section 5.6). The first branch is not fully blocked: a steered but allowed proposal stays a residual risk (RR-1).</text>
 </svg>
-<p class="cap">Figure 2. Attack tree for the most serious goal. Each branch must pass a control that is outside the model.</p>
 </div>
+<p class="cap">Figure 2. Attack tree for the most serious goal. Each branch must pass a control that is outside the model.</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Abuse case</th><th>Actor</th><th>Surface</th><th>Harm if not stopped</th><th>Controls</th><th>Q</th></tr>
@@ -321,8 +321,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="116" y="185">no</text><text x="306" y="185">no</text><text x="686" y="185">yes</text><text x="876" y="185">no</text>
 </g>
 </svg>
-<p class="cap">Figure 3. Flowchart of the approval check at the approval gate and the executor. The M11 rule is the fourth check. It applies only to a permanent fix.</p>
 </div>
+<p class="cap">Figure 3. Flowchart of the approval check at the approval gate and the executor. The M11 rule is the fourth check. It applies only to a permanent fix.</p>
 
 <div class="fig">
 <svg viewBox="0 0 1150 440" role="img" aria-label="Sequence diagram of an approved config restore">
@@ -365,8 +365,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 </g>
 <text x="20" y="435" class="lbl">The agent never talks to the executor or the config store. Steps 7 and 8 use the absolute target "v41", not "previous version".</text>
 </svg>
-<p class="cap">Figure 4. Sequence diagram of an approved config restore in incident A. It shows where SC-14, SC-15 and SC-16 act.</p>
 </div>
+<p class="cap">Figure 4. Sequence diagram of an approved config restore in incident A. It shows where SC-14, SC-15 and SC-16 act.</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Control</th><th>Label</th><th>Enforced by</th><th>Answers</th><th>Stops</th></tr>
@@ -424,8 +424,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="910" y="216">RR-4 sandbox escape</text><text x="910" y="232">RR-6 approver account taken over</text>
 </g>
 </svg>
-<p class="cap">Figure 5. Risk matrix after the controls. Green = accept. Yellow = accept and watch, or reduce in a later layer. Red = not acceptable for V1 (empty).</p>
 </div>
+<p class="cap">Figure 5. Risk matrix after the controls. Green = accept. Yellow = accept and watch, or reduce in a later layer. Red = not acceptable for V1 (empty).</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Residual risk</th><th>Likelihood</th><th>Impact</th><th>Treatment</th><th>Owner</th><th>Q</th></tr>

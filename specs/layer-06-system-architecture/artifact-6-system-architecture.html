@@ -128,8 +128,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="680" y="320">off by default</text>
 </g>
 </svg>
-<p class="cap">Figure 1. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
 </div>
+<p class="cap">Figure 1. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
 <table>
 <tr><th>Neighbour</th><th>What crosses</th><th>Direction</th><th>Label</th></tr>
 <tr><td>On-call engineer, approver</td><td>Incidents, approvals, stop and take-over, timeline queries</td><td>In</td><td><span class="L F">Fixed</span> A2 2.3 (CLI, HTTP API, no dashboard)</td></tr>
@@ -199,8 +199,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 </g>
 <text x="20" y="560" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). This is not a product dashboard (A2 2.3).</text>
 </svg>
-<p class="cap">Figure 2. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
 </div>
+<p class="cap">Figure 2. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
 <div class="fig">
 <svg viewBox="0 0 1150 400" role="img" aria-label="Sequence diagram of incident A from alert to the first workflow step">
 <defs><marker id="c4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
@@ -234,8 +234,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="480" y="338">8 step 1 done: checkpoint, audit entry</text>
 </g>
 </svg>
-<p class="cap">Figure 3. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
 </div>
+<p class="cap">Figure 3. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
 <h3>Processes and their responsibilities</h3>
 <table>
 <tr><th>Process</th><th>Synchronous work</th><th>Asynchronous work</th><th>Scale</th><th>Label</th></tr>
@@ -305,8 +305,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M795,374 V395" stroke-dasharray="6 4" marker-end="url(#c3)"/>
 </g>
 </svg>
-<p class="cap">Figure 4. Component diagram. Each dashed outline is a process (deploy unit). Each box is a module (code package). Every model call goes through the inference gateway. The dashed adapters and providers are off by default (Q6.36).</p>
 </div>
+<p class="cap">Figure 4. Component diagram. Each dashed outline is a process (deploy unit). Each box is a module (code package). Every model call goes through the inference gateway. The dashed adapters and providers are off by default (Q6.36).</p>
 <table>
 <tr><th>Component</th><th>Responsibility</th><th>Process</th><th>Q</th><th>Label</th></tr>
 <tr><td>Intake</td><td>Authenticate the caller, validate, group duplicates, save and queue in one transaction, reply</td><td>API</td><td>Q6.9</td><td><span class="L D">Decision</span></td></tr>
@@ -444,8 +444,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <circle cx="740" cy="100" r="11" class="tb"/><text x="740" y="104" text-anchor="middle" class="tbt">4</text>
 <circle cx="740" cy="315" r="11" class="tb"/><text x="740" y="319" text-anchor="middle" class="tbt">6</text></g>
 </svg>
-<p class="cap">Figure 5. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
 </div>
+<p class="cap">Figure 5. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
 <div class="fig">
 <svg viewBox="0 0 1150 470" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
 <defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
@@ -485,8 +485,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="1045" y="425" text-anchor="end">11 check signature, hash, expiry, single use; then pipeline or config store</text>
 </g>
 </svg>
-<p class="cap">Figure 6. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
 </div>
+<p class="cap">Figure 6. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
 <table>
 <tr><th>Container</th><th>Zone</th><th>Holds</th><th>Network reach</th><th>A5 boundary</th></tr>
 <tr><td>API</td><td>Trusted</td><td>Approval signing key</td><td>Clients in; PostgreSQL; chat and pager</td><td>TB-1, TB-5</td></tr>
