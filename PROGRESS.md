@@ -15,8 +15,8 @@ _Last updated: 2026-11-14_
 | 4 | Requirements | Dhanush (from Chirag) | Done — ChatGPT pass pending (H2) | [log](specs/layer-04-requirements/conversation-log.md) | [A4](specs/layer-04-requirements/artifact-4-requirements-specification.html) | 34 requirements, 5 provisional milestones |
 | 5 | Threat Modeling | Chirag | Done — ChatGPT pass pending (H2); consumer review by Dhanush done, fixes applied (2026-11-14) | [log](specs/layer-05-threat-modeling/conversation-log.md) | [A5](specs/layer-05-threat-modeling/artifact-5-threat-model.html) | 18 abuse cases, 23 controls, 16 security tests. Closes M11 (author may approve the revert, not the fix), NFR-08 method (rules-only redaction, fail closed), A1 E8 check, secret store requirements |
 | 6 | System Architecture | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-06-system-architecture/conversation-log.md) | [A6](specs/layer-06-system-architecture/artifact-6-system-architecture.html) | 4 processes (API, worker, executor, sandbox runner), 18 components, 10 ADRs. Temporal + PostgreSQL waiting queue. Revised A2 model rule: cloud providers by config, off by default |
-| 7 | Data, APIs and Events | Dhanush (from Manish) | Not started — inputs ready (A4, A6) | | | |
-| 8 | Workflows and State Machines | Dhanush | Not started — prep allowed (Sections A, D) | | | Needs A6, A7 |
+| 7 | Data, APIs and Events | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-07-data-apis-events/conversation-log.md) | [A7](specs/layer-07-data-apis-events/artifact-7-data-and-interface-specification.html) | 45 tables, CloudEvents envelope, outbox via queued row + event table, idempotency table, SSE timeline. Gap review F1–F9 applied. Revised A5 login (SC-25) and config (SC-24) |
+| 8 | Workflows and State Machines | Dhanush | Not started — inputs ready (A6, A7) | | | |
 | 9 | Agent Architecture | Dhanush | Not started | | | Needs A3, A7, A8 |
 | 10 | Inference and Retrieval | Irfan | Not started | | | Needs A2, A9 |
 | 11 | Safe Remediation | Rinisha | Not started | | | Needs A5, A8, A9 |
@@ -30,6 +30,7 @@ _Last updated: 2026-11-14_
 | 2026-11-12 | A1 | Claude (same session) | 4 contradictions, recovery-first change, 11 new unknowns — all applied |
 | 2026-11-13 | A1, A2, A3 + logs | Claude subagent (fresh context) | 3 High, 12 Medium, 9 Low — team approved fixes; all applied except H2 (team action) |
 | 2026-11-14 | A5 + log, AGENTS.md | Dhanush with Claude (consumer review) | 3 Medium, 5 Low, 1 L6 action — [all approved and applied](specs/reviews/2026-11-14-a5-review.md) |
+| 2026-11-14 | L7 tables and API vs A1–A6 features | Claude subagent (fresh context) | 62 features, 28 gaps (11 High) — [F1–F9 approved and applied](specs/reviews/2026-11-14-l7-gap-fixes.md) |
 
 ## Open findings from the 2026-11-13 review
 
@@ -68,5 +69,6 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Executor, reconcile, patch policy rules, branch protection, "author" for multi-commit deploys (A5 SC-04, SC-13 to SC-16, SC-20) | Rinisha | Layer 11 |
 | Point A1 1.2 / 1.5 self-approval text to the A5 M11 decision (SC-04) | Chirag | Before submission |
 | Team walk-through of A5 decisions (work-split rule 4; review R8) | Chirag | Before Layer 11 |
-| Confirm A5 additions from Layer 6: AB-19, SC-24, ST-17 (cloud model providers) | Chirag | A5 walk-through |
+| Confirm A5 changes from Layers 6 and 7: AB-19, AB-20, SC-01, SC-04, SC-24, SC-25, AST-11, TA-8, RR-6, ST-17, ST-18, ST-19 | Chirag | A5 walk-through |
+| Fix approval record: signed approval vs "merge is the approval" (A2 2.3, L7 F7) | Rinisha | Layer 11 |
 | Rebalance load: Dhanush owns L3, L4, L6–L9 (311 Qs); Manish has no layer; Chirag owns L5 | Team | Before Layer 7 |

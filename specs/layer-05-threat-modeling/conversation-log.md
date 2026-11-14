@@ -54,7 +54,7 @@ Labels (from Layer 2): **Fixed** = fixed requirement (with source), **Decision**
 
 | # | Assumption | Owner | Validate when |
 |---|---|---|---|
-| L5-A1 | The organization has single sign-on with MFA that the CLI and the API can use | Dhanush | Layer 6 (technology selection) |
+| L5-A1 | Where a company chooses single sign-on, its OIDC provider works with the CLI (device-code flow) and the API *(revised in Layer 7)* | Dhanush | Layer 7 (API design); before Layer 13 |
 | L5-A2 | A secret store that meets Q5.13 exists or can be run for V1 | Dhanush | Layer 6 |
 | L5-A3 | The Git host supports branch protection with a required human review, code owners, and dismissal of stale approvals | Rinisha | Layer 11 |
 | L5-A4 | The pipeline and the config store let the platform look up a run or a version by an ID or key, so a crashed action can be reconciled (Q5.11) | Dhanush | Layer 6 / Layer 7 |
@@ -79,3 +79,9 @@ Consumer review by Dhanush (Layer 6 owner): [specs/reviews/2026-11-14-a5-review.
 ## Changes from Layer 6 (2026-11-14)
 
 The team revised the A2 model rule (L6 log Q6.12): the inference gateway supports cloud model providers (Anthropic, OpenAI-compatible) by configuration only, off by default. Added to A5: **AB-19** (incident data to an unapproved provider), **SC-24** (Decision: only a platform admin enables a provider through a reviewed config change, audited; key in the secret store; host on the egress allow list; redaction before every call; no automatic fallback; platform refuses to start if the reviewer model equals the main model), **ST-17** (off-by-default and no-fallback test). Owner Chirag to confirm in the A5 walk-through.
+
+## Changes from Layer 7 (2026-11-14)
+
+Team decision (L7 log, Q7.18): **one login mode per deployment** — own login (default) or single sign-on (configuration). No self-signup; Argon2id; lockout after 5 failures; password re-entry to approve; **no MFA in V1**. Revised SC-01, L5-A1 and RR-6 (accepted for V1, revisit before real production use); added **SC-25**, **AB-20**, **ST-18**; updated TB-1, Figures 1–3 labels. Owner Chirag to confirm in the A5 walk-through.
+
+**More changes from Layer 7 (gap review F3, F5; 2026-11-14):** platform admin is a separate account (SC-04); cloud provider enablement through the admin API with a second admin's approval (SC-24); new asset **AST-11** (configuration in the database); TA-8 reach widened; ST-17 extended; new **ST-19**. Owner Chirag to confirm.

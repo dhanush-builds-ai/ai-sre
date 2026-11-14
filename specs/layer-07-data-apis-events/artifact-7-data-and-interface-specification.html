@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 7 - Data and Interface Specification</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px}
+.sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
+.qs{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.tw{overflow-x:auto}
+.reg{min-width:1000px;font-size:13.5px}
+.reg td:first-child{white-space:nowrap;font-weight:600}
+.reg tr.grp td{background:var(--accent-bg);color:var(--accent);font-weight:600}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
+.fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
+.fig svg{display:block;min-width:720px;width:100%;height:auto}
+.cap{color:var(--muted);font-size:14px;margin:4px 0 0}
+.note{border-left:4px solid var(--human);background:var(--human-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+.no{border-left:4px solid var(--bad);background:var(--bad-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+ul,ol{padding-left:22px}li{margin:2px 0}
+.checks{list-style:none;padding-left:0}
+.L{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.F{background:var(--fix-bg);color:var(--fix);border:1px solid var(--fix)}
+.D{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent)}
+.A{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.R{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.Rl{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.Rm{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.Rh{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+svg text{fill:var(--fg);font-family:system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
+svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
+svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .zb{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zt{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zo{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
+svg .ac{fill:var(--muted)}
+svg .halo text{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-weight:700}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-size:13px;line-height:1.45}
+pre code{border:0;padding:0;background:none}
+@media print{body{background:#fff}.fig{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Artifact 7 - Data and Interface Specification</h1>
+<p class="sub">Building an AI SRE &middot; Layer 7: Data Architecture, APIs and Event Design &middot; <b>Built from.</b> Artifacts 4 and 6 (and the standing decisions of Artifacts 1, 2, 3 and 5).</p>
+<table>
+<tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Dhanush (owner, from Manish), Chirag, Manish, Rinisha, Irfan</td></tr>
+</table>
+<p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code> and the approved gap review (<code>specs/reviews/2026-11-14-l7-gap-fixes.md</code>, F1&ndash;F9). Focus of this layer: every object has a structure, an owner and an identity. If it cannot be stored, referenced and replayed, it is not yet designed. Labels:
+<span class="L F">Fixed requirement</span> comes from an earlier artifact (source given).
+<span class="L D">Decision</span> was made in this layer, with a rationale in the log.
+<span class="L A">Assumption</span> is provisional, with an owner and a validation condition (see Appendix).</p>
+
+<h3>Required sections</h3>
+<table>
+<tr><th>Required section</th><th>Questions this section answers</th><th>Done</th></tr>
+<tr><td>7.1 Entity relationship diagram</td><td>Q7.1, Q7.2, Q7.5 to Q7.9, Q7.18, Q7.19, Q7.22</td><td>&#9745;</td></tr>
+<tr><td>7.2 PostgreSQL schema</td><td>Q7.3, Q7.4, Q7.10 to Q7.15, Q7.17, Q7.18, Q7.20, Q7.21, Q7.23 to Q7.27</td><td>&#9745;</td></tr>
+<tr><td>7.3 Pydantic contracts</td><td>Q7.3, Q7.4, Q7.8, Q7.10, Q7.14, Q7.26, Q7.28</td><td>&#9745;</td></tr>
+<tr><td>7.4 API specification</td><td>Q7.28 to Q7.41</td><td>&#9745;</td></tr>
+<tr><td>7.5 Event schemas</td><td>Q7.16, Q7.42 to Q7.46, Q7.53</td><td>&#9745;</td></tr>
+<tr><td>7.6 Event sequencing rules</td><td>Q7.25, Q7.47 to Q7.50</td><td>&#9745;</td></tr>
+<tr><td>7.7 Outbox design</td><td>Q7.54 to Q7.59, Q7.64</td><td>&#9745;</td></tr>
+<tr><td>7.8 Idempotency rules</td><td>Q7.9, Q7.11, Q7.20, Q7.60 to Q7.63</td><td>&#9745;</td></tr>
+<tr><td>7.9 SSE timeline design</td><td>Q7.30, Q7.51 to Q7.53</td><td>&#9745;</td></tr>
+</table>
+
+<!-- ============ 7.1 ============ -->
+<h2><span class="sec">7.1</span>Entity relationship diagram</h2>
+<p class="qs">Answers: Q7.1, Q7.2, Q7.5 to Q7.9, Q7.18, Q7.19, Q7.22</p>
+<p>The platform has <b>45 tables</b> in 7 groups (Q7.18, gap review F1&ndash;F9). Figure 1 shows the incident life cycle. Figure 2 shows the supporting tables. The ID of every record is a UUIDv7. A UUIDv7 sorts by time. The incident ID is also the Temporal workflow ID (A6 ADR-03).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 630" role="img" aria-label="Entity relationship diagram of the incident life cycle">
+<defs><marker id="cf" viewBox="0 0 12 12" refX="12" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,6 L12,0 M0,6 L12,12 M0,6 L12,6" class="ln"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="30" y="30" width="170" height="40" rx="5" class="box"/><text x="115" y="54">service</text>
+<rect x="230" y="30" width="170" height="40" rx="5" class="box"/><text x="315" y="54">environment</text>
+<rect x="430" y="30" width="170" height="40" rx="5" class="uc"/><text x="515" y="54" font-weight="600">incident</text>
+<rect x="630" y="30" width="170" height="40" rx="5" class="box"/><text x="715" y="54">alert</text>
+<rect x="830" y="30" width="170" height="40" rx="5" class="fx"/><text x="915" y="54">event</text>
+<rect x="1010" y="30" width="130" height="40" rx="5" class="fx"/><text x="1075" y="54">artifact</text>
+<rect x="230" y="120" width="170" height="40" rx="5" class="box"/><text x="315" y="144">tool_call</text>
+<rect x="430" y="120" width="170" height="40" rx="5" class="box"/><text x="515" y="144">evidence</text>
+<rect x="630" y="120" width="170" height="40" rx="5" class="box"/><text x="715" y="144">model_call</text>
+<rect x="30" y="120" width="170" height="40" rx="5" class="box"/><text x="115" y="144">budget_entry</text>
+<rect x="30" y="210" width="170" height="40" rx="5" class="box"/><text x="115" y="234">notification</text>
+<rect x="430" y="210" width="170" height="40" rx="5" class="box"/><text x="515" y="234">hypothesis_evidence</text>
+<rect x="630" y="210" width="170" height="40" rx="5" class="box"/><text x="715" y="234">hypothesis</text>
+<rect x="430" y="300" width="170" height="40" rx="5" class="box"/><text x="515" y="324">diagnosis_feedback</text>
+<rect x="630" y="300" width="170" height="40" rx="5" class="box"/><text x="715" y="324">diagnosis</text>
+<rect x="830" y="300" width="170" height="40" rx="5" class="box"/><text x="915" y="324">review</text>
+<rect x="630" y="390" width="170" height="40" rx="5" class="uc"/><text x="715" y="414" font-weight="600">action</text>
+<rect x="830" y="390" width="170" height="40" rx="5" class="box"/><text x="915" y="414">patch</text>
+<rect x="1010" y="390" width="130" height="40" rx="5" class="box"/><text x="1075" y="414">policy_check</text>
+<rect x="830" y="480" width="170" height="40" rx="5" class="box"/><text x="915" y="504">sandbox_run</text>
+<rect x="430" y="480" width="170" height="40" rx="5" class="hum"/><text x="515" y="504">approval_request</text>
+<rect x="230" y="480" width="170" height="40" rx="5" class="hum"/><text x="315" y="504">approval</text>
+<rect x="30" y="480" width="170" height="40" rx="5" class="hum"/><text x="115" y="504">approval_use</text>
+<rect x="630" y="570" width="170" height="40" rx="5" class="okb"/><text x="715" y="594">execution_attempt</text>
+<rect x="830" y="570" width="170" height="40" rx="5" class="okb"/><text x="915" y="594">verification</text>
+</g>
+<g class="ln">
+<path d="M115,30 V14 H500 V30" marker-end="url(#cf)"/>
+<path d="M400,50 H430" marker-end="url(#cf)"/>
+<path d="M600,50 H630" marker-end="url(#cf)"/>
+<path d="M560,30 V8 H915 V30" marker-end="url(#cf)"/>
+<path d="M515,70 V120" marker-end="url(#cf)"/>
+<path d="M400,140 H430" marker-end="url(#cf)"/>
+<path d="M590,70 V95 H715 V120" marker-end="url(#cf)"/>
+<path d="M515,160 V210" marker-end="url(#cf)"/>
+<path d="M715,160 V210" marker-end="url(#cf)"/>
+<path d="M630,230 H600" marker-end="url(#cf)"/>
+<path d="M715,250 V300" marker-end="url(#cf)"/>
+<path d="M630,320 H600" marker-end="url(#cf)"/>
+<path d="M800,320 H830" marker-end="url(#cf)"/>
+<path d="M715,340 V390" marker-end="url(#cf)"/>
+<path d="M800,410 H830"/>
+<path d="M1000,410 H1010" marker-end="url(#cf)"/>
+<path d="M915,430 V480" marker-end="url(#cf)"/>
+<path d="M630,410 H515 V480" marker-end="url(#cf)"/>
+<path d="M430,500 H400" marker-end="url(#cf)"/>
+<path d="M230,500 H200"/>
+<path d="M715,430 V570" marker-end="url(#cf)"/>
+<path d="M315,520 V590 H630" marker-end="url(#cf)"/>
+<path d="M800,590 H830" marker-end="url(#cf)"/>
+</g>
+<g class="lbl halo">
+<text x="268" y="10">n incidents per service</text>
+<text x="722" y="190">creates</text>
+<text x="404" y="135">collects</text>
+<text x="602" y="225">supports or</text><text x="602" y="250">contradicts</text>
+<text x="805" y="314">verdicts</text>
+<text x="805" y="404">1:1</text>
+<text x="205" y="495">1:1</text>
+<text x="520" y="400">needs approval</text>
+<text x="400" y="584">authorizes</text>
+</g>
+<text x="30" y="370" class="lbl">Crow's foot = many. Every table here also</text>
+<text x="30" y="386" class="lbl">carries incident_id (lines not drawn).</text>
+<text x="30" y="402" class="lbl">Artifact rows are referenced by ID from</text>
+<text x="30" y="418" class="lbl">evidence, patch, model_call, sandbox_run.</text>
+</svg>
+</div>
+<p class="cap">Figure 1. ERD of the incident life cycle. Blue = the two central entities. Amber = human approval. Green = changes to production and their check. Purple = append-only stores. A review can also target an action or a patch (Q7.18).</p>
+
+<div class="fig">
+<svg viewBox="0 0 1150 450" role="img" aria-label="Entity relationship diagram of identity, ownership and configuration tables">
+<defs><marker id="cf2" viewBox="0 0 12 12" refX="12" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,6 L12,0 M0,6 L12,12 M0,6 L12,6" class="ln"/></marker></defs>
+<rect x="15" y="15" width="1120" height="85" rx="8" class="zo"/>
+<rect x="15" y="190" width="600" height="245" rx="8" class="zo"/>
+<rect x="630" y="190" width="505" height="245" rx="8" class="zo"/>
+<g class="lbl" font-weight="600"><text x="25" y="112">Identity and teams</text><text x="25" y="186">Ownership directory</text><text x="640" y="186">Platform configuration</text></g>
+<g text-anchor="middle" class="sm">
+<rect x="30" y="30" width="170" height="40" rx="5" class="box"/><text x="115" y="54">team</text>
+<rect x="230" y="30" width="170" height="40" rx="5" class="box"/><text x="315" y="54">team_member</text>
+<rect x="430" y="30" width="170" height="40" rx="5" class="uc"/><text x="515" y="54" font-weight="600">user</text>
+<rect x="630" y="30" width="170" height="40" rx="5" class="box"/><text x="715" y="54">local_credential</text>
+<rect x="830" y="30" width="140" height="40" rx="5" class="box"/><text x="900" y="54">session</text>
+<rect x="985" y="30" width="140" height="40" rx="5" class="box"/><text x="1055" y="54">user_identity</text>
+<rect x="230" y="120" width="170" height="40" rx="5" class="box"/><text x="315" y="144">oncall_shift</text>
+<rect x="30" y="210" width="170" height="40" rx="5" class="uc"/><text x="115" y="234" font-weight="600">service</text>
+<rect x="230" y="210" width="170" height="40" rx="5" class="box"/><text x="315" y="234">service_owner</text>
+<rect x="430" y="210" width="170" height="40" rx="5" class="box"/><text x="515" y="234">service_alias</text>
+<rect x="30" y="300" width="170" height="40" rx="5" class="box"/><text x="115" y="324">service_dependency</text>
+<rect x="230" y="300" width="170" height="40" rx="5" class="box"/><text x="315" y="324">service_repository</text>
+<rect x="430" y="300" width="170" height="40" rx="5" class="box"/><text x="515" y="324">service_env_config</text>
+<rect x="430" y="380" width="170" height="40" rx="5" class="box"/><text x="515" y="404">environment</text>
+<rect x="650" y="210" width="150" height="40" rx="5" class="uc"/><text x="725" y="234" font-weight="600">integration</text>
+<rect x="820" y="210" width="150" height="40" rx="5" class="box"/><text x="895" y="234">model_provider</text>
+<rect x="985" y="210" width="140" height="40" rx="5" class="box"/><text x="1055" y="234">model_assignment</text>
+<rect x="650" y="300" width="150" height="40" rx="5" class="box"/><text x="725" y="324">knowledge_document</text>
+<rect x="820" y="300" width="150" height="40" rx="5" class="box"/><text x="895" y="324">platform_setting</text>
+<rect x="985" y="300" width="140" height="40" rx="5" class="hum"/><text x="1055" y="324">config_change</text>
+</g>
+<g class="ln">
+<path d="M200,50 H230" marker-end="url(#cf2)"/>
+<path d="M430,50 H400" marker-end="url(#cf2)"/>
+<path d="M600,50 H630"/>
+<path d="M560,30 V20 H900 V30" marker-end="url(#cf2)"/>
+<path d="M580,70 V85 H1055 V70" marker-end="url(#cf2)"/>
+<path d="M150,70 V140 H230" marker-end="url(#cf2)"/>
+<path d="M470,70 V140 H400" marker-end="url(#cf2)"/>
+<path d="M115,70 V95 H80 V200 H315 V210" marker-end="url(#cf2)"/>
+<path d="M200,230 H230" marker-end="url(#cf2)"/>
+<path d="M115,250 V300" marker-end="url(#cf2)"/>
+<path d="M170,250 V275 H315 V300" marker-end="url(#cf2)"/>
+<path d="M190,250 V265 H515 V300" marker-end="url(#cf2)"/>
+<path d="M515,380 V340" marker-end="url(#cf2)"/>
+<path d="M650,230 H600" marker-end="url(#cf2)"/>
+<path d="M725,250 V300" marker-end="url(#cf2)"/>
+<path d="M970,230 H985" marker-end="url(#cf2)"/>
+</g>
+<g class="lbl halo"><text x="88" y="150">owns</text><text x="612" y="224">source</text><text x="733" y="280">Git sync</text></g>
+</svg>
+</div>
+<p class="cap">Figure 2. ERD of identity, ownership and configuration. One login mode per deployment: a user has a local credential (own login) or an SSO subject. The admin flag sits on a separate admin account (F3). Every configuration change writes a config_change row and a platform event (F5).</p>
+
+<table>
+<tr><th>Group</th><th>Tables</th><th>Count</th></tr>
+<tr><td>Reference and ownership</td><td>service, environment, team, service_owner, service_dependency, service_repository, service_alias, service_environment_config, knowledge_document</td><td>9</td></tr>
+<tr><td>Identity</td><td>user, local_credential, team_member, session, user_identity</td><td>5</td></tr>
+<tr><td>Intake</td><td>incident, alert</td><td>2</td></tr>
+<tr><td>Investigation</td><td>evidence, tool_call, hypothesis, hypothesis_evidence, diagnosis, review, model_call</td><td>7</td></tr>
+<tr><td>Change</td><td>action, patch, policy_check, sandbox_run, approval_request, approval, approval_use, execution_attempt, verification</td><td>9</td></tr>
+<tr><td>Cross-cutting</td><td>event, artifact, budget_entry, notification, oncall_shift, diagnosis_feedback, consumer_checkpoint, idempotency_key</td><td>8</td></tr>
+<tr><td>Configuration</td><td>integration, model_provider, model_assignment, platform_setting, config_change</td><td>5</td></tr>
+<tr><td colspan="2"><b>Total</b></td><td><b>45</b></td></tr>
+</table>
+<div class="note"><b>Not in the database:</b> workflow progress (Temporal); prompts, policy rules, redaction rules and the tool allow list (repository, reviewed PR, A5 AST-10); secrets and signing keys (secret store; the database keeps only the reference name).</div>
+
+<!-- ============ 7.2 ============ -->
+<h2><span class="sec">7.2</span>PostgreSQL schema</h2>
+<p class="qs">Answers: Q7.3, Q7.4, Q7.10 to Q7.15, Q7.17, Q7.18, Q7.20, Q7.21, Q7.23 to Q7.27</p>
+<h3>Rules for every table</h3>
+<table>
+<tr><th>Rule</th><th>Detail</th><th>Label</th></tr>
+<tr><td>Primary key</td><td><code>id uuid</code> (UUIDv7)</td><td><span class="L D">Decision</span> Q7.1</td></tr>
+<tr><td>Incident link</td><td>Life-cycle tables carry <code>incident_id</code> (indexed) and use composite foreign keys, so a record cannot link to another incident's record (Q7.19).</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Columns or JSONB</td><td>Columns for anything filtered, joined, constrained or indexed. JSONB only for variable payloads, always with <code>schema_version</code> and a Pydantic model (Q7.26).</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Immutable tables</td><td>approval, approval_use, execution_attempt, verification, evidence, artifact, model_call, event, config_change (after applied or rejected). The platform's database role has INSERT and SELECT only, and a trigger rejects UPDATE and DELETE (Q7.21).</td><td><span class="L D">Decision</span> (A5 SC-19)</td></tr>
+<tr><td>Concurrency</td><td>One writer per incident: its Temporal workflow. The API sends signals and does not write incident state (Q7.24). <code>incident.version</code> is a compare-and-set guard (Q7.25).</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Retention</td><td>Incidents and events: 1 year. Raw evidence artifacts: 90 days. <code>event</code>, <code>evidence</code>, <code>model_call</code> and <code>tool_call</code> are partitioned by month. A separate maintenance role drops expired partitions and writes a <code>retention.purged</code> event with the chain checkpoint (F9).</td><td><span class="L D">Decision</span> closes A1 D3 for V1</td></tr>
+<tr><td>Migrations</td><td>Alembic, expand then contract, batched backfills, reviewed PR, backup first, tested on fixtures. Immutable tables are never rewritten (Q7.27, A6 ADR-04).</td><td><span class="L F">Fixed</span> A6 ADR-04</td></tr>
+</table>
+<h3>Main columns and constraints</h3>
+<div class="tw"><table class="reg">
+<tr><th>Table</th><th>Main columns</th><th>Constraints</th><th>Q</th></tr>
+<tr class="grp"><td colspan="4">Intake</td></tr>
+<tr><td>incident</td><td>id, key (<code>INC-0042</code>), service_id, environment_id, alert_rule, severity, severity_source, severity_confirmed, status, version, code_version_at_start, config_version_at_start, owner_team_at_start, config_versions (JSONB), owner_user_id, resolution, closed_at, created_at</td><td>unique key; partial unique <code>(service_id, environment_id, alert_rule) WHERE status is open AND alert_rule IS NOT NULL</code></td><td>Q7.1, Q7.2, Q7.20, Q7.25</td></tr>
+<tr><td>alert</td><td>id, integration_id, external_alert_id, fingerprint, status (firing / resolved), labels (JSONB), starts_at, ends_at, received_at, incident_id, payload_artifact_id</td><td>unique <code>(integration_id, external_alert_id)</code></td><td>Q7.20</td></tr>
+<tr class="grp"><td colspan="4">Investigation</td></tr>
+<tr><td>evidence</td><td>id, incident_id, kind, integration_id, adapter_version, query (JSONB), window_start, window_end, collected_at, source_time, content_hash, summary (JSONB), artifact_id, redaction_version, status (ok / partial / missing), trust = untrusted, tool_call_id</td><td>immutable</td><td>Q7.3, Q7.4</td></tr>
+<tr><td>tool_call</td><td>id, incident_id, model_call_id, tool, arguments (JSONB), status (ok / rejected / failed), reject_reason, started_at, ended_at</td><td>immutable</td><td>Q7.4</td></tr>
+<tr><td>hypothesis</td><td>id, incident_id, statement, confidence, rank, status (open / ruled_out / confirmed), created_by_rule, created_by_model_call_id</td><td>one creator only (CHECK)</td><td>Q7.5</td></tr>
+<tr><td>hypothesis_evidence</td><td>hypothesis_id, evidence_id, role (supports / contradicts), incident_id</td><td>PK (hypothesis_id, evidence_id)</td><td>Q7.5, Q7.22</td></tr>
+<tr><td>diagnosis</td><td>id, incident_id, hypothesis_id, result (cause_found / inconclusive), rationale, confidence, ruled_out (uuid[]), missing (JSONB), status (active / superseded)</td><td>partial unique <code>(incident_id) WHERE status = 'active'</code>; ON DELETE RESTRICT</td><td>Q7.6, Q7.19</td></tr>
+<tr><td>review</td><td>id, incident_id, target_type (diagnosis / action / patch), target_id, model_call_id, verdict, notes</td><td>&mdash;</td><td>Q7.18</td></tr>
+<tr><td>model_call</td><td>id, incident_id, step, role (diagnoser / critic / fixer), model_provider_id, model_name, model_version, prompt_version, input_hash, input_tokens, output_artifact_id, output_hash, output_tokens, latency_ms, attempt, result (valid / malformed / timeout), parse_error, budget_entry_id</td><td>immutable</td><td>Q7.14</td></tr>
+<tr class="grp"><td colspan="4">Change</td></tr>
+<tr><td>action</td><td>id, incident_id, diagnosis_id, kind (redeploy / config_restore / fix_pr), target (JSONB, absolute: <code>config v41</code>), precondition (JSONB: <code>current = v42</code>), undo (JSONB), risk_class (type1 / type2), action_hash, status, undoes_action_id</td><td>idempotency key = incident_id + id</td><td>Q7.7, Q7.9</td></tr>
+<tr><td>patch</td><td>id, action_id, base_commit, branch, diff_artifact_id, diff_hash, files_changed, lines_added, lines_removed, repro_test, pr_url, head_sha</td><td>unique action_id</td><td>Q7.8</td></tr>
+<tr><td>approval_request</td><td>id, action_id, action_hash, stage (primary / backup), eligible_user_ids, expires_at, escalated_at</td><td>&mdash;</td><td>Q7.23</td></tr>
+<tr><td>approval</td><td>id, approval_request_id, action_id, action_hash, approver_user_id, auth_method, role_at_decision, decision (approve / reject), reason, decided_at, expires_at, signature, channel</td><td>immutable; reason required for reject and self-approval (CHECK)</td><td>Q7.10, Q7.23</td></tr>
+<tr><td>approval_use</td><td>approval_id, used_at, execution_attempt_id</td><td>unique approval_id = single use</td><td>Q7.23</td></tr>
+<tr><td>execution_attempt</td><td>id, action_id, approval_id, attempt_no, idempotency_key, intent_at, dispatched_at, external_ref, outcome_status, resulting_version, response_artifact_id, outcome_source (reply / lookup), error</td><td>immutable; unique (action_id, attempt_no)</td><td>Q7.11, Q7.12</td></tr>
+<tr><td>verification</td><td>id, action_id, queries (JSONB), baseline (JSONB), baseline_window, observed (JSONB), watch_period, thresholds (JSONB), result (recovered / not_recovered / inconclusive), verifier_version</td><td>immutable</td><td>Q7.13</td></tr>
+<tr class="grp"><td colspan="4">Cross-cutting</td></tr>
+<tr><td>event</td><td>id, stream_type (incident / platform), stream_id, incident_id, sequence, type, schema_version, occurred_at, recorded_at, actor block (section 7.5), subject_type, subject_id, causation_id, correlation_id, data (JSONB), prev_hash, hash</td><td>unique (stream_id, sequence); immutable; monthly partitions</td><td>Q7.16, Q7.21</td></tr>
+<tr><td>artifact</td><td>id, incident_id, kind, media_type, size_bytes, sha256, storage_key (internal only), redaction_status, retention_class</td><td>immutable</td><td>Q7.17</td></tr>
+<tr><td>budget_entry</td><td>id, incident_id, kind (tokens_in / tokens_out / gpu_seconds / tool_calls / money), phase (reserve / commit / release), amount, model_call_id</td><td>append-only; a reserve must fit the remaining limit</td><td>Q7.15</td></tr>
+<tr><td>notification</td><td>id, incident_id, recipient_user_id, channel (chat / pager / ticket), kind, sent_at, delivery_status, external_ref, acked_at, acked_by_user_id</td><td>&mdash;</td><td>F8</td></tr>
+<tr><td>idempotency_key</td><td>caller, key, endpoint, request_hash, response_status, response_body, created_at, expires_at</td><td>unique (caller, key)</td><td>Q7.61</td></tr>
+<tr><td>consumer_checkpoint</td><td>consumer, stream_id, last_sequence, updated_at</td><td>PK (consumer, stream_id)</td><td>Q7.43</td></tr>
+</table></div>
+<p>The reference, identity and configuration tables (Figure 2) follow the same rules. Their columns are in the gap review (F3&ndash;F5). Every change to them writes a platform event with before and after values.</p>
+<h3>Key constraints in SQL</h3>
+<pre><code>-- One open incident per alert key (Q7.20). A second insert conflicts and becomes evidence.
+CREATE UNIQUE INDEX incident_open_key ON incident (service_id, environment_id, alert_rule)
+  WHERE status NOT IN ('closed','cancelled') AND alert_rule IS NOT NULL;
+
+-- One active diagnosis per incident (Q7.19).
+CREATE UNIQUE INDEX diagnosis_active ON diagnosis (incident_id) WHERE status = 'active';
+
+-- An approval can be used once (Q7.23, A5 SC-14).
+CREATE TABLE approval_use (approval_id uuid PRIMARY KEY REFERENCES approval(id), used_at timestamptz NOT NULL,
+  execution_attempt_id uuid NOT NULL);
+
+-- Only a user with the approver role can approve (F1, A5 SC-04).
+ALTER TABLE event ADD CONSTRAINT approve_by_approver CHECK (type &lt;&gt; 'action.approved'
+  OR (actor_type = 'user' AND actor_role = 'approver'));
+
+-- Immutable tables reject UPDATE and DELETE (Q7.21).
+CREATE TRIGGER event_no_change BEFORE UPDATE OR DELETE ON event
+  FOR EACH ROW EXECUTE FUNCTION reject_change();
+
+-- Compare-and-set state change (Q7.25). 0 rows = someone else changed it first.
+UPDATE incident SET status = :new, version = version + 1 WHERE id = :id AND version = :expected;</code></pre>
+
+<!-- ============ 7.3 ============ -->
+<h2><span class="sec">7.3</span>Pydantic contracts</h2>
+<p class="qs">Answers: Q7.3, Q7.4, Q7.8, Q7.10, Q7.14, Q7.26, Q7.28</p>
+<p>Every API body, event payload and JSONB column has one Pydantic model. The model has a <code>schema_version</code>. The same models validate the input, generate the OpenAPI document, and check the JSONB columns. Unknown fields are rejected (<code>extra = "forbid"</code>).</p>
+<pre><code>class Actor(BaseModel):                      # F1: on every event
+    actor_type: Literal["user", "agent", "platform", "external"]
+    actor_id: str                            # user ID, model_call ID, component, integration ID
+    actor_role: str                          # approver, diagnoser, executor, monitoring ...
+    on_behalf_of: Ref | None = None
+    auth_method: Literal["password", "sso", "webhook_hmac", "webhook_token", "sns_signature", "internal"] | None
+    session_id: UUID | None = None
+    request_id: str | None = None
+    reason: str | None = None                # required for cancel, take-over, reject, severity, config change
+
+class AlertIn(BaseModel):                    # Q7.28: what every source adapter produces
+    source: str; external_alert_id: str | None; fingerprint: str
+    status: Literal["firing", "resolved"]
+    service: str; environment: str; alert_rule: str
+    severity: Literal["SEV1", "SEV2", "SEV3"] | None
+    starts_at: datetime; summary: str; labels: dict[str, str]
+
+class IncidentSubmit(BaseModel):             # engineer submission (FR-01)
+    service: str; environment: str; symptom: str
+    started_at: datetime; severity: Literal["SEV1", "SEV2", "SEV3"] | None = None
+
+class LogEvidence(BaseModel):  kind: Literal["log"];    lines: int;  sample: list[str]
+class MetricEvidence(BaseModel): kind: Literal["metric"]; series: str; points: list[tuple[datetime, float]]
+class TraceEvidence(BaseModel): kind: Literal["trace"];  trace_id: str; spans: int; error_spans: int
+class ConfigChangeEvidence(BaseModel): kind: Literal["config_change"]; key: str
+    from_version: str; to_version: str; value_changed: bool   # secret values never read (A1 E8)
+EvidencePayload = Annotated[LogEvidence | MetricEvidence | TraceEvidence | ConfigChangeEvidence | ...,
+                            Field(discriminator="kind")]       # Q7.3, Q7.26
+
+class EvidenceRecord(BaseModel):             # Q7.4
+    id: UUID; incident_id: UUID; kind: str
+    source: str; adapter_version: str; query: dict; window: tuple[datetime, datetime]
+    collected_at: datetime; content_hash: str; artifact_id: UUID | None
+    redaction_version: str; status: Literal["ok", "partial", "missing"]
+    trust: Literal["untrusted"] = "untrusted"; payload: EvidencePayload
+
+class Decision(BaseModel):                   # Q7.32, Q7.33
+    decision: Literal["approve", "reject"]
+    action_hash: str                         # must equal the current action hash (A5 SC-14)
+    reason: str | None                       # required for reject and self-approval
+    password: SecretStr | None               # re-entry in own-login mode (A5 SC-25)
+
+class ModelCallRecord(BaseModel):            # Q7.14
+    role: Literal["diagnoser", "critic", "fixer"]; model_name: str; model_version: str
+    prompt_version: str; input_hash: str; input_tokens: int; output_tokens: int
+    latency_ms: int; attempt: int; result: Literal["valid", "malformed", "timeout"]
+
+class Problem(BaseModel):                    # RFC 9457, Q7.38
+    type: str; title: str; status: int; detail: str; request_id: str</code></pre>
+<p>The patch contract (Q7.8) holds the base commit, branch, head SHA, PR URL, counts and the diff artifact ID. The diff itself is never inline. The approval contract (Q7.10) is the <code>approval</code> row in section 7.2.</p>
+
+<!-- ============ 7.4 ============ -->
+<h2><span class="sec">7.4</span>API specification</h2>
+<p class="qs">Answers: Q7.28 to Q7.41</p>
+<table>
+<tr><th>Rule</th><th>Detail</th></tr>
+<tr><td>Versioning</td><td>The URL holds the version (<code>/v1</code>). Changes in a version only add. A breaking change gets <code>/v2</code> and a deprecation period. CI compares the generated OpenAPI document and flags a breaking change (Q7.40).</td></tr>
+<tr><td>Authentication</td><td>A session or bearer token gives the user. One login mode for each deployment: own login (default) or SSO (A5 SC-25). Webhooks use the auth method of their source (Q7.39).</td></tr>
+<tr><td>Authorization</td><td>Each endpoint states its role. The server checks it on every request from team membership and on-call at that time (A5 SC-03). Admin endpoints are under <code>/v1/admin</code> and need the separate admin account (F3).</td></tr>
+<tr><td>Actor</td><td>The server fills the actor block from the caller. A request body cannot set it (F1).</td></tr>
+<tr><td>Errors</td><td>RFC 9457 <code>application/problem+json</code>. 401 = not logged in. 403 = no right, with an audit event. 409 = state or hash conflict. 422 = invalid body, or an idempotency key reused with a different request (Q7.38, Q7.62).</td></tr>
+<tr><td>Idempotency</td><td>Every state-changing POST accepts <code>Idempotency-Key</code> (section 7.8).</td></tr>
+</table>
+<div class="tw"><table class="reg">
+<tr><th>Method and path</th><th>Purpose</th><th>Who may call</th><th>Q</th></tr>
+<tr class="grp"><td colspan="4">Intake</td></tr>
+<tr><td>POST /v1/alerts</td><td>Alert from a monitoring source. 202 <code>{incident_id, key, status, grouped}</code>. A resolved alert returns <code>resolved_recorded</code> and never opens an incident.</td><td>Source with valid auth (HMAC, token, or SNS signature)</td><td>Q7.28</td></tr>
+<tr><td>POST /v1/incidents</td><td>Engineer submission. 202. Submissions never group.</td><td>Submitter of the service</td><td>Q7.28</td></tr>
+<tr class="grp"><td colspan="4">Incidents and records</td></tr>
+<tr><td>GET /v1/incidents, /v1/incidents/{id}</td><td>List with filters; current state with <code>ETag</code> = version</td><td>Viewer</td><td>Q7.29</td></tr>
+<tr><td>GET /v1/incidents/{id}/evidence | /hypotheses | /diagnoses | /actions</td><td>Read records (paged)</td><td>Viewer</td><td>Q7.29</td></tr>
+<tr><td>GET /v1/incidents/{id}/events?after=</td><td>Timeline page, in sequence order</td><td>Viewer</td><td>Q7.30</td></tr>
+<tr><td>GET /v1/incidents/{id}/events/stream</td><td>SSE timeline (section 7.9)</td><td>Viewer</td><td>Q7.30, Q7.52</td></tr>
+<tr><td>GET /v1/incidents/{id}/provenance/{type}/{entity_id}</td><td>Full provenance chain of one item</td><td>Viewer</td><td>Q7.30</td></tr>
+<tr><td>GET /v1/incidents/{id}/report | /budget</td><td>Closing report; budget used</td><td>Viewer</td><td>F8</td></tr>
+<tr><td>GET /v1/artifacts/{id}, /v1/artifacts/{id}/content</td><td>Metadata; redacted content as <code>text/plain</code> or attachment, <code>nosniff</code>, hash header. Never a path.</td><td>Viewer of the incident</td><td>Q7.31, Q7.41</td></tr>
+<tr class="grp"><td colspan="4">Human decisions</td></tr>
+<tr><td>GET /v1/actions/{id}</td><td>Target, precondition, undo, risk, action hash, evidence for and against, critic verdict, policy checks, sandbox report, PR</td><td>Viewer</td><td>Q7.32</td></tr>
+<tr><td>GET /v1/approvals?status=pending</td><td>The caller's pending approval requests</td><td>Approver</td><td>Q7.32</td></tr>
+<tr><td>POST /v1/actions/{id}/decisions</td><td>Approve or reject. Password re-entry (own login) or recent SSO login. 201 signed approval; 409 wrong hash, expired, or already decided.</td><td>Approver of the service; never an admin account</td><td>Q7.32, Q7.33</td></tr>
+<tr><td>POST /v1/incidents/{id}/cancel | /takeover | /resolve | /severity | /ack | /feedback</td><td>Stop (within 10 s, FR-14), take over, close a human-owned incident, change severity, acknowledge, mark the diagnosis correct or not. Reason required where marked in F1.</td><td>Submitter or approver of the service</td><td>Q7.34</td></tr>
+<tr class="grp"><td colspan="4">Auth and users</td></tr>
+<tr><td>POST /v1/auth/login, /logout, /device, /device/token; GET /v1/auth/oidc/callback</td><td>Own login or SSO device-code flow (one mode per deployment)</td><td>Anyone (login); a user (logout)</td><td>Q7.39</td></tr>
+<tr><td>GET /v1/users/me; POST /v1/users/me/password</td><td>Own profile; change own password</td><td>Any user</td><td>Q7.39</td></tr>
+<tr><td>/v1/admin/users (POST, GET, PATCH; /disable, /enable, /unlock, /password-reset, /identities)</td><td>User management. No delete.</td><td>Admin</td><td>F3</td></tr>
+<tr><td>/v1/admin/teams, /members, /oncall; /v1/admin/services (owner, dependencies, repositories, aliases, environments)</td><td>Teams, on-call shifts, ownership directory</td><td>Admin</td><td>F4</td></tr>
+<tr class="grp"><td colspan="4">Configuration and audit</td></tr>
+<tr><td>/v1/admin/integrations (GET, POST, PATCH, /test, /rotate-secret, /finish-rotation)</td><td>Monitoring, logs, metrics, traces, error tracker, Git, CI/CD, config store, chat, pager, ticketing, MCP servers</td><td>Admin</td><td>F5</td></tr>
+<tr><td>/v1/admin/model-providers, /model-assignments, /settings/{key}</td><td>Models (critic &ne; diagnoser, else 409), limits, timeouts, retention, login mode, SSO</td><td>Admin</td><td>F5</td></tr>
+<tr><td>GET /v1/admin/config-changes; POST /{id}/approve, /reject</td><td>Second-admin approval for a cloud provider or a login-mode change</td><td>A different admin</td><td>F5</td></tr>
+<tr><td>GET /v1/admin/audit/events, /v1/admin/audit/verify</td><td>Audit query across streams; hash-chain check. Each query is logged.</td><td>Admin</td><td>F2</td></tr>
+<tr class="grp"><td colspan="4">Operations</td></tr>
+<tr><td>GET /livez</td><td>Process is up. No dependency checks.</td><td>Docker</td><td>Q7.35</td></tr>
+<tr><td>GET /readyz</td><td>PostgreSQL reachable, migrations at head, Temporal reachable; else 503</td><td>Docker</td><td>Q7.36</td></tr>
+<tr><td>GET /metrics (internal port)</td><td>Prometheus metrics; never public</td><td>Prometheus</td><td>Q7.37</td></tr>
+</table></div>
+<h3>Alert source adapters (Q7.28)</h3>
+<table>
+<tr><th>Source</th><th>How it pushes</th><th>How intake checks it</th></tr>
+<tr><td>Prometheus Alertmanager</td><td><code>webhook_configs</code>, firing and resolved</td><td>Bearer token or basic auth over TLS</td></tr>
+<tr><td>Grafana Alerting</td><td>Webhook contact point</td><td>HMAC-SHA256 header with a timestamp</td></tr>
+<tr><td>Datadog</td><td>Webhooks integration, custom JSON template</td><td>Secret custom header</td></tr>
+<tr><td>AWS CloudWatch</td><td>Alarm to SNS to HTTPS</td><td>SNS message signature (certificate)</td></tr>
+</table>
+<p>Each adapter maps its payload to <code>AlertIn</code>. V1 needs one adapter for the demo. A ticketing system is an output channel only. It never starts an investigation.</p>
+
+<!-- ============ 7.5 ============ -->
+<h2><span class="sec">7.5</span>Event schemas</h2>
+<p class="qs">Answers: Q7.16, Q7.42 to Q7.46, Q7.53</p>
+<p>One <code>event</code> table is the audit record and the source of the timeline (Q7.42, F2). Every operation appends one event. Events that leave the platform use the <b>CloudEvents 1.0</b> envelope (Q7.44). The table columns map one to one.</p>
+<table>
+<tr><th>Field</th><th>Example (incident A)</th><th>Rule</th></tr>
+<tr><td>id</td><td><code>0193b6…</code></td><td>UUIDv7. Unique even when two payloads are equal (Q7.46).</td></tr>
+<tr><td>specversion, source</td><td><code>1.0</code>, <code>ai-sre/executor</code></td><td>Source = the component that wrote it (Q7.45)</td></tr>
+<tr><td>type</td><td><code>ai-sre.action.executed</code></td><td>From the catalog below</td></tr>
+<tr><td>subject</td><td><code>INC-0042</code></td><td>The incident, or <code>platform</code></td></tr>
+<tr><td>time, recorded_at</td><td>02:19:04Z</td><td>When it happened; when it was stored</td></tr>
+<tr><td>dataschema</td><td><code>…/action.executed/1</code></td><td>Payload version</td></tr>
+<tr><td>stream, sequence</td><td><code>incident:INC-0042</code>, 37</td><td>Order within the stream (section 7.6)</td></tr>
+<tr><td>causationid, correlationid</td><td>approval event ID; incident ID</td><td>The event that caused it; the incident chain</td></tr>
+<tr><td>actor block</td><td>platform / executor, on behalf of approval X</td><td>F1; never from a request body</td></tr>
+<tr><td>subjecttype, subjectid</td><td>action, <code>ACT-2</code></td><td>The record the event is about; provenance starts here</td></tr>
+<tr><td>prevhash, hash</td><td>SHA-256</td><td>Hash chain per stream (A5 SC-19)</td></tr>
+</table>
+<h3>Event type catalog</h3>
+<table>
+<tr><th>Group</th><th>Types</th></tr>
+<tr><td>Intake</td><td><code>alert.received</code>, <code>alert.resolved</code>, <code>incident.created</code>, <code>incident.grouped</code>, <code>incident.queued</code>, <code>incident.started</code>, <code>incident.routed</code>, <code>incident.acknowledged</code>, <code>incident.severity_changed</code></td></tr>
+<tr><td>Investigation</td><td><code>tool.called</code>, <code>tool.rejected</code>, <code>evidence.collected</code>, <code>evidence.missing</code>, <code>model.called</code>, <code>injection.flagged</code>, <code>hypothesis.created</code>, <code>hypothesis.ruled_out</code>, <code>diagnosis.made</code>, <code>review.completed</code></td></tr>
+<tr><td>Change</td><td><code>action.proposed</code>, <code>policy.checked</code>, <code>sandbox.completed</code>, <code>approval.requested</code>, <code>action.approved</code>, <code>action.rejected</code>, <code>approval.expired</code>, <code>action.dispatched</code>, <code>action.executed</code>, <code>action.reconciled</code>, <code>verification.completed</code>, <code>fix.merged</code></td></tr>
+<tr><td>Human control</td><td><code>incident.cancelled</code>, <code>incident.taken_over</code>, <code>incident.escalated</code>, <code>incident.resolved</code>, <code>incident.closed</code>, <code>notification.sent</code>, <code>feedback.recorded</code></td></tr>
+<tr><td>Platform stream</td><td><code>auth.login_succeeded</code>, <code>auth.login_failed</code>, <code>auth.locked</code>, <code>authz.denied</code>, <code>user.*</code>, <code>team.*</code>, <code>service.*</code>, <code>config.changed</code>, <code>audit.queried</code>, <code>retention.purged</code></td></tr>
+</table>
+<div class="no"><b>Temporal history is not the timeline (Q7.53).</b> It holds engine internals: retries, timers and signal names. It changes when workflow code changes, has its own retention, and is not redacted. Using it would tie the public API to the engine. The platform writes its own domain events.</div>
+
+<!-- ============ 7.6 ============ -->
+<h2><span class="sec">7.6</span>Event sequencing rules</h2>
+<p class="qs">Answers: Q7.25, Q7.47 to Q7.50</p>
+<table>
+<tr><th>#</th><th>Rule</th><th>Q</th></tr>
+<tr><td>S1</td><td>Order is <b>per stream</b>: one stream per incident, plus one platform stream. There is no global order, because it would put every write through one point.</td><td>Q7.48</td></tr>
+<tr><td>S2</td><td>The writer takes a per-stream lock, reads the last sequence and hash, and inserts sequence + 1 with the new hash, in one transaction. The lock also keeps the hash chain without forks.</td><td>Q7.47</td></tr>
+<tr><td>S3</td><td>Order by <code>sequence</code>, never by a timestamp. Clocks drift. <code>occurred_at</code> and <code>recorded_at</code> are both kept for people.</td><td>Q7.47</td></tr>
+<tr><td>S4</td><td>A state change and its event are one transaction. The event carries the new <code>incident.version</code>.</td><td>Q7.25</td></tr>
+<tr><td>S5</td><td>A consumer keeps its last sequence for each stream in <code>consumer_checkpoint</code>. It skips a sequence at or below that value. Handlers are idempotent by event ID.</td><td>Q7.49</td></tr>
+<tr><td>S6</td><td>Gap check: if a consumer gets sequence n and n &gt; last + 1, it reads <code>?after=last</code> first. It applies events only in order.</td><td>Q7.50</td></tr>
+<tr><td>S7</td><td>Lists across incidents sort by <code>recorded_at</code>. This order is approximate and is for display only.</td><td>Q7.48</td></tr>
+</table>
+
+<!-- ============ 7.7 ============ -->
+<h2><span class="sec">7.7</span>Outbox design</h2>
+<p class="qs">Answers: Q7.54 to Q7.59, Q7.64</p>
+<p>A PostgreSQL transaction cannot include Temporal. Temporal has its own storage, and there is no two-phase commit between them (Q7.56). So the platform uses a <b>transactional outbox</b> (Q7.57). The platform has two outboxes and no new table:</p>
+<table>
+<tr><th>Outbox</th><th>Marker written in the same transaction</th><th>Relay</th><th>Outside effect</th></tr>
+<tr><td>Start a workflow</td><td><code>incident.status = 'queued'</code></td><td>Admission loop (worker)</td><td>Temporal workflow start</td></tr>
+<tr><td>Tell the outside world</td><td>The <code>event</code> row</td><td>Consumers with <code>consumer_checkpoint</code></td><td>SSE, chat, pager, ticket updates</td></tr>
+</table>
+<div class="fig">
+<svg viewBox="0 0 1150 470" role="img" aria-label="Sequence diagram of the outbox from intake to workflow start, with a crash and a retry">
+<defs><marker id="o7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="60" y="20" width="160" height="40" rx="6" class="uc"/><text x="140" y="45">API (intake)</text>
+<rect x="360" y="20" width="160" height="40" rx="6" class="fx"/><text x="440" y="45">PostgreSQL</text>
+<rect x="660" y="20" width="160" height="40" rx="6" class="uc"/><text x="740" y="45">Admission loop</text>
+<rect x="940" y="20" width="160" height="40" rx="6" class="box"/><text x="1020" y="45">Temporal</text>
+</g>
+<g class="ln" stroke-dasharray="3 4"><path d="M140,60 V455"/><path d="M440,60 V455"/><path d="M740,60 V455"/><path d="M1020,60 V455"/></g>
+<rect x="150" y="80" width="300" height="70" rx="4" class="zt"/>
+<g class="ln">
+<path d="M140,100 H440" marker-end="url(#o7)"/>
+<path d="M140,135 H440" marker-end="url(#o7)"/>
+<path d="M440,175 H740" marker-end="url(#o7)"/>
+<path d="M740,210 H440" marker-end="url(#o7)"/>
+<path d="M740,250 H1020" marker-end="url(#o7)"/>
+<path d="M740,330 H1020" marker-end="url(#o7)"/>
+<path d="M1020,365 H740" marker-end="url(#o7)" stroke-dasharray="5 4"/>
+<path d="M740,405 H440" marker-end="url(#o7)"/>
+</g>
+<g class="lbl halo">
+<text x="150" y="93">1 INSERT incident, alert, event, key</text>
+<text x="150" y="128">2 COMMIT (one transaction)</text>
+<text x="450" y="168">3 NOTIFY (wake-up only)</text>
+<text x="450" y="203">4 SELECT queued … FOR UPDATE SKIP LOCKED</text>
+<text x="750" y="243">5 start workflow, ID = incident ID</text>
+<text x="750" y="280">crash here: incident is still queued</text>
+<text x="750" y="323">6 after restart: start again, same ID</text>
+<text x="750" y="358">7 "already started" = success</text>
+<text x="450" y="398">8 UPDATE status running + event</text>
+</g>
+<text x="20" y="440" class="lbl">Temporal down at step 5: the incident stays queued; the loop retries with backoff; an alert fires if it stays queued too long (Q7.54).</text>
+</svg>
+</div>
+<p class="cap">Figure 3. Outbox sequence for incident A. The workflow starts only after the incident row commits, so a workflow without an incident cannot exist (Q7.55). A crash between steps 5 and 8 is safe (Q7.59).</p>
+<table>
+<tr><th>Case</th><th>What happens</th><th>Q</th></tr>
+<tr><td>Temporal is down after the incident is saved</td><td>The incident stays <code>queued</code>. The loop retries with backoff. A platform alert fires when an incident stays queued past a set time.</td><td>Q7.54</td></tr>
+<tr><td>Workflow starts, but the incident row is missing</td><td>Not possible in this order. If it happens, the first step finds no incident, fails, and raises a platform alert.</td><td>Q7.55</td></tr>
+<tr><td>Find pending work</td><td><code>SELECT … WHERE status = 'queued' ORDER BY severity, created_at FOR UPDATE SKIP LOCKED LIMIT n</code>. <code>LISTEN/NOTIFY</code> only wakes the loop.</td><td>Q7.58</td></tr>
+<tr><td>Crash after start, before the update</td><td>Start again with the same workflow ID. "Already started" means success.</td><td>Q7.59</td></tr>
+<tr><td>Kafka</td><td>Not in V1. PostgreSQL and the outbox carry about 3 incidents with tens of events each. Use Kafka only when one of these is measured: many independent consumer systems need fan-out and replay; thousands of events per second slow PostgreSQL; consumer lag passes a set limit; events must cross data centres.</td><td>Q7.64</td></tr>
+</table>
+
+<!-- ============ 7.8 ============ -->
+<h2><span class="sec">7.8</span>Idempotency rules</h2>
+<p class="qs">Answers: Q7.9, Q7.11, Q7.20, Q7.60 to Q7.63</p>
+<div class="fig">
+<svg viewBox="0 0 1150 260" role="img" aria-label="Flowchart of idempotency key handling">
+<defs><marker id="i7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="20" y="70" width="170" height="56" rx="6" class="box"/><text x="105" y="94">POST with</text><text x="105" y="110">Idempotency-Key</text>
+<polygon points="330,48 420,98 330,148 240,98" class="hum"/><text x="330" y="94">Key seen for</text><text x="330" y="108">this caller?</text>
+<rect x="470" y="160" width="230" height="70" rx="6" class="uc"/><text x="585" y="185">Do the work and store key,</text><text x="585" y="201">request hash and response</text><text x="585" y="217">in one transaction</text>
+<polygon points="585,10 675,55 585,100 495,55" class="hum"/><text x="585" y="51">Same request</text><text x="585" y="65">hash?</text>
+<rect x="760" y="10" width="200" height="50" rx="6" class="okb"/><text x="860" y="32">Return the stored</text><text x="860" y="48">response; do nothing</text>
+<rect x="760" y="80" width="200" height="50" rx="6" class="bad"/><text x="860" y="102">422 problem+json</text><text x="860" y="118">key reused, other request</text>
+<rect x="760" y="170" width="200" height="50" rx="6" class="okb"/><text x="860" y="192">Return the</text><text x="860" y="208">new response</text>
+</g>
+<g class="ln">
+<path d="M190,98 H240" marker-end="url(#i7)"/>
+<path d="M330,48 V30 H495 V55" marker-end="url(#i7)"/>
+<path d="M330,148 V195 H470" marker-end="url(#i7)"/>
+<path d="M675,40 H760" marker-end="url(#i7)"/>
+<path d="M585,100 V105 H760" marker-end="url(#i7)"/>
+<path d="M700,195 H760" marker-end="url(#i7)"/>
+</g>
+<g class="lbl halo"><text x="340" y="24">yes</text><text x="340" y="180">no</text><text x="690" y="34">yes</text><text x="600" y="118">no</text></g>
+</svg>
+</div>
+<p class="cap">Figure 4. Idempotency key handling at the API. A unique index on (caller, key) stops two parallel requests with the same key: the second insert waits, then sees the stored response.</p>
+<table>
+<tr><th>Operation</th><th>Key</th><th>Where it is enforced</th><th>Q</th></tr>
+<tr><td>API write (submit, decision, cancel, admin write)</td><td>Client UUID for each logical operation (the CLI makes it)</td><td><code>idempotency_key</code>, unique (caller, key), kept 24 h; same key + other request hash → 422</td><td>Q7.60 to Q7.62</td></tr>
+<tr><td>Alert from monitoring</td><td>source + external alert ID or fingerprint + status + start time</td><td>Unique (integration, external_alert_id) and the open-incident index</td><td>Q7.20, Q7.61</td></tr>
+<tr><td>Workflow start</td><td>Workflow ID = incident ID; reuse policy "reject duplicate"</td><td>Temporal</td><td>Q7.63</td></tr>
+<tr><td>Production action</td><td>incident ID + action ID, the same on every attempt; absolute target; precondition</td><td>Pipeline or config store lookup by key; reconcile before retry (A5 SC-15, SC-16)</td><td>Q7.9, Q7.11</td></tr>
+<tr><td>Approval</td><td>approval ID</td><td><code>approval_use</code> unique approval_id (single use)</td><td>Q7.23</td></tr>
+<tr><td>Event consumer</td><td>event ID; last sequence</td><td><code>consumer_checkpoint</code></td><td>Q7.49</td></tr>
+</table>
+
+<!-- ============ 7.9 ============ -->
+<h2><span class="sec">7.9</span>SSE timeline design</h2>
+<p class="qs">Answers: Q7.30, Q7.51 to Q7.53</p>
+<p>The timeline is a read view over the <code>event</code> table in sequence order. There is no separate timeline table. Every event names its subject record and its cause. So a click on one item returns the full provenance chain: action &rarr; diagnosis &rarr; hypotheses &rarr; evidence &rarr; tool calls and model calls &rarr; approval &rarr; attempts &rarr; verification (Q7.30). A projection table is added only if the provenance query misses its latency target (Layer 12-A).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 330" role="img" aria-label="Sequence diagram of an SSE timeline stream that drops and resumes">
+<defs><marker id="s7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="80" y="20" width="180" height="40" rx="6" class="hum"/><text x="170" y="45">CLI: incident watch</text>
+<rect x="480" y="20" width="180" height="40" rx="6" class="uc"/><text x="570" y="45">API (SSE)</text>
+<rect x="880" y="20" width="180" height="40" rx="6" class="fx"/><text x="970" y="45">PostgreSQL</text>
+</g>
+<g class="ln" stroke-dasharray="3 4"><path d="M170,60 V315"/><path d="M570,60 V315"/><path d="M970,60 V315"/></g>
+<g class="ln">
+<path d="M170,90 H570" marker-end="url(#s7)"/>
+<path d="M570,120 H970" marker-end="url(#s7)"/>
+<path d="M570,150 H170" marker-end="url(#s7)"/>
+<path d="M170,215 H570" marker-end="url(#s7)"/>
+<path d="M570,245 H970" marker-end="url(#s7)"/>
+<path d="M570,275 H170" marker-end="url(#s7)"/>
+<path d="M970,300 H570" marker-end="url(#s7)" stroke-dasharray="5 4"/>
+</g>
+<g class="lbl halo">
+<text x="180" y="83">1 GET …/events/stream</text>
+<text x="580" y="113">2 SELECT events in order; LISTEN</text>
+<text x="180" y="143">3 id: incident:INC-0042:43 … events 41 to 43</text>
+<text x="180" y="185">— connection drops —</text>
+<text x="180" y="208">4 GET again, Last-Event-ID: incident:INC-0042:43</text>
+<text x="580" y="238">5 SELECT sequence &gt; 43</text>
+<text x="180" y="268">6 events 44, 45 … then live</text>
+<text x="580" y="293">7 NOTIFY: new event</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 5. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing. Events are kept for one year.</p>
+<table>
+<tr><th>Topic</th><th>Design</th><th>Q</th></tr>
+<tr><td>Mechanism</td><td>Server-Sent Events: one-way, plain HTTP, simple for the CLI (<code>ai-sre incident watch INC-0042</code>). No WebSocket, because the client sends nothing on the stream.</td><td>Q7.52</td></tr>
+<tr><td>Event ID</td><td><code>incident:&lt;key&gt;:&lt;sequence&gt;</code></td><td>Q7.51</td></tr>
+<tr><td>Resume</td><td>The client sends <code>Last-Event-ID</code>. The server sends every event after it, then live events.</td><td>Q7.51</td></tr>
+<tr><td>Live updates</td><td>The API process listens on PostgreSQL <code>NOTIFY</code> and reads new rows by sequence. A missed notify is safe, because a heartbeat every 15 s also reads.</td><td>Q7.52</td></tr>
+<tr><td>Payload</td><td>CloudEvents JSON with redacted data only (section 7.5). Large items are artifact links.</td><td>Q7.30</td></tr>
+<tr><td>Access</td><td>Viewer of the incident's service. The role is checked when the stream opens and again every 5 minutes.</td><td>Q7.30</td></tr>
+<tr><td>Source</td><td>Our domain events only, never Temporal history.</td><td>Q7.53</td></tr>
+</table>
+
+<h2>Acceptance checks before submission</h2>
+<ul class="checks">
+<li>&#9745; Every required section above is present and complete.</li>
+<li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
+<li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
+</ul>
+<table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
+
+<!-- ============ Appendix ============ -->
+<h2>Appendix: supporting records from the conversation log</h2>
+<p>These records are not template sections. They hold the evidence for the acceptance checks above.</p>
+<h3>Assumptions (all provisional)</h3>
+<table>
+<tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
+<tr><td>L7-A1</td><td>Every V1 alert source gives a stable alert identity (an ID or a fingerprint) that the adapter can use for duplicates</td><td>Dhanush</td><td>When the V1 monitoring tool is fixed (adapter build)</td></tr>
+<tr><td>L7-A2</td><td>One PostgreSQL instance handles the per-stream lock and hash chain at V1 load without slowing intake past p95 30 s</td><td>Dhanush</td><td>Layer 12 load test</td></tr>
+<tr><td>L7-A3</td><td>Retention of 1 year (incidents, events) and 90 days (raw evidence) meets organization policy</td><td>Dhanush</td><td>Before Layer 13</td></tr>
+<tr><td>L5-A1</td><td>Where a company chooses SSO, its OIDC provider works with the CLI and the API</td><td>Dhanush</td><td>Before Layer 13</td></tr>
+<tr><td>L5-A7</td><td>Each alert source can sign or send a per-source token (partly checked: Grafana signs; Alertmanager and Datadog use a token or header)</td><td>Dhanush</td><td>Adapter build</td></tr>
+<tr><td>L6-A3</td><td>A filesystem volume is enough for the artifact store in V1</td><td>Dhanush</td><td>Layer 12 (capacity)</td></tr>
+</table>
+<h3>Consistency with Artifacts 1 to 6</h3>
+<table>
+<tr><th>Earlier artifact says</th><th>Artifact 7 decides</th><th>Status</th></tr>
+<tr><td>A1 D3: retention is unknown.</td><td>1 year for incidents and events; 90 days for raw evidence; partition drop by a maintenance role.</td><td>Closed for V1 (L7-A3).</td></tr>
+<tr><td>A5 SC-01: SSO with MFA only.</td><td>One login mode per deployment; own login by default; no MFA in V1 (A5 SC-25).</td><td><b>Explicit decision.</b> A5 updated; Chirag confirms.</td></tr>
+<tr><td>A5 SC-24 and the L7 log Q7.18 first draft: configuration in the repository.</td><td>Hybrid: prompts, policies and the allow list stay in the repository; integrations, models, limits and SSO move to the database through the admin API; a cloud provider or a login-mode change needs a second admin (F5).</td><td><b>Explicit decision.</b> A5 updated; Chirag confirms.</td></tr>
+<tr><td>A2 2.3: "the merge is the approval" for a fix.</td><td>The signed approval is the record; the merge must match it (F7).</td><td><b>Open conflict.</b> Rinisha decides in Layer 11.</td></tr>
+<tr><td>A4 FR-02, FR-14, FR-15; NFR-01, NFR-03.</td><td>Grouping index, cancel signal, event timeline, idempotent intake, audit before execution.</td><td>Consistent.</td></tr>
+<tr><td>A5 SC-14 to SC-16, SC-19.</td><td>Action hash, single-use approval, idempotency key + precondition, hash-chained event table.</td><td>Consistent. Adds the database rules.</td></tr>
+<tr><td>A6 ADR-03: Temporal plus a PostgreSQL waiting queue.</td><td>The queued incident row is the workflow outbox; the event table is the outbox for outside effects.</td><td>Consistent.</td></tr>
+</table>
+<h3>Open items</h3>
+<table>
+<tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
+<tr><td>Allowed state transitions, signal design, notifier spool when the database is down</td><td>Dhanush</td><td>Layer 8</td></tr>
+<tr><td>Name of the patch-writing agent role (fixer or diagnoser)</td><td>Dhanush</td><td>Layer 9</td></tr>
+<tr><td>Budget estimate rule for each model</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>Fix approval record vs PR merge; merge detection</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>Queued-age alert threshold; provenance query latency target</td><td>Dhanush</td><td>Layer 12-A</td></tr>
+<tr><td>Confirm A5 changes from Layers 6 and 7</td><td>Chirag</td><td>A5 walk-through</td></tr>
+</table>
+<h3>Where Claude and ChatGPT disagreed</h3>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2).</p>
+</main>
+</body>
+</html>

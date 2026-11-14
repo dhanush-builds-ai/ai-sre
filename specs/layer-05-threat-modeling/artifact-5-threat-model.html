@@ -97,6 +97,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>AST-8</td><td>Incident records and redacted evidence</td><td>C, I</td><td>The platform database (PostgreSQL, A2).</td><td>Q5.12</td></tr>
 <tr><td>AST-9</td><td>Model capacity (GPU time) and the incident queue</td><td>A</td><td>The self-hosted model servers (A2 2.4).</td><td>Q5.6</td></tr>
 <tr><td>AST-10</td><td>Prompts, policy rules, and the tool allow list</td><td>I</td><td>The platform repository. Changed only by a reviewed pull request.</td><td>Q5.12</td></tr>
+<tr><td>AST-11</td><td>Platform configuration in the database: integrations, MCP servers, model providers, limits, ownership directory, on-call shifts (added in Layer 7)</td><td>I</td><td>PostgreSQL. Changed only through the admin API; every change is audited with before and after values.</td><td>Q5.12</td></tr>
 </table>
 
 <!-- ============ 5.2 ============ -->
@@ -106,13 +107,13 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <table>
 <tr><th>ID</th><th>Actor</th><th>Intent</th><th>Access that the actor has</th><th>Main target</th><th>Q</th></tr>
 <tr><td>TA-1</td><td>External user of the target application</td><td>Malicious</td><td>Can put any text in a request (header, body, user name). The application writes it to logs and traces.</td><td>The model, through evidence (AB-01)</td><td>Q5.1</td></tr>
-<tr><td>TA-2</td><td>Authenticated engineer outside their scope</td><td>Curious or malicious</td><td>A valid single sign-on account. Not on the owning team and not on call for the service.</td><td>Data of other services; GPU budget (AB-05, AB-17, AB-18)</td><td>Q5.6, Q5.22, Q5.24</td></tr>
+<tr><td>TA-2</td><td>Authenticated engineer outside their scope</td><td>Curious or malicious</td><td>A valid platform account (own login or single sign-on). Not on the owning team and not on call for the service.</td><td>Data of other services; GPU budget (AB-05, AB-17, AB-18)</td><td>Q5.6, Q5.22, Q5.24</td></tr>
 <tr><td>TA-3</td><td>Unauthorized person</td><td>Malicious</td><td>No account, or a stolen session or token.</td><td>Approval authority (AB-06)</td><td>Q5.7, Q5.21</td></tr>
 <tr><td>TA-4</td><td>Malicious insider who has commit rights and is on call</td><td>Malicious</td><td>A real approver. Can change their own code, comments, and logs.</td><td>A harmful fix that they approve alone (AB-07)</td><td>Q5.7</td></tr>
 <tr><td>TA-5</td><td>The model (agent or reviewer)</td><td>None: faulty or steered</td><td>Reads evidence. Requests tool calls. Writes proposals and patches.</td><td>Produces a wrong diagnosis, a destructive command, malformed output, or a leaked secret (AB-02, AB-03, AB-04, AB-14)</td><td>Q5.3, Q5.4, Q5.5, Q5.26</td></tr>
 <tr><td>TA-6</td><td>Platform faults</td><td>None</td><td>Retries, worker crashes, lost replies.</td><td>Duplicate or unknown actions (AB-10, AB-11)</td><td>Q5.10, Q5.11</td></tr>
 <tr><td>TA-7</td><td>A compromised integration or hosted tool</td><td>Malicious</td><td>Sends data to the platform. Can receive a read token.</td><td>The model, through data; a read token</td><td>Q5.12</td></tr>
-<tr><td>TA-8</td><td>A rogue or compromised platform administrator</td><td>Malicious</td><td>Can change platform settings.</td><td>Rules, allow list, approval rights (cannot approve, SC-04)</td><td>Q5.22</td></tr>
+<tr><td>TA-8</td><td>A rogue or compromised platform administrator</td><td>Malicious</td><td>Can change platform settings through the admin API: integrations, model providers, users, teams, ownership, on-call (Layer 7).</td><td>Integrations, ownership and on-call (to make a friend an approver), cloud provider enablement (needs a second admin, SC-24). Cannot approve (SC-04).</td><td>Q5.22</td></tr>
 </table>
 
 <!-- ============ 5.3 ============ -->
@@ -163,7 +164,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="455" y="245" width="100" height="50" rx="6" class="bad"/><text x="505" y="266">Agent model</text><text x="505" y="281" class="lbl">no credentials</text>
 <rect x="570" y="245" width="100" height="50" rx="6" class="bad"/><text x="620" y="266">Reviewer</text><text x="620" y="281" class="lbl">model</text>
 <rect x="685" y="245" width="100" height="50" rx="6" class="bad"/><text x="735" y="266">Sandbox</text><text x="735" y="281" class="lbl">AI code, tests</text>
-<rect x="850" y="70" width="270" height="46" rx="6" class="hum"/><text x="985" y="89">Human approver</text><text x="985" y="104" class="lbl">on-call or owner, SSO and MFA</text>
+<rect x="850" y="70" width="270" height="46" rx="6" class="hum"/><text x="985" y="89">Human approver</text><text x="985" y="104" class="lbl">on-call or owner, logged in</text>
 <rect x="850" y="160" width="270" height="46" rx="6" class="box"/><text x="985" y="179">CI/CD pipeline, config store</text><text x="985" y="194" class="lbl">existing tools</text>
 <rect x="850" y="250" width="270" height="46" rx="6" class="okb"/><text x="985" y="269">Production</text><text x="985" y="284" class="lbl">changed only through the pipeline or config store</text>
 </g>
@@ -217,7 +218,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <h3>The six trust boundaries</h3>
 <table>
 <tr><th>ID</th><th>Boundary</th><th>Check at the crossing</th><th>Q</th></tr>
-<tr><td>TB-1</td><td>Users and machines &rarr; intake</td><td>Login with SSO and MFA, or a valid webhook signature. Role check for every request.</td><td>Q5.12</td></tr>
+<tr><td>TB-1</td><td>Users and machines &rarr; intake</td><td>Login (own login or single sign-on, SC-25), or a valid webhook signature. Role check for every request.</td><td>Q5.12</td></tr>
 <tr><td>TB-2</td><td>Evidence sources &rarr; tool layer</td><td>Read-only tokens. Redaction (fail closed). Evidence is labelled untrusted.</td><td>Q5.13, Q5.17</td></tr>
 <tr><td>TB-3</td><td>Platform &harr; model</td><td>In: instructions only in the system role; evidence only in untrusted-data blocks. Out: schema check, tool allow list, scope check.</td><td>Q5.2</td></tr>
 <tr><td>TB-4</td><td>Platform &rarr; sandbox</td><td>Hardened container, no network route out, dummy credentials. Test results are collected by the sandbox runner, not reported by the model.</td><td>Q5.19</td></tr>
@@ -251,7 +252,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="770" y="110" width="170" height="54" rx="6" class="box"/><text x="855" y="132">Write without</text><text x="855" y="148" class="lbl">the executor (AB-02)</text>
 <rect x="960" y="110" width="170" height="54" rx="6" class="box"/><text x="1045" y="132">Run the action</text><text x="1045" y="148" class="lbl">twice (AB-10)</text>
 <rect x="10" y="215" width="170" height="54" rx="6" class="uc"/><text x="95" y="237">Allow list, review,</text><text x="95" y="253">human, verifier</text>
-<rect x="200" y="215" width="170" height="54" rx="6" class="uc"/><text x="285" y="237">SSO and MFA,</text><text x="285" y="253">role checked now</text>
+<rect x="200" y="215" width="170" height="54" rx="6" class="uc"/><text x="285" y="237">Login, re-auth to approve,</text><text x="285" y="253">role checked now</text>
 <rect x="390" y="215" width="170" height="54" rx="6" class="uc"/><text x="475" y="237">A different person</text><text x="475" y="253">approves the fix</text>
 <rect x="580" y="215" width="170" height="54" rx="6" class="uc"/><text x="665" y="237">Approval bound to</text><text x="665" y="253">a hash, signed</text>
 <rect x="770" y="215" width="170" height="54" rx="6" class="uc"/><text x="855" y="237">Agent holds no</text><text x="855" y="253">write credentials</text>
@@ -289,6 +290,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>AB-17</td><td>Many submissions, or an injected loop, use up the GPU budget</td><td>TA-2, TA-1</td><td>SF-1, SF-2</td><td>Real incidents wait in the queue</td><td>SC-03, SC-21</td><td>Q5.6</td></tr>
 <tr><td>AB-18</td><td>An authenticated engineer tries to change a service they do not own</td><td>TA-2</td><td>SF-1</td><td>A change to the wrong service</td><td>SC-03, SC-05</td><td>Q5.22</td></tr>
 <tr><td>AB-19</td><td>Incident data goes to a cloud model provider that the organization did not approve (a quiet configuration change, or an automatic fallback)</td><td>TA-8</td><td>Inference gateway configuration</td><td>Incident data leaves the organization</td><td>SC-08, SC-09, SC-24</td><td>Q5.16</td></tr>
+<tr><td>AB-20</td><td>An attacker guesses or reuses a password of an own-login account, then approves a change</td><td>TA-3</td><td>SF-1, SF-8</td><td>A production change approved by the wrong person</td><td>SC-03, SC-14, SC-25</td><td>Q5.21</td></tr>
 </table></div>
 
 <!-- ============ 5.6 ============ -->
@@ -302,7 +304,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <svg viewBox="0 0 1150 290" role="img" aria-label="Flowchart of the approval check">
 <defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
-<polygon points="110,60 195,105 110,150 25,105" class="hum"/><text x="110" y="100">Logged in with</text><text x="110" y="114">SSO and MFA?</text>
+<polygon points="110,60 195,105 110,150 25,105" class="hum"/><text x="110" y="100">Logged in?</text><text x="110" y="114">re-entered password</text>
 <polygon points="300,60 385,105 300,150 215,105" class="hum"/><text x="300" y="100">On-call or owner</text><text x="300" y="114">of this service now?</text>
 <polygon points="490,60 575,105 490,150 405,105" class="hum"/><text x="490" y="100">Revert or</text><text x="490" y="114">config restore?</text>
 <polygon points="680,60 765,105 680,150 595,105" class="hum"/><text x="680" y="100">Approver is author</text><text x="680" y="114">of faulty change?</text>
@@ -371,10 +373,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Control</th><th>Label</th><th>Enforced by</th><th>Answers</th><th>Stops</th></tr>
 <tr class="grp"><td colspan="6">Identity and access</td></tr>
-<tr><td>SC-01</td><td>Identity comes from the organization's single sign-on (OIDC) with MFA. The CLI logs in with a device-code flow. The API accepts short-lived tokens only. No shared accounts. V1 has no dashboard (A2), so this applies to the CLI and the API. Depends on L5-A1.</td><td><span class="L D">Decision</span></td><td>Intake and auth</td><td>Q5.21</td><td>AB-06</td></tr>
+<tr><td>SC-01</td><td>Identity comes from <b>one</b> login mode for each deployment (SC-25): own login (default) or the organization's single sign-on (OIDC, by configuration). With single sign-on, the CLI logs in with a device-code flow. The API accepts short-lived tokens only. No shared accounts. V1 has no dashboard (A2), so this applies to the CLI and the API. Revised in Layer 7 (2026-11-14). Depends on L5-A1.</td><td><span class="L D">Decision</span></td><td>Intake and auth</td><td>Q5.21</td><td>AB-06</td></tr>
 <tr><td>SC-02</td><td>A monitoring webhook is accepted only with a valid HMAC signature. If the sender cannot sign, it must send a per-source secret token over TLS. A signed request carries a timestamp, and the platform rejects it outside a 5-minute window. A replayed alert is also grouped into the open incident (FR-02). Platform service accounts are separate from human identities. Depends on L5-A7.</td><td><span class="L D">Decision</span></td><td>Intake and auth</td><td>Q5.6, Q5.21</td><td>AB-05, AB-17</td></tr>
 <tr><td>SC-03</td><td>Roles from the ownership list and the on-call schedule, checked on the server for every request. <b>Viewer:</b> owning team. <b>Submitter:</b> owning team, on-call of that service, platform team on-call (FR-03). <b>Approver:</b> on-call or owner of that service at that time. <b>Platform admin:</b> configures the platform. A failed check returns 403 and writes an audit entry. Depends on L5-A5.</td><td><span class="L D">Decision</span></td><td>Intake and auth, approval gate</td><td>Q5.6, Q5.7, Q5.22</td><td>AB-05, AB-06, AB-17, AB-18</td></tr>
-<tr><td>SC-04</td><td>Separation of duties. The author of the faulty change can approve a revert or a config restore, but not the permanent fix (M11). If no eligible approver other than the author exists, the fix request goes to the backup approver (QR-05). If there is none, the request stays open and is escalated. The service is already recovered, so nothing is applied meanwhile. The platform admin cannot approve. The platform's own identity cannot approve.</td><td><span class="L D">Decision</span></td><td>Approval gate</td><td>Q5.7</td><td>AB-06, AB-07</td></tr>
+<tr><td>SC-04</td><td>Separation of duties. The author of the faulty change can approve a revert or a config restore, but not the permanent fix (M11). If no eligible approver other than the author exists, the fix request goes to the backup approver (QR-05). If there is none, the request stays open and is escalated. The service is already recovered, so nothing is applied meanwhile. The platform admin cannot approve: the admin role is held by a separate admin account (Layer 7). The platform's own identity cannot approve.</td><td><span class="L D">Decision</span></td><td>Approval gate</td><td>Q5.7</td><td>AB-06, AB-07</td></tr>
 <tr><td>SC-05</td><td>Target scope lock. The incident's service is fixed at intake. The tool layer accepts queries only for that service and its declared dependencies (read only, A1 1.5). Any other target is rejected and logged.</td><td><span class="L D">Decision</span></td><td>Tool layer</td><td>Q5.24</td><td>AB-05, AB-18</td></tr>
 <tr class="grp"><td colspan="6">Model input and output</td></tr>
 <tr><td>SC-06</td><td>Mediated access. The tool layer holds the credentials. The agent calls typed tools. The model never sees a credential.</td><td><span class="L F">Fixed</span> A2 2.1, 2.3</td><td>Tool layer, secret store</td><td>Q5.13</td><td>AB-02</td></tr>
@@ -396,7 +398,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>SC-21</td><td>Budgets and limits for each incident: time, tool calls, GPU-minutes, tokens; queue limit with overflow to humans.</td><td><span class="L F">Fixed</span> A4 NFR-05, NFR-06, QR-06, QR-07</td><td>Orchestration</td><td>Q5.6</td><td>AB-17</td></tr>
 <tr><td>SC-22</td><td>Human approval of every production change, recovery verification on the alert signals, and an undo path for every change.</td><td><span class="L F">Fixed</span> A1 1.5, A4 FR-11 to FR-13</td><td>Approval gate, verifier</td><td>Q5.4</td><td>AB-03</td></tr>
 <tr><td>SC-23</td><td>Platform credentials. One read-only service account for each integration, with least privilege. Short-lived tokens come from the secret store. The secret store encrypts at rest, has an access policy for each credential, audits every read, and supports rotation. Depends on L5-A2.</td><td><span class="L D">Decision</span></td><td>Secret store, tool layer</td><td>Q5.13</td><td>AB-02, AB-09</td></tr>
-<tr><td>SC-24</td><td>Cloud model providers (added after Layer 6, Q6.12). Off by default. Only a platform admin enables one, through a reviewed configuration change, with an audit entry. The API key is in the secret store (SC-23); the configuration holds its name only. The provider host is added to the outbound allow list (SC-08). Redaction (SC-09) runs before every model call. No automatic fallback to a cloud provider. The platform does not start if the reviewer model equals the main model.</td><td><span class="L D">Decision</span></td><td>Inference gateway, network rules</td><td>Q5.16</td><td>AB-19</td></tr>
+<tr><td>SC-24</td><td>Cloud model providers (added after Layer 6, Q6.12). Off by default. Only a platform admin enables one, through the admin API, and a <b>second platform admin approves</b> the change; the change record keeps before and after values (revised in Layer 7). The API key is in the secret store (SC-23); the configuration holds its name only. The provider host is added to the outbound allow list (SC-08). Redaction (SC-09) runs before every model call. No automatic fallback to a cloud provider. The platform does not start if the reviewer model equals the main model.</td><td><span class="L D">Decision</span></td><td>Inference gateway, network rules</td><td>Q5.16</td><td>AB-19</td></tr>
+<tr><td>SC-25</td><td>Login modes (added in Layer 7). Each deployment uses <b>one</b> mode, set by configuration: <b>own login</b> (default) or the organization's single sign-on. Own login: a platform admin creates every account (no self-signup); passwords are hashed with Argon2id; 5 failed attempts lock the account; rate limits per IP address; every login, failure, lockout and reset writes an audit event. To approve a production action, the approver enters the password again (or logs in again with single sign-on). <b>No MFA in V1</b> (RR-6).</td><td><span class="L D">Decision</span></td><td>Intake and auth, approval gate</td><td>Q5.21</td><td>AB-06, AB-20</td></tr>
 </table></div>
 
 <!-- ============ 5.7 ============ -->
@@ -434,7 +437,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>RR-3</td><td>Rules-only redaction misses personal data in free text (names, addresses).</td><td><span class="R Rl">Low</span></td><td><span class="R Rm">Medium</span></td><td>Accept for V1: the fixtures are synthetic. <b>Revisit trigger:</b> a leak scan finds missed personal data, then add a small self-hosted personal-data model.</td><td>Dhanush (Layer 12)</td><td>Q5.26</td></tr>
 <tr><td>RR-4</td><td>A kernel-level escape from the Docker sandbox.</td><td><span class="R Rl">Low</span></td><td><span class="R Rh">High</span></td><td>Reduce in Layer 11: consider a stronger container runtime.</td><td>Rinisha</td><td>Q5.25</td></tr>
 <tr><td>RR-5</td><td>The author of the faulty change approves its revert alone.</td><td><span class="R Rl">Low</span></td><td><span class="R Rl">Low</span></td><td>Accept: the target version already passed staging and QA (M11).</td><td>Chirag</td><td>Q5.7</td></tr>
-<tr><td>RR-6</td><td>An attacker takes over an approver account and approves a change.</td><td><span class="R Rl">Low</span></td><td><span class="R Rh">High</span></td><td>Reduce: MFA, short-lived tokens, approval bound to one action. Single sign-on product in Layer 6.</td><td>Dhanush</td><td>Q5.21</td></tr>
+<tr><td>RR-6</td><td>An attacker takes over an approver account and approves a change.</td><td><span class="R Rl">Low</span></td><td><span class="R Rh">High</span></td><td>Reduce: lockout, password re-entry to approve, short-lived tokens, approval bound to one action. <b>No MFA in V1</b> (team decision, Layer 7): accepted because V1 uses synthetic fixtures. Revisit trigger: add MFA before any real production use.</td><td>Dhanush</td><td>Q5.21</td></tr>
 <tr><td>RR-7</td><td>The reviewer model shares the main model's blind spots (A1 1.5 limitation).</td><td><span class="R Rm">Medium</span></td><td><span class="R Rl">Low</span></td><td>Accept: the human approval and the verifier remain. Model choice in Layer 10.</td><td>Irfan</td><td>Q5.4</td></tr>
 <tr><td>RR-8</td><td>The ownership list or the on-call schedule is old, so the wrong person can approve.</td><td><span class="R Rm">Medium</span></td><td><span class="R Rl">Low</span></td><td>Accept and watch: L5-A5.</td><td>Dhanush</td><td>Q5.7</td></tr>
 <tr><td>RR-9</td><td>A compromised integration steals a read-only token.</td><td><span class="R Rl">Low</span></td><td><span class="R Rm">Medium</span></td><td>Reduce: short-lived tokens, one account for each integration, read-only.</td><td>Dhanush (Layer 6)</td><td>Q5.12</td></tr>
@@ -462,7 +465,9 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>ST-14</td><td>Sandbox isolation</td><td>Code in the sandbox tries an outbound connection, a write to the root file system, the Docker socket, real credentials, and a fork bomb.</td><td>All fail. The sandbox is gone after incident close.</td><td>Fault test</td><td>SC-17</td><td>Q5.25</td></tr>
 <tr><td>ST-15</td><td>Audit integrity</td><td>The platform database role tries UPDATE and DELETE on the audit record. A database administrator edits one entry directly.</td><td>UPDATE and DELETE are denied. The hash-chain check reports the edited entry. Every step of a fixture A run has an entry with an actor.</td><td>Audit check</td><td>SC-19</td><td>Q5.20, Q5.28</td></tr>
 <tr><td>ST-16</td><td>Verifier independence</td><td>Fixture A. A stub model reports "recovered" while the error rate stays at 98%.</td><td>The incident is not marked "Recovered".</td><td>Fixture test</td><td>SC-18</td><td>Q5.19</td></tr>
-<tr><td>ST-17</td><td>Cloud provider off by default</td><td>Default configuration. Stop the self-hosted models during a fixture A run. In a second run, set the reviewer model equal to the main model.</td><td>No connection to any cloud provider host. The incident is escalated (no fallback). The platform refuses to start with equal models.</td><td>Fault test</td><td>SC-24</td><td>Q5.16</td></tr>
+<tr><td>ST-17</td><td>Cloud provider off by default</td><td>Default configuration. Stop the self-hosted models during a fixture A run. In a second run, set the reviewer model equal to the main model.</td><td>No connection to any cloud provider host. The incident is escalated (no fallback). The platform refuses to start with equal models. A cloud provider enabled by one admin stays "proposed" and gets no traffic until a second admin approves it.</td><td>Fault test</td><td>SC-24</td><td>Q5.16</td></tr>
+<tr><td>ST-18</td><td>Own login</td><td>Default configuration. Try to create an account without an admin. Send 6 wrong passwords. Approve a fixture A action with a valid session but without re-entering the password.</td><td>Signup is refused. The account is locked after 5 failures, with audit events. The approval is refused until the password is entered again.</td><td>Fixture test, audit check</td><td>SC-25</td><td>Q5.21</td></tr>
+<tr><td>ST-19</td><td>Config through the admin API</td><td>A platform admin sets the critic model equal to the diagnosis model. A second run changes the ownership of shop-api while incident A is open.</td><td>The first change is refused (409) with an audit event. Incident A keeps the owner it resolved at start.</td><td>Fixture test, audit check</td><td>SC-24</td><td>Q5.16</td></tr>
 </table></div>
 
 <!-- ============ Acceptance ============ -->
@@ -484,7 +489,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <h3>Assumptions (all provisional)</h3>
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
-<tr><td>L5-A1</td><td>The organization has single sign-on with MFA that the CLI and the API can use</td><td>Dhanush</td><td>Layer 6 (technology selection)</td></tr>
+<tr><td>L5-A1</td><td>Where a company chooses single sign-on, its OIDC provider works with the CLI (device-code flow) and the API</td><td>Dhanush</td><td>Layer 7 (API design); before Layer 13</td></tr>
 <tr><td>L5-A2</td><td>A secret store that meets SC-23 exists or can be run for V1</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>L5-A3</td><td>The Git host supports branch protection with a required human review, code owners, and dismissal of stale approvals</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>L5-A4</td><td>The pipeline and the config store let the platform look up a run or a version by an ID or key</td><td>Dhanush</td><td>Layer 6 / Layer 7</td></tr>
@@ -522,6 +527,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>A2 2.3: the user interface is a CLI and an HTTP API, with no dashboard.</td><td>Q5.21 asks about a dashboard. SC-01 applies the same identity rules to the CLI and the API.</td><td><b>Explicit decision.</b> No dashboard is added.</td></tr>
 <tr><td>A2 2.3: no production access and no production credentials for the agent; writes only through the pipeline or the config store.</td><td>SC-06, SC-07, SC-15, SC-23: mediated read access, no shell, no SQL, no URL fetch; the executor is the only writer.</td><td>Consistent. Adds detail.</td></tr>
 <tr><td>A2 2.3: the sandbox has no network route and no credentials to production.</td><td>SC-17 adds hardening settings.</td><td>Consistent.</td></tr>
+<tr><td>A5 SC-01 (original): single sign-on with MFA only.</td><td>SC-25: one login mode per deployment, own login by default; no MFA in V1 (Layer 7 team decision).</td><td><b>Explicit decision.</b> RR-6 accepted for V1 with a revisit trigger.</td></tr>
 <tr><td>A2 2.1, 2.5 (revised by Layer 6, 2026-11-14): cloud model providers by configuration, off by default.</td><td>SC-24 and AB-19, ST-17: who may enable it, key, egress, redaction, no automatic fallback.</td><td>Consistent with the revised A2.</td></tr>
 <tr><td>A1 E8: never read secret values; compare fingerprints; remove secrets and personal data from evidence.</td><td>SC-09: the fingerprint is a keyed hash; redaction also runs on model output; fail closed.</td><td>Consistent. Strengthens E8.</td></tr>
 <tr><td>A3: incidents A, B, C are the fixtures.</td><td>Section 5.8 tests use them (ST-01, ST-07, ST-08, ST-10, ST-16).</td><td>Consistent.</td></tr>
