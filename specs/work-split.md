@@ -16,8 +16,8 @@ A layer cannot start until the artifacts it is built from exist (worksheet rule)
 | 3 | A3 Incident and Evidence Catalog | A1, A2 | 37 | Dhanush (from Chirag) |
 | 4 | A4 Requirements | A1, A2, A3 | 34 | Dhanush (from Chirag) |
 | 5 | A5 Threat Model | A3, A4 | 28 | Chirag |
-| 6 | A6 System Architecture | A4, A5 | 39 | Manish |
-| 7 | A7 Data and Interface | A4, A6 | 64 | Manish |
+| 6 | A6 System Architecture | A4, A5 | 39 | Dhanush (from Manish) |
+| 7 | A7 Data and Interface | A4, A6 | 64 | Dhanush (from Manish) |
 | 8 | A8 Workflow | A6, A7 | 48 | Dhanush |
 | 9 | A9 Agent Design | A3, A7, A8 | 53 | Dhanush |
 | 10 | A10 Inference and Retrieval | A2, A9 | 64 | Irfan |
@@ -41,17 +41,17 @@ graph LR
 
 | Person | Theme | Layers | Qs |
 |---|---|---|---|
-| **Chirag** | Threats (back from Dhanush; L3, L4 stay with Dhanush) | L5 | **28** |
-| **Manish** | Architecture and data | L6, L7 | **103** |
-| **Dhanush** | Incident domain, requirements, workflows, agents | L3, L4, L8, L9 + L12 sections A, C | 71 + 101 + 36 = **208** |
+| **Chirag** | Threat model | L5 | **28** |
+| **Manish** | To be reassigned | — (L6, L7 moved to Dhanush) | **0** |
+| **Dhanush** | Incident domain, requirements, architecture, data, workflows, agents | L3, L4, L6, L7, L8, L9 + L12 sections A, C | 71 + 103 + 101 + 36 = **311** |
 | **Rinisha** | Safe remediation | L11 + L12 section B | 92 + 13 = **105** |
 | **Irfan** | Models, retrieval and evaluation | L10 + L12 sections D, E | 64 + 34 = **98** |
 
 Total 542.
 
 Why this grouping:
-- **Dhanush (from Chirag)** carries how incidents happen (L3) and what the system must do (L4). **Chirag** takes back what can go wrong (L5). Dhanush also takes L12-A (self-observability), which uses the same incident vocabulary.
-- **Manish** owns the two linked design layers: components (L6), then data and interfaces (L7).
+- **Dhanush (from Chirag)** carries how incidents happen (L3) and what the system must do (L4). **Chirag** owns what can go wrong (L5), which builds on both. Dhanush also takes L12-A (self-observability), which uses the same incident vocabulary.
+- **Dhanush (from Manish)** also owns the two linked design layers: components (L6), then data and interfaces (L7). They feed L8 and L9 directly, so one owner keeps L6 to L9 consistent.
 - **Dhanush** owns long-running workflows (L8) and the agent that runs inside them (L9). L12-C is backup and disaster recovery, which follows from the workflow state design.
 - **Rinisha** owns the controlled change path (L11). It answers the threats from L5. L12-B (operational reliability) follows from it.
 - **Irfan** owns models and retrieval (L10). L12-D and E (evaluation, experiments) test the model and agent behaviour.
@@ -73,9 +73,9 @@ Why this grouping:
 | 0 | L2 | whole team | — |
 | 1 | L3 | Dhanush | Prepare (see rules) |
 | 2 | L4 | Dhanush | Prepare |
-| 3 | L5 | Chirag | Manish prepares L6 |
-| 4 | L6 | Manish | Dhanush prepares L8 |
-| 5 | L7 | Manish | Dhanush prepares L8 and L9. Rinisha, Irfan can help on L7 sections D and E. |
+| 3 | L5 | Chirag | Dhanush starts L6 Parts A–C (Part D and trust boundaries wait for A5) |
+| 4 | L6 | Dhanush | Others prepare |
+| 5 | L7 | Dhanush | Rinisha, Irfan can help on L7 sections D and E. |
 | 6 | L8 | Dhanush | Rinisha prepares L11. Irfan prepares L10. |
 | 7 | L9 | Dhanush | Rinisha and Irfan prepare |
 | 8 | **L10 ∥ L11** | Irfan ∥ Rinisha | Manish, Dhanush prepare L12 and review |
@@ -85,12 +85,12 @@ Why this grouping:
 ## 5. Rules for keeping everyone busy
 
 1. **Prepare.** While a layer is written, the next owners read their questions and list knowns, unknowns and assumptions. They do not write the artifact until its inputs exist.
-2. **Consumer reviews producer.** The owner of the next layer reviews each finished artifact (Manish reviews A5, Dhanush reviews A7, Rinisha and Irfan review A9).
+2. **Consumer reviews producer.** The owner of the next layer reviews each finished artifact (Dhanush reviews A5; Rinisha and Irfan review A6, A7 and A9, because Dhanush owns the chain from L6 to L9).
 3. **Help on big layers.** A free person may take lettered sections of the layer in progress. The owner merges. Best candidates: L7 (D, E), L8 (D), L9 (E, F).
 4. **Whole team still discusses every question.** The owner drafts, runs the agent conversations, writes the log rows, and builds the artifact.
 
 ## 6. Risks
 
-- **Dhanush owns L3–L4 and L8–L9** (208 questions, about twice anyone else). Chirag returned and took back L5 (2026-11-14). Consider moving L12-A to Chirag as well. Use rules 1–3.
-- **Manish owns two layers in a row** (waves 4–5). Use rule 3 on L7.
+- **Dhanush owns L3, L4, L6, L7, L8, L9** (311 questions, about three times anyone else): Chirag was unavailable for L3 and L4, and Dhanush took L6 and L7 from Manish. Manish has no layer now. Give Manish sections (for example L7 D and E, or L12-A) or the review of A6 to A9. Use rules 1–3.
+- **Dhanush owns six layers in a row** (waves 1–7, except L5). This is the critical path. Use rule 3 on L7 and L9.
 - **The critical path is 10 waves after L2.** One slow layer delays the end. Keep each layer to one working session, and keep V1 simple.

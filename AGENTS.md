@@ -38,8 +38,8 @@ specs/layer-NN-<name>/
 ## Standing decisions to respect (from A1/A2)
 
 - Layer 1 names no technology. Technology appears from Layer 2 on, each with its assumption recorded.
-- Incident data must not leave the organization → self-hosted open-weight models only, on existing GPUs; no external model API, no CPU fallback (inference down → halt and escalate). All model access goes through one model interface.
-- Agent never touches production directly and holds no production credentials. All writes go through checks and human approval enforced outside the agent; revert = re-run the CI/CD pipeline at the last known-good version; fix = branch + PR deployed by the pipeline.
+- Incident data must not go to a **new** external party (for example an external model API). Organization-approved hosted tools (monitoring, Git, CI/CD, error tracker, chat) stay allowed through allow-listed network rules (A2 2.7). Models: self-hosted open-weight models only, on existing GPUs; no external model API, no CPU fallback (inference down → halt and escalate). All model access goes through one model interface.
+- Agent never touches production directly and holds no production credentials. All writes go through checks and human approval enforced outside the agent; recovery = redeploy the last known-good artifact through the pipeline (emergency path skips staging and QA, because that artifact already passed them) **or** restore the previous config version in the config store; fix = branch + PR, merged by the human approver (never the platform) and deployed by the pipeline. Only the executor calls the pipeline or the config store (A2 2.3, A5 SC-15).
 - V1: single tenant, Python apps only, synthetic sanitized fixtures, CLI + HTTP API (no dashboard), Docker (no Kubernetes), modular monolith, PostgreSQL, 3 configurable concurrent incidents (queued by severity, then arrival).
 
 ## Reading the worksheet

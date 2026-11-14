@@ -295,22 +295,22 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>Example (Q2.21)</th><th>Content</th></tr>
 <tr><td><span class="L D">Decision</span></td><td>Use PostgreSQL for incident data. Rationale: industry standard, proven at large volume, supports many data types (from a literature review).</td></tr>
-<tr><td><span class="L A">Assumption</span> it depends on</td><td>V1 data volume fits one PostgreSQL instance. Owner: Manish. Validate: measure data for each incident in the Q2.16 experiments.</td></tr>
+<tr><td><span class="L A">Assumption</span> it depends on</td><td>V1 data volume fits one PostgreSQL instance. Owner: Dhanush. Validate: measure data for each incident in the Q2.16 experiments.</td></tr>
 <tr><td>If the assumption fails</td><td>The decision is opened again.</td></tr>
 </table>
 
 <h3>Open dependencies</h3>
 <table>
 <tr><th>Dependency</th><th>Owner</th><th>Resolve in</th></tr>
-<tr><td>Which monitoring, trace, and config store tools are used or simulated for V1</td><td>Manish</td><td>Layer 6 (technology selection)</td></tr>
-<tr><td>Exact internal setup for the demo</td><td>Manish</td><td>Layer 6</td></tr>
-<tr><td>Where the platform credentials are stored (secret store)</td><td>Dhanush</td><td>Layer 5</td></tr>
+<tr><td>Which monitoring, trace, and config store tools are used or simulated for V1</td><td>Dhanush</td><td>Layer 6 (technology selection)</td></tr>
+<tr><td>Exact internal setup for the demo</td><td>Dhanush</td><td>Layer 6</td></tr>
+<tr><td>Where the platform credentials are stored (secret store)</td><td>Chirag</td><td>Layer 5</td></tr>
 <tr><td>How MCP write tools are blocked until approval (enforcement outside the agent)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Where the 2 AM approval happens (chat action, API, or CLI)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Which open-weight models (main and reviewer), and GPU sizing</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>High-availability design for the model servers</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>Buffer size, provisional cap, and the phase 1 and fix-phase time limits</td><td>Irfan, Dhanush</td><td>Layer 10, Layer 8 (from the experiments)</td></tr>
-<tr><td>Platform module boundaries</td><td>Manish</td><td>Layer 6</td></tr>
+<tr><td>Platform module boundaries</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>Trigger to move to an orchestrator or to split a module</td><td>Dhanush</td><td>Layer 13</td></tr>
 <tr><td>Which Python web framework the reference app uses</td><td>Dhanush</td><td>Fixtures (Layer 3)</td></tr>
 <tr><td>Sandbox design</td><td>Rinisha</td><td>Layer 11</td></tr>
@@ -339,17 +339,17 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
 <tr><td>L2-A1</td><td>Every Python service has one Git repository and one CI/CD pipeline that can be mapped</td><td>Dhanush</td><td>Layer 3 fixtures</td></tr>
-<tr><td>L2-A2</td><td>The CI/CD pipeline can redeploy an earlier version on request</td><td>Manish</td><td>Layer 6</td></tr>
-<tr><td>L2-A3</td><td>Monitoring tools push alert events by webhook and expose data by API or MCP</td><td>Manish</td><td>Layer 6</td></tr>
+<tr><td>L2-A2</td><td>The CI/CD pipeline can redeploy an earlier version on request</td><td>Dhanush</td><td>Layer 6</td></tr>
+<tr><td>L2-A3</td><td>Monitoring tools push alert events by webhook and expose data by API or MCP</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>L2-A4</td><td>MCP servers exist, or can be written, for the monitoring, Git, and CI/CD tools</td><td>Dhanush</td><td>Layer 9 (tool architecture)</td></tr>
 <tr><td>L2-A5</td><td>Synthetic fixtures are realistic enough to evaluate diagnosis</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>L2-A6</td><td>Services pass trace context, so a request can be followed across services</td><td>Dhanush</td><td>Layer 3 (observability)</td></tr>
-<tr><td>L2-A7</td><td>The config store has an API or MCP server with read access to its change history, keeps every version, and can restore a previous version</td><td>Manish</td><td>Layer 6</td></tr>
+<tr><td>L2-A7</td><td>The config store has an API or MCP server with read access to its change history, keeps every version, and can restore a previous version</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>L2-A8</td><td>Self-hosted open-weight models are good enough for the agent and the reviewer</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>L2-A10</td><td>The existing GPUs can hold 2 models &times; 2 copies (high availability) and serve 3 concurrent incidents</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
 <tr><td>L2-A11</td><td>20 minutes is enough for a typical investigation</td><td>Dhanush</td><td>Q2.16 experiments</td></tr>
 <tr><td>L2-A12</td><td>The existing GPUs are reserved for the platform, not shared</td><td>Dhanush</td><td>Before V1 build (Layer 13)</td></tr>
-<tr><td>L2-A13</td><td>V1 data volume fits one PostgreSQL instance</td><td>Manish</td><td>Q2.16 experiments, Layer 7</td></tr>
+<tr><td>L2-A13</td><td>V1 data volume fits one PostgreSQL instance</td><td>Dhanush</td><td>Q2.16 experiments, Layer 7</td></tr>
 </table>
 
 <h3>Consistency with Artifact 1</h3>

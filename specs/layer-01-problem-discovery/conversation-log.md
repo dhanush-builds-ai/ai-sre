@@ -112,13 +112,13 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 | E2 | Past incidents and knowledge documents are accurate and current | Assumption | Irfan | Layer 10 |
 | E3 | Exact escalation rules, rubric content, and gate limits. The method for the System 2 gate is chosen in Layer 9/10 (Layer 1 names no technology; candidate notes moved to `specs/layer-09-agent-architecture/prep-notes.md`) | Unknown | Dhanush (with Irfan for model choice) | Layer 9 / Layer 10 |
 | E4 | "Normal level" for the recovery check; low-traffic handling | Unknown | Rinisha | Layer 11 |
-| E6 | Alert-grouping rule | Unknown | Manish | Layer 7 |
+| E6 | Alert-grouping rule | Unknown | Dhanush | Layer 7 |
 | E7 | Watch period for a self-recovered incident | Unknown | Dhanush | Layer 8 |
-| E8 | Secrets and personal data handling: check against threats | Decision | Dhanush | Layer 5 |
+| E8 | Secrets and personal data handling: check against threats | Decision | Chirag | Layer 5 |
 | E11 | Wrong-change rate and escalation rate: set targets | Decision | Irfan | Layer 12 |
 | F1 | Approval timeout values and backup approver order | Unknown | Rinisha | Layer 11 |
 | F2 | Platform cost per incident | Unknown | Irfan | Layer 10 |
-| M11 | Must self-approval be forbidden for SEV1? (separation of duties) | Unknown | Dhanush | Layer 5 |
+| M11 | Must self-approval be forbidden for SEV1? (separation of duties) | Unknown | Chirag | Layer 5 |
 
 ### Where Claude and ChatGPT disagreed
 _Pending: ChatGPT pass not done yet (review finding H2)._
@@ -129,6 +129,6 @@ _Pending: ChatGPT pass not done yet (review finding H2)._
 - H1: revert also covers restoring the previous config version in the config store (same gate).
 - H2: acceptance check 4 un-ticked until the ChatGPT pass is done.
 - M10: model names removed from this Layer 1 log; moved to Layer 9 prep notes.
-- M11: self-approval rationale recorded; separation-of-duties check sent to Layer 5 (Dhanush).
+- M11: self-approval rationale recorded; separation-of-duties check sent to Layer 5 (Chirag).
 - M12: "decision policies" = Type 1/2 and System 1/2; "decision model" is reserved for the ML classifier (Layer 2+).
 - L1: "may not be the only cause" wording. L5: Chirag's items now owned by Dhanush. L6: A5 business-impact measure restored. L9: stale placeholder removed.

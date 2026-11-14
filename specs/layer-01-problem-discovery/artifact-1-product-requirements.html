@@ -447,7 +447,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Stop the platform or take over, at any step</td><td>Humans always keep control.</td></tr>
 <tr><td>Receive an escalation</td><td>The platform cannot continue by itself.</td></tr>
 </table>
-<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner. The approver can be the author of the change. Rationale: at 2 AM the author is often the only person on call; the other controls still apply (a review by a different model, policy checks, an undo path, and the audit trail). The threat model (Layer 5) checks if self-approval must be forbidden for SEV1.</div>
+<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner. The approver can be the author of the change. Rationale: at 2 AM the author is often the only person on call; the other controls still apply (a review by a different model, policy checks, an undo path, and the audit trail). The threat model (Layer 5, Chirag) checks if self-approval must be forbidden for SEV1.</div>
 
 <h3>How the platform decides (decision policies)</h3>
 <p>The platform uses two known decision policies. One sets how careful an action must be. The other sets how deep the reasoning must be.</p>
@@ -578,19 +578,19 @@ svg .ac{fill:var(--muted)}
 <tr><td>B3</td><td>Numbers for the loop limits (time, steps, cost)</td><td>Unknown</td><td>Dhanush</td><td>Layer 2 (Q2.16, Q2.18)</td></tr>
 <tr><td>B4</td><td>The undo path for a revert and for a fix, and how the platform knows the last known-good version</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>A5</td><td>How business impact is measured (users affected, lost income, SLA)</td><td>Unknown</td><td>Irfan</td><td>Layer 12</td></tr>
-<tr><td>M11</td><td>Must self-approval be forbidden for SEV1? (separation of duties)</td><td>Unknown</td><td>Dhanush</td><td>Layer 5 (threat model)</td></tr>
+<tr><td>M11</td><td>Must self-approval be forbidden for SEV1? (separation of duties)</td><td>Unknown</td><td>Chirag</td><td>Layer 5 (threat model)</td></tr>
 <tr><td>C1</td><td>Baseline: time to diagnose and recover today (from past incidents, or a timed manual run)</td><td>Unknown</td><td>Irfan</td><td>Before targets are set</td></tr>
 <tr><td>C2</td><td>Target values for each outcome measure</td><td>Unknown</td><td>Irfan</td><td>After C1, in Layer 12</td></tr>
 <tr><td>C3</td><td>Who decides that a diagnosis was correct, and against what</td><td>Unknown</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>C4</td><td>The period that signals must stay healthy after a revert</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (independent verification)</td></tr>
-<tr><td>D3</td><td>How long incident records are kept</td><td>Unknown</td><td>Manish</td><td>Layer 7</td></tr>
+<tr><td>D3</td><td>How long incident records are kept</td><td>Unknown</td><td>Dhanush</td><td>Layer 7</td></tr>
 <tr><td>E1</td><td>An on-call schedule exists, and the platform can read it</td><td>Assumption</td><td>Dhanush</td><td>Layer 3</td></tr>
 <tr><td>E2</td><td>Past incidents and knowledge documents exist, and are accurate and current</td><td>Assumption</td><td>Irfan</td><td>Layer 10 (retrieval)</td></tr>
 <tr><td>E3</td><td>The exact escalation rules, the rubric content, and the gate limits (decision policies chosen: Type 1/2 and System 1/2)</td><td>Unknown</td><td>Dhanush</td><td>Layer 9 (evidence-based reasoning)</td></tr>
 <tr><td>E4</td><td>The "normal level" for the recovery check, and how low traffic is handled</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
-<tr><td>E6</td><td>The rule that groups related alerts into one incident</td><td>Unknown</td><td>Manish</td><td>Layer 7 (events)</td></tr>
+<tr><td>E6</td><td>The rule that groups related alerts into one incident</td><td>Unknown</td><td>Dhanush</td><td>Layer 7 (events)</td></tr>
 <tr><td>E7</td><td>How long the platform watches a self-recovered incident</td><td>Unknown</td><td>Dhanush</td><td>Layer 8 (state machine)</td></tr>
-<tr><td>E8</td><td>Handling of secrets and personal data in evidence (section 1.3). Decided; check it against the threats</td><td>Decision</td><td>Dhanush</td><td>Layer 5 (threat model)</td></tr>
+<tr><td>E8</td><td>Handling of secrets and personal data in evidence (section 1.3). Decided; check it against the threats</td><td>Decision</td><td>Chirag</td><td>Layer 5 (threat model)</td></tr>
 <tr><td>E11</td><td>Safety measures: wrong-change rate and escalation rate. Decided; set targets</td><td>Decision</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>F1</td><td>Approval timeout values, and the backup approver order</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (human approval)</td></tr>
 <tr><td>F2</td><td>The platform cost per incident</td><td>Unknown</td><td>Irfan</td><td>Layer 10 (inference budgets)</td></tr>
