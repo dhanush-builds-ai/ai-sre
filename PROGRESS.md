@@ -3,7 +3,7 @@
 The **only** place where project status is kept. Other files (README, work split) hold no status.
 Update this file whenever a layer moves, a review runs, or an open item is closed.
 
-_Last updated: 2026-11-13_
+_Last updated: 2026-11-14_
 
 ## Layers
 
@@ -13,8 +13,8 @@ _Last updated: 2026-11-13_
 | 2 | Scope and Constraints | Team | Done — review fixes applied; ChatGPT pass pending (H2) | [log](specs/layer-02-scope-and-constraints/conversation-log.md) | [A2](specs/layer-02-scope-and-constraints/artifact-2-scope-and-constraints.html) | |
 | 3 | SRE Fundamentals | Dhanush (from Chirag) | Done — review fixes applied; ChatGPT pass pending (H2) | [log](specs/layer-03-sre-fundamentals/conversation-log.md) | [A3](specs/layer-03-sre-fundamentals/artifact-3-incident-and-evidence-catalog.html) | |
 | 4 | Requirements | Dhanush (from Chirag) | Done — ChatGPT pass pending (H2) | [log](specs/layer-04-requirements/conversation-log.md) | [A4](specs/layer-04-requirements/artifact-4-requirements-specification.html) | 34 requirements, 5 provisional milestones |
-| 5 | Threat Modeling | Dhanush (from Chirag) | Not started — inputs ready (A3, A4) | | | |
-| 6 | System Architecture | Manish | Not started | | | Needs A4, A5 |
+| 5 | Threat Modeling | Chirag | Done — ChatGPT pass pending (H2); review by Manish pending | [log](specs/layer-05-threat-modeling/conversation-log.md) | [A5](specs/layer-05-threat-modeling/artifact-5-threat-model.html) | 18 abuse cases, 22 controls, 16 security tests. Closes M11 (author may approve the revert, not the fix), NFR-08 method (rules-only redaction, fail closed), A1 E8 check, secret store requirements |
+| 6 | System Architecture | Manish | Not started — inputs ready (A4, A5) | | | Picks the SSO and secret store products (L5-A1, L5-A2) |
 | 7 | Data, APIs and Events | Manish | Not started | | | Needs A4, A6 |
 | 8 | Workflows and State Machines | Dhanush | Not started — prep allowed (Sections A, D) | | | Needs A6, A7 |
 | 9 | Agent Architecture | Dhanush | Not started | | | Needs A3, A7, A8 |
@@ -63,4 +63,7 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Approval channel, timeouts, write-tool enforcement, sandbox design | Rinisha | Layer 11 |
 | Run the ChatGPT pass on A1–A3 decisions and record disagreements (H2) | Layer owners | Before submission |
 | Fill "Reviewed by" and "Date" on A1–A3 | Team | Before submission |
-| Rebalance load: Dhanush now owns L3–L5, L8–L9 (236 Qs) | Team | Before Layer 4 |
+| Single sign-on, secret store, signing key storage, egress rules (A5 SC-01, SC-06, SC-08, SC-14) | Manish | Layer 6 |
+| Executor, reconcile, patch policy rules, branch protection, "author" for multi-commit deploys (A5 SC-04, SC-13 to SC-16, SC-20) | Rinisha | Layer 11 |
+| Point A1 1.2 / 1.5 self-approval text to the A5 M11 decision (SC-04) | Chirag | Before submission |
+| Rebalance load: Chirag took back L5; Dhanush still owns L3–L4, L8–L9 (208 Qs). Consider moving L12-A to Chirag | Team | Before Layer 8 |

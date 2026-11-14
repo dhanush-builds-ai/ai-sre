@@ -15,7 +15,7 @@ A layer cannot start until the artifacts it is built from exist (worksheet rule)
 | 2 | A2 Scope and Constraints | A1 | 23 | **team** |
 | 3 | A3 Incident and Evidence Catalog | A1, A2 | 37 | Dhanush (from Chirag) |
 | 4 | A4 Requirements | A1, A2, A3 | 34 | Dhanush (from Chirag) |
-| 5 | A5 Threat Model | A3, A4 | 28 | Dhanush (from Chirag) |
+| 5 | A5 Threat Model | A3, A4 | 28 | Chirag |
 | 6 | A6 System Architecture | A4, A5 | 39 | Manish |
 | 7 | A7 Data and Interface | A4, A6 | 64 | Manish |
 | 8 | A8 Workflow | A6, A7 | 48 | Dhanush |
@@ -41,16 +41,16 @@ graph LR
 
 | Person | Theme | Layers | Qs |
 |---|---|---|---|
-| **Chirag** | — (unavailable; layers moved to Dhanush) | — | **0** |
+| **Chirag** | Threats (back from Dhanush; L3, L4 stay with Dhanush) | L5 | **28** |
 | **Manish** | Architecture and data | L6, L7 | **103** |
-| **Dhanush** | Incident domain, requirements, threats, workflows, agents | L3, L4, L5, L8, L9 + L12 sections A, C | 99 + 101 + 36 = **236** |
+| **Dhanush** | Incident domain, requirements, workflows, agents | L3, L4, L8, L9 + L12 sections A, C | 71 + 101 + 36 = **208** |
 | **Rinisha** | Safe remediation | L11 + L12 section B | 92 + 13 = **105** |
 | **Irfan** | Models, retrieval and evaluation | L10 + L12 sections D, E | 64 + 34 = **98** |
 
 Total 542.
 
 Why this grouping:
-- **Dhanush (from Chirag)** carries one thread: how incidents happen (L3), what the system must do (L4), what can go wrong (L5). Dhanush also takes L12-A (self-observability), which uses the same incident vocabulary.
+- **Dhanush (from Chirag)** carries how incidents happen (L3) and what the system must do (L4). **Chirag** takes back what can go wrong (L5). Dhanush also takes L12-A (self-observability), which uses the same incident vocabulary.
 - **Manish** owns the two linked design layers: components (L6), then data and interfaces (L7).
 - **Dhanush** owns long-running workflows (L8) and the agent that runs inside them (L9). L12-C is backup and disaster recovery, which follows from the workflow state design.
 - **Rinisha** owns the controlled change path (L11). It answers the threats from L5. L12-B (operational reliability) follows from it.
@@ -73,7 +73,7 @@ Why this grouping:
 | 0 | L2 | whole team | — |
 | 1 | L3 | Dhanush | Prepare (see rules) |
 | 2 | L4 | Dhanush | Prepare |
-| 3 | L5 | Dhanush | Manish prepares L6 |
+| 3 | L5 | Chirag | Manish prepares L6 |
 | 4 | L6 | Manish | Dhanush prepares L8 |
 | 5 | L7 | Manish | Dhanush prepares L8 and L9. Rinisha, Irfan can help on L7 sections D and E. |
 | 6 | L8 | Dhanush | Rinisha prepares L11. Irfan prepares L10. |
@@ -91,6 +91,6 @@ Why this grouping:
 
 ## 6. Risks
 
-- **Dhanush owns L3–L5 and L8–L9** (236 questions, about twice anyone else) because Chirag is unavailable. Rebalance if Chirag returns, or move L5 or L12-A to Manish/Irfan/Rinisha. Use rules 1–3.
+- **Dhanush owns L3–L4 and L8–L9** (208 questions, about twice anyone else). Chirag returned and took back L5 (2026-11-14). Consider moving L12-A to Chirag as well. Use rules 1–3.
 - **Manish owns two layers in a row** (waves 4–5). Use rule 3 on L7.
 - **The critical path is 10 waves after L2.** One slow layer delays the end. Keep each layer to one working session, and keep V1 simple.

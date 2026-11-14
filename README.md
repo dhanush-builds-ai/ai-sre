@@ -29,6 +29,7 @@ specs/layer-NN-<name>/
 | 13 | [Implementation Planning](specs/layer-13-implementation-planning/) | How do we build it? | A13: Complete Implementation Plan (`artifact-13-implementation-plan.html`) |
 
 Progress (the only place status is tracked): [PROGRESS.md](PROGRESS.md)  
+How to work in this repo (for any coding agent or person): [AGENTS.md](AGENTS.md)  
 Work split and dependency order: [specs/work-split.md](specs/work-split.md)  
 Starter prompt for layer owners: [specs/starter-prompt.md](specs/starter-prompt.md)
 
