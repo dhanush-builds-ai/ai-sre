@@ -3,7 +3,7 @@
 The **only** place where project status is kept. Other files (README, work split) hold no status.
 Update this file whenever a layer moves, a review runs, or an open item is closed.
 
-_Last updated: 2026-11-14_
+_Last updated: 2026-11-15_
 
 ## Layers
 
@@ -16,8 +16,8 @@ _Last updated: 2026-11-14_
 | 5 | Threat Modeling | Chirag | Done — ChatGPT pass pending (H2); consumer review by Dhanush done, fixes applied (2026-11-14) | [log](specs/layer-05-threat-modeling/conversation-log.md) | [A5](specs/layer-05-threat-modeling/artifact-5-threat-model.html) | 18 abuse cases, 23 controls, 16 security tests. Closes M11 (author may approve the revert, not the fix), NFR-08 method (rules-only redaction, fail closed), A1 E8 check, secret store requirements |
 | 6 | System Architecture | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-06-system-architecture/conversation-log.md) | [A6](specs/layer-06-system-architecture/artifact-6-system-architecture.html) | 4 processes (API, worker, executor, sandbox runner), 18 components, 10 ADRs. Temporal + PostgreSQL waiting queue. Revised A2 model rule: cloud providers by config, off by default |
 | 7 | Data, APIs and Events | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-07-data-apis-events/conversation-log.md) | [A7](specs/layer-07-data-apis-events/artifact-7-data-and-interface-specification.html) | 45 tables, CloudEvents envelope, outbox via queued row + event table, idempotency table, SSE timeline. Gap review F1–F9 applied. Revised A5 login (SC-25) and config (SC-24) |
-| 8 | Workflows and State Machines | Dhanush | Not started — inputs ready (A6, A7) | | | |
-| 9 | Agent Architecture | Dhanush | Not started | | | Needs A3, A7, A8 |
+| 8 | Workflows and State Machines | Dhanush | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-08-workflows-state-machines/conversation-log.md) | [A8](specs/layer-08-workflows-state-machines/artifact-8-workflow-specification.html) | Incident workflow + one child per action; 7 incident and 13 action states; signals not Temporal cancel; one retry owner; intent-then-dispatch reconciliation; no notifier spool (A7 updated) |
+| 9 | Agent Architecture | Dhanush | Not started — inputs ready (A3, A7, A8) | | | Needs A3, A7, A8 |
 | 10 | Inference and Retrieval | Irfan | Not started | | | Needs A2, A9 |
 | 11 | Safe Remediation | Rinisha | Not started | | | Needs A5, A8, A9 |
 | 12 | Reliability and Evaluation | All, by section (Dhanush merges) | Not started | | | Needs A3, A4, A10, A11 |

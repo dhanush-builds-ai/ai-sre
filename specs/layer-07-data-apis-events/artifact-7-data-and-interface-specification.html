@@ -537,7 +537,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <text x="750" y="280">crash here: incident is still queued</text>
 <text x="750" y="323">6 after restart: start again, same ID</text>
 <text x="750" y="358">7 "already started" = success</text>
-<text x="450" y="398">8 UPDATE status running + event</text>
+<text x="450" y="398">8 UPDATE status investigating + event</text>
 </g>
 <text x="20" y="440" class="lbl">Temporal down at step 5: the incident stays queued; the loop retries with backoff; an alert fires if it stays queued too long (Q7.54).</text>
 </svg>
@@ -549,7 +549,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>Workflow starts, but the incident row is missing</td><td>Not possible in this order. If it happens, the first step finds no incident, fails, and raises a platform alert.</td><td>Q7.55</td></tr>
 <tr><td>Find pending work</td><td><code>SELECT … WHERE status = 'queued' ORDER BY severity, created_at FOR UPDATE SKIP LOCKED LIMIT n</code>. The loop polls every 1 s. <code>LISTEN/NOTIFY</code> is not used (S10).</td><td>Q7.58</td></tr>
 <tr><td>Crash after start, before the update</td><td>Start again with the same workflow ID. "Already started" means success.</td><td>Q7.59</td></tr>
-<tr><td>Chat, pager and ticket messages</td><td>Workflow steps (Temporal activities). Temporal retries a step until it succeeds. <code>notification</code> records delivery and acknowledgement. When the database is down, the notifier posts directly to the chat or pager webhook (A4 NFR-03; spool design in Layer 8).</td><td>Q7.57</td></tr>
+<tr><td>Chat, pager and ticket messages</td><td>Workflow steps (Temporal activities). Temporal retries a step until it succeeds. <code>notification</code> records delivery and acknowledgement. When the database is down, the API posts one degraded-mode message directly to the chat or pager webhook, with no spool (A4 NFR-03; Artifact 8 section 8.10).</td><td>Q7.57</td></tr>
 <tr><td>Kafka</td><td>Not in V1. PostgreSQL and the outbox carry about 3 incidents with tens of events each. Use Kafka only when one of these is measured: many independent consumer systems need fan-out and replay; thousands of events per second slow PostgreSQL; consumer lag passes a set limit; events must cross data centres.</td><td>Q7.64</td></tr>
 </table>
 
@@ -676,7 +676,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <h3>Open items</h3>
 <table>
 <tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
-<tr><td>Allowed state transitions, signal design, notifier spool when the database is down</td><td>Dhanush</td><td>Layer 8</td></tr>
+<tr><td>Allowed state transitions, signal design, notifier when the database is down</td><td>Dhanush</td><td>Closed in Artifact 8 (sections 8.3, 8.4, 8.7, 8.10)</td></tr>
 <tr><td>Name of the patch-writing agent role (fixer or diagnoser)</td><td>Dhanush</td><td>Layer 9</td></tr>
 <tr><td>Budget estimate rule for each model</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>Fix approval record vs PR merge; merge detection</td><td>Rinisha</td><td>Layer 11</td></tr>
