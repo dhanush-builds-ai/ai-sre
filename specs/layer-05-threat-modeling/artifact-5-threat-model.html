@@ -6,7 +6,7 @@
 <title>Artifact 5 - Threat Model</title>
 <style>
 :root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
-@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+@media screen and (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
 main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
@@ -52,7 +52,9 @@ svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:v
 svg .ac{fill:var(--muted)}
 svg .halo text{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
 svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-weight:700}
-@media print{body{background:#fff}.fig{break-inside:avoid}}
+@page{size:A4;margin:14mm}
+@page erd{size:A3 landscape;margin:8mm}
+@media print{body{background:#fff;font-size:12px}main{max-width:none}.tw,.fig,pre{overflow:visible!important;max-height:none!important}.reg{min-width:0;font-size:9.5px}.reg td:first-child{white-space:normal}.fig svg{min-width:0!important;width:100%!important;max-width:100%!important;height:auto}.fig.erd,.fig.erd+.cap{page:erd}.fig.erd{break-before:page;border:0;padding:0}.fig.erd svg{max-height:262mm}code{font-size:.9em}pre{white-space:pre-wrap;word-break:break-word}.fig,tr{break-inside:avoid}.cap{break-before:avoid}h2,h3{break-after:avoid}}
 </style>
 </head>
 <body>
@@ -63,7 +65,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
 <tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Chirag (owner), Manish, Dhanush, Rinisha, Irfan</td></tr>
 </table>
-<p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code>. Focus of this layer: set the trust boundaries before the platform allows any AI-generated action. Every input that the model reads is hostile until shown otherwise. Each security control (section 5.6) has exactly one label. The other sections describe threats, not decisions, so they carry no label:
+<p class="qs">Decisions come from <code>conversation-log.md</code>. Focus of this layer: set the trust boundaries before the platform allows any AI-generated action. Every input that the model reads is hostile until shown otherwise. Each security control (section 5.6) has exactly one label. The other sections describe threats, not decisions, so they carry no label:
 <span class="L F">Fixed requirement</span> comes from an earlier artifact (source given).
 <span class="L D">Decision</span> was made in this layer, with a rationale in the log.
 <span class="L A">Assumption</span> is provisional, with an owner and a validation condition (see Appendix).</p>

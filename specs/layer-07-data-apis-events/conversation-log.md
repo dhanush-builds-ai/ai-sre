@@ -76,6 +76,7 @@ Focus: every object the platform and the agent produce must have a defined struc
 | Q7.62 | C | (this session) | Same key with a different request hash → **422** `problem+json` "idempotency key reused with a different request". | None | 7.4, 7.8 |
 | Q7.63 | C | (this session) | Workflow ID = incident ID with the reuse policy "reject duplicate"; a retry gets "already started" = success. Executor actions use incident ID + action ID (A5 SC-15). | None | 7.8 |
 | Q7.64 | C | (this session) | PostgreSQL + outbox is enough for V1 (~3 incidents, tens of events each). Kafka only when measured: many independent consumer systems need fan-out and replay; thousands of events per second slow PostgreSQL; consumer lag over a set limit; cross-data-centre streaming. A6 lists Kafka as "avoid in V1". | None | 7.7 |
+| Schema review (over-engineering) | C (Fable subagent, ponytail-review) | (this session); `specs/reviews/2026-11-14-l7-schema-overengineering.md`, ERD `specs/reviews/2026-11-14-l7-erd.html` | S1–S11 approved by Dhanush: no partitions (row delete by the maintenance role); drop `consumer_checkpoint` (outside messages are Temporal activities); drop the `idempotency_key` table (key column on `incident`, supersedes Q7.60–Q7.62 storage); `policy_check` + `sandbox_run` + `review` → `check_result`; `model_provider` → `integration` kind = model, `model_assignment` → setting `models`; `config_change` only for second-admin changes; `service_owner`, `service_repository`, `environment` → columns; `diagnosis_feedback` → columns; drop `event.stream_id`, `correlation_id`, `diagnosis.ruled_out`, `model_call.budget_entry_id`; polling instead of `LISTEN/NOTIFY` (supersedes Q7.58 wake-up); CloudEvents field names only (narrows Q7.44). Gaps closed: every table's columns in 7.2; PK exceptions stated; `incident_id` on all change tables; unique `approval.approval_request_id`; `verification.execution_attempt_id`; `evidence.knowledge_document_id`; `incident.sealed` chain head on the platform stream; config read once at workflow start. **45 → 35 tables.** | None | 7.1, 7.2, 7.5–7.9 |
 
 ## Assumptions (all provisional)
 
@@ -89,7 +90,7 @@ Focus: every object the platform and the agent produce must have a defined struc
 
 | Earlier artifact says | Layer 7 decides | Status |
 |---|---|---|
-| A1 D3: retention unknown | 1 year / 90 days; partition drop by a maintenance role | Closed for V1 (L7-A3) |
+| A1 D3: retention unknown | 1 year / 90 days; row delete by a maintenance role (schema review S1) | Closed for V1 (L7-A3) |
 | A5 SC-01: SSO with MFA only | One login mode per deployment; own login default; no MFA in V1 (A5 SC-25) | Explicit decision; A5 updated; Chirag confirms |
 | A5 SC-24 and Q7.18 first draft: config in the repository | Hybrid config (F5): DB + admin API for integrations, models, limits, SSO; second admin for cloud provider and login mode | Explicit decision; A5 updated; Chirag confirms |
 | A2 2.3: "the merge is the approval" | Signed approval is the record; merge must match (F7) | Open — Rinisha, Layer 11 |

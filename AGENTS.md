@@ -34,6 +34,8 @@ specs/layer-NN-<name>/
 - Copy the `<style>` block from the latest artifact (`specs/layer-02-…/artifact-2-…html`) so all artifacts share one look: CSS variables on `:root` with a `prefers-color-scheme: dark` override, `.sec` section badges, `.qs` "Answers: Q…" lines, `.L .F/.D/.A` label chips, `.note`/`.no` callouts, and `.fig` wrappers for diagrams.
 - Diagrams are inline SVG using the shared `svg .box/.hum/.bad/.okb/.uc/.ln/...` classes (colours come from variables, so they work in light and dark). Each diagram gets a number and a caption (`.cap`, placed **below** the `.fig` card, not inside it), uses the type that fits (use case, swimlane, sequence, state machine, component, ER, flowchart, deployment), and must not just repeat the text.
 - Writing style: ASD-STE100 Simplified Technical English (≥80%): sentences of ~20 words or fewer, one idea per sentence, active voice, "must" for rules, one term per meaning used consistently, no idioms/filler/marketing words. Prefer tables and lists for rules, steps and comparisons.
+- The artifact holds only content for its reader. Do not state the writing style, the review process, file paths of review notes, or screen-only hints (hover, scroll) in it; traceability stays in the log and the Appendix.
+- Print/PDF: the shared `<style>` has print rules. Scroll frames expand, wide tables and SVGs shrink to A4 width, and the ERD (`.fig.erd`) prints on its own A3 landscape page. Check a new artifact with Chrome print preview before calling it done.
 
 ## Standing decisions to respect (from A1/A2)
 

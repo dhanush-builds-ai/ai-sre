@@ -31,6 +31,7 @@ _Last updated: 2026-11-14_
 | 2026-11-13 | A1, A2, A3 + logs | Claude subagent (fresh context) | 3 High, 12 Medium, 9 Low — team approved fixes; all applied except H2 (team action) |
 | 2026-11-14 | A5 + log, AGENTS.md | Dhanush with Claude (consumer review) | 3 Medium, 5 Low, 1 L6 action — [all approved and applied](specs/reviews/2026-11-14-a5-review.md) |
 | 2026-11-14 | L7 tables and API vs A1–A6 features | Claude subagent (fresh context) | 62 features, 28 gaps (11 High) — [F1–F9 approved and applied](specs/reviews/2026-11-14-l7-gap-fixes.md) |
+| 2026-11-14 | L7 schema, over-engineering + full ERD | Claude subagents (Fable, fresh context) | 11 findings, 7 spec gaps; 45 → 35 tables — [S1–S11 approved and applied](specs/reviews/2026-11-14-l7-schema-overengineering.md); [ERD](specs/reviews/2026-11-14-l7-erd.html) |
 
 ## Open findings from the 2026-11-13 review
 
