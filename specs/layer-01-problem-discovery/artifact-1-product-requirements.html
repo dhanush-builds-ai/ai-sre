@@ -69,6 +69,61 @@ svg .ac{fill:var(--muted)}
 <h2><span class="sec">1.1</span>Problem statement</h2>
 <p class="qs">Answers: Q1.1, Q1.3, Q1.4, Q1.7, Q1.8</p>
 
+<div class="fig">
+<svg viewBox="0 0 1100 450" role="img" aria-label="Overview of the product: people, the two incident phases, the guardrails, the success measures and the non-goals">
+<defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<text x="10" y="22" class="md" font-weight="600">Trigger and people (1.2)</text>
+<g class="sm">
+<rect x="10" y="34" width="200" height="46" rx="6" class="box"/><text x="20" y="53">Monitoring sends an alert</text><text x="20" y="69" class="lbl">(email, chat, or ticket)</text>
+<rect x="10" y="96" width="200" height="82" rx="6" class="box"/><text x="20" y="114" font-weight="600">Owner list (maintained)</text><text x="20" y="129">service &#8594; owning team</text><text x="20" y="143">&#8594; manager &#8594; members,</text><text x="20" y="157">plus the on-call schedule</text><text x="20" y="171" class="lbl">Change author: evidence only</text>
+<rect x="10" y="194" width="200" height="110" rx="6" class="hum"/><text x="20" y="212" font-weight="600">Approver (one of two)</text><text x="20" y="227">on-call engineer OR</text><text x="20" y="241">service owner</text><text x="20" y="255">Backup approver if no</text><text x="20" y="269">answer in the set time</text><text x="20" y="283">Can be the change author</text><text x="20" y="297">Confirms severity (no wait)</text>
+<rect x="10" y="320" width="200" height="46" rx="6" class="box"/><text x="20" y="339">Engineering management</text><text x="20" y="355" class="lbl">reads the outcome measures</text>
+</g>
+<path class="ln" d="M210,57 H220 V124 H235" marker-end="url(#a0)"/>
+
+<rect x="226" y="34" width="654" height="366" rx="10" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+<text x="553" y="52" text-anchor="middle" class="md" font-weight="600">AI SRE platform (V1)</text>
+<text x="553" y="68" text-anchor="middle" class="lbl">Reads the affected and related services. Writes only 2 actions. Each needs human approval and has an undo path.</text>
+<text x="237" y="90" class="md" font-weight="600">Phase 1: recover the service</text><text x="420" y="90" class="lbl">revert = last known-good version, or previous config version</text>
+<g class="sm" text-anchor="middle">
+<rect x="237" y="98" width="92" height="52" rx="6" class="uc"/><text x="283" y="120">Group alerts,</text><text x="283" y="134">find owner</text>
+<rect x="345" y="98" width="92" height="52" rx="6" class="uc"/><text x="391" y="113">Collect</text><text x="391" y="126">evidence;</text><text x="391" y="139">remove secrets</text>
+<rect x="453" y="98" width="92" height="52" rx="6" class="uc"/><text x="499" y="113">Propose revert,</text><text x="499" y="126">evidence and</text><text x="499" y="139">confidence</text>
+<rect x="561" y="98" width="92" height="52" rx="6" class="uc"/><text x="607" y="113">Review by a</text><text x="607" y="126">different</text><text x="607" y="139">model</text>
+<rect x="669" y="98" width="92" height="52" rx="6" class="hum"/><text x="715" y="120">Human</text><text x="715" y="134">approves</text>
+<rect x="777" y="98" width="92" height="52" rx="6" class="okb"/><text x="823" y="113">Apply revert,</text><text x="823" y="126">verify same</text><text x="823" y="139">signals</text>
+</g>
+<g class="ln"><path d="M329,124 H343" marker-end="url(#a0)"/><path d="M437,124 H451" marker-end="url(#a0)"/><path d="M545,124 H559" marker-end="url(#a0)"/><path d="M653,124 H667" marker-end="url(#a0)"/><path d="M761,124 H775" marker-end="url(#a0)"/>
+<path d="M823,150 V164 H283 V186" marker-end="url(#a0)"/></g>
+<text x="295" y="182" class="md" font-weight="600">Phase 2: permanent fix (after recovery)</text>
+<g class="sm" text-anchor="middle">
+<rect x="237" y="188" width="92" height="52" rx="6" class="uc"/><text x="283" y="210">Find the</text><text x="283" y="224">root cause</text>
+<rect x="345" y="188" width="92" height="52" rx="6" class="uc"/><text x="391" y="210">Propose</text><text x="391" y="224">permanent fix</text>
+<rect x="453" y="188" width="92" height="52" rx="6" class="uc"/><text x="499" y="203">Prove fix in a</text><text x="499" y="216">non-production</text><text x="499" y="229">copy</text>
+<rect x="561" y="188" width="92" height="52" rx="6" class="uc"/><text x="607" y="203">Review by a</text><text x="607" y="216">different</text><text x="607" y="229">model</text>
+<rect x="669" y="188" width="92" height="52" rx="6" class="hum"/><text x="715" y="203">Human</text><text x="715" y="216">approves or</text><text x="715" y="229">declines</text>
+<rect x="777" y="188" width="92" height="52" rx="6" class="okb"/><text x="823" y="203">Apply fix,</text><text x="823" y="216">verify, close</text><text x="823" y="229">with report</text>
+</g>
+<g class="ln"><path d="M329,214 H343" marker-end="url(#a0)"/><path d="M437,214 H451" marker-end="url(#a0)"/><path d="M545,214 H559" marker-end="url(#a0)"/><path d="M653,214 H667" marker-end="url(#a0)"/><path d="M761,214 H775" marker-end="url(#a0)"/>
+<path d="M869,214 H894" marker-end="url(#a0)"/></g>
+<g class="sm" text-anchor="middle">
+<rect x="237" y="256" width="632" height="44" rx="6" class="bad"/><text x="553" y="274">Any step can escalate to a human, with an explanation: thin evidence, no revert fits, review rejects,</text><text x="553" y="290">no approval in time, errors persist, or a time, step, or cost limit is hit. A failed fix leaves the service recovered.</text>
+<rect x="237" y="308" width="632" height="26" rx="6" class="hum"/><text x="553" y="325">A human can stop the platform or take over at any step. Silence is never approval.</text>
+<rect x="237" y="342" width="632" height="44" rx="6" class="box"/><text x="553" y="360">Provenance record: one per incident, add-only, kept after close. Every claim links to its source.</text><text x="553" y="376">Secrets: name and fingerprint only. Secrets and personal data are removed before any store or model.</text>
+</g>
+
+<g class="sm">
+<rect x="896" y="34" width="194" height="196" rx="6" class="okb"/><text x="906" y="52" class="md" font-weight="600">Success (1.6)</text>
+<text x="906" y="70">Recovery proof: the same</text><text x="906" y="84">signals return to the normal</text><text x="906" y="98">level for a set period, and</text><text x="906" y="112">the alert clears.</text>
+<text x="906" y="132" font-weight="600">Outcome measures</text><text x="906" y="146">time to recover, time to</text><text x="906" y="160">diagnose, diagnosis accuracy,</text><text x="906" y="174">on-call time saved, cost per</text><text x="906" y="188">incident, wrong-change rate,</text><text x="906" y="202">escalation rate.</text><text x="906" y="220" class="lbl">Baseline and targets: not set</text>
+<rect x="896" y="244" width="194" height="156" rx="6" class="bad"/><text x="906" y="262" class="md" font-weight="600">Never (1.7)</text>
+<text x="906" y="279">change production unapproved</text><text x="906" y="293">leak secrets or sensitive data</text><text x="906" y="307">write to another service</text><text x="906" y="321">delete data</text><text x="906" y="335">silence alerts or monitoring</text><text x="906" y="349">change access or permissions</text><text x="906" y="363">claim success, not verified</text><text x="906" y="377">apply a change with no undo</text><text x="906" y="391">take silence as approval</text>
+</g>
+<text x="10" y="432" class="lbl">Blue = platform work. Yellow = human decision. Green = verified result. Red = escalation or forbidden action. Grey = input or record.</text>
+</svg>
+</div>
+<p class="cap">Figure 1. The product at a glance. The platform recovers the service first and then proposes a permanent fix. A human approves every production change.</p>
+
 <p><b>Alert systems already work.</b> When a service fails, the existing alert system sends a message to people. The message can be an email, a chat message, or a ticket.</p>
 <p><b>The unsolved problem is what happens after the alert.</b> The engineer must restore the service and find the cause by hand. This takes a long time, and the work is tiring.</p>
 
@@ -110,7 +165,7 @@ svg .ac{fill:var(--muted)}
 <text x="10" y="236" class="lbl">Yellow = human work. Blue = platform work. Green = good result. Red = slow result.</text>
 </svg>
 </div>
-<p class="cap">Figure 1. The incident flow today and with the platform.</p>
+<p class="cap">Figure 2. The incident flow today and with the platform.</p>
 
 <h3>What information the engineer needs to find the root cause</h3>
 <ul>
@@ -170,16 +225,16 @@ svg .ac{fill:var(--muted)}
 <g class="lane"><rect x="0" y="10" width="1100" height="70"/><rect x="0" y="80" width="1100" height="70"/><rect x="0" y="150" width="1100" height="70"/><rect x="0" y="220" width="1100" height="70"/></g>
 <g class="md" font-weight="600"><text x="8" y="40">Alert source</text><text x="8" y="110">Platform</text><text x="8" y="180">Reviewer</text><text x="8" y="196" class="lbl" font-weight="400">(different model)</text><text x="8" y="250">Human</text><text x="8" y="266" class="lbl" font-weight="400">(approver)</text></g>
 <g class="sm" text-anchor="middle">
-<rect x="118" y="23" width="80" height="44" rx="6" class="box"/><text x="158" y="42">1 Raise</text><text x="158" y="56">alert</text>
-<rect x="216" y="93" width="80" height="44" rx="6" class="uc"/><text x="256" y="112">2 Group alerts,</text><text x="256" y="126">find owner</text>
-<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">3 Collect</text><text x="354" y="126">evidence</text>
-<rect x="412" y="233" width="80" height="44" rx="6" class="hum"/><text x="452" y="252">4 Confirm</text><text x="452" y="266">severity</text>
-<rect x="510" y="93" width="80" height="44" rx="6" class="uc"/><text x="550" y="112">5 Propose</text><text x="550" y="126">revert</text>
-<rect x="608" y="163" width="80" height="44" rx="6" class="uc"/><text x="648" y="182">6 Review</text><text x="648" y="196">proposal</text>
-<rect x="706" y="233" width="80" height="44" rx="6" class="hum"/><text x="746" y="252">7 Approve</text><text x="746" y="266">revert</text>
-<rect x="804" y="93" width="80" height="44" rx="6" class="uc"/><text x="844" y="112">8 Apply</text><text x="844" y="126">revert</text>
-<rect x="902" y="93" width="80" height="44" rx="6" class="uc"/><text x="942" y="112">9 Watch</text><text x="942" y="126">signals</text>
-<rect x="1000" y="93" width="80" height="44" rx="6" class="okb"/><text x="1040" y="112">10 Recovered,</text><text x="1040" y="126">find cause</text>
+<rect x="118" y="23" width="80" height="44" rx="6" class="box"/><text x="158" y="42">2 Raise</text><text x="158" y="56">alert</text>
+<rect x="216" y="93" width="80" height="44" rx="6" class="uc"/><text x="256" y="112">3–4 Group,</text><text x="256" y="126">find owner</text>
+<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">5 Collect</text><text x="354" y="126">evidence</text>
+<rect x="412" y="233" width="80" height="44" rx="6" class="hum"/><text x="452" y="252">6 Confirm</text><text x="452" y="266">severity</text>
+<rect x="510" y="93" width="80" height="44" rx="6" class="uc"/><text x="550" y="112">7 Propose</text><text x="550" y="126">revert</text>
+<rect x="608" y="163" width="80" height="44" rx="6" class="uc"/><text x="648" y="182">8 Review</text><text x="648" y="196">proposal</text>
+<rect x="706" y="233" width="80" height="44" rx="6" class="hum"/><text x="746" y="248">9 Approve</text><text x="746" y="260">revert</text><text x="746" y="272">(or backup)</text>
+<rect x="804" y="93" width="80" height="44" rx="6" class="uc"/><text x="844" y="112">10 Apply</text><text x="844" y="126">revert</text>
+<rect x="902" y="93" width="80" height="44" rx="6" class="uc"/><text x="942" y="112">11 Watch</text><text x="942" y="126">signals</text>
+<rect x="1000" y="93" width="80" height="44" rx="6" class="okb"/><text x="1040" y="112">12 Service</text><text x="1040" y="126">recovered</text>
 </g>
 <g class="ln">
 <path d="M158,67 V115 H214" marker-end="url(#a2)"/>
@@ -193,10 +248,10 @@ svg .ac{fill:var(--muted)}
 </g>
 <path class="dash" d="M354,137 V255 H410" marker-end="url(#a2)"/>
 <text x="362" y="200" class="lbl">in parallel,</text><text x="362" y="213" class="lbl">does not block</text>
-<text x="8" y="312" class="lbl">Every step writes to the provenance record. A human can stop or take over at any step. Any step can end in "escalate to human" (see Figure 4).</text>
+<text x="8" y="306" class="lbl">Step 1 (the deployment) comes before the alert. Step 12 leads to step 13 (Figure 4). Every step writes to the provenance record. A human can stop or take over at any step.</text><text x="8" y="321" class="lbl">Any step can end in "escalate to human" (see Figure 6).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Swimlane diagram, phase 1: recovery. Yellow = human. Blue = platform. Green = service recovered.</p>
+<p class="cap">Figure 3. Swimlane diagram, phase 1: recovery. Step numbers match the journey list below. Yellow = human. Blue = platform. Green = service recovered.</p>
 
 <div class="fig">
 <svg viewBox="0 0 1100 250" role="img" aria-label="Swimlane diagram of the permanent fix phase">
@@ -204,13 +259,13 @@ svg .ac{fill:var(--muted)}
 <g class="lane"><rect x="0" y="10" width="1100" height="70"/><rect x="0" y="80" width="1100" height="70"/><rect x="0" y="150" width="1100" height="70"/></g>
 <g class="md" font-weight="600"><text x="8" y="40">Platform</text><text x="8" y="110">Reviewer</text><text x="8" y="126" class="lbl" font-weight="400">(different model)</text><text x="8" y="180">Human</text><text x="8" y="196" class="lbl" font-weight="400">(approver)</text></g>
 <g class="sm" text-anchor="middle">
-<rect x="118" y="23" width="80" height="44" rx="6" class="uc"/><text x="158" y="42">11 Propose</text><text x="158" y="56">permanent fix</text>
-<rect x="216" y="23" width="80" height="44" rx="6" class="uc"/><text x="256" y="38">12 Prove fix</text><text x="256" y="51">in non-prod</text><text x="256" y="64">copy</text>
-<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">13 Review</text><text x="354" y="126">fix</text>
-<rect x="412" y="163" width="80" height="44" rx="6" class="hum"/><text x="452" y="182">14 Approve</text><text x="452" y="196">fix</text>
-<rect x="510" y="23" width="80" height="44" rx="6" class="uc"/><text x="550" y="42">15 Apply</text><text x="550" y="56">fix</text>
-<rect x="608" y="23" width="80" height="44" rx="6" class="uc"/><text x="648" y="42">16 Watch</text><text x="648" y="56">signals</text>
-<rect x="706" y="23" width="80" height="44" rx="6" class="okb"/><text x="746" y="42">17 Close</text><text x="746" y="56">with report</text>
+<rect x="118" y="23" width="80" height="44" rx="6" class="uc"/><text x="158" y="42">13 Propose</text><text x="158" y="56">permanent fix</text>
+<rect x="216" y="23" width="80" height="44" rx="6" class="uc"/><text x="256" y="42">14 Prove fix</text><text x="256" y="56">(non-prod)</text>
+<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">15 Review</text><text x="354" y="126">fix</text>
+<rect x="412" y="163" width="80" height="44" rx="6" class="hum"/><text x="452" y="182">16 Approve</text><text x="452" y="196">fix</text>
+<rect x="510" y="23" width="80" height="44" rx="6" class="uc"/><text x="550" y="42">17 Apply</text><text x="550" y="56">fix</text>
+<rect x="608" y="23" width="80" height="44" rx="6" class="uc"/><text x="648" y="42">18 Watch</text><text x="648" y="56">signals</text>
+<rect x="706" y="23" width="80" height="44" rx="6" class="okb"/><text x="746" y="42">19 Close</text><text x="746" y="56">with report</text>
 </g>
 <g class="ln">
 <path d="M198,45 H214" marker-end="url(#a2b)"/>
@@ -220,10 +275,10 @@ svg .ac{fill:var(--muted)}
 <path d="M590,45 H606" marker-end="url(#a2b)"/>
 <path d="M688,45 H704" marker-end="url(#a2b)"/>
 </g>
-<text x="8" y="242" class="lbl">Starts after step 10. If the human declines the fix, the incident closes with the fix as a recommendation only.</text>
+<text x="8" y="242" class="lbl">Starts after step 12. If the human declines the fix, the incident closes with the fix as a recommendation only.</text>
 </svg>
 </div>
-<p class="cap">Figure 2b. Swimlane diagram, phase 2: permanent fix. The fix is proven, reviewed, and approved before it is applied.</p>
+<p class="cap">Figure 4. Swimlane diagram, phase 2: permanent fix. The fix is proven, reviewed, and approved before it is applied.</p>
 
 <h3>The journey in the reference scenario</h3>
 <ol>
@@ -243,7 +298,8 @@ svg .ac{fill:var(--muted)}
 <li>The platform proves the fix in a non-production copy of the application.</li>
 <li>The reviewer that uses a different model reviews the fix.</li>
 <li>A human approves the fix. The fix must have an undo path.</li>
-<li>The platform applies the fix. It watches the same signals again for the set period.</li>
+<li>The platform applies the fix.</li>
+<li>The platform watches the same signals again for the set period.</li>
 <li>The platform closes the incident. It writes a report with the root cause, the fix, and the full audit trail.</li>
 </ol>
 
@@ -302,33 +358,34 @@ svg .ac{fill:var(--muted)}
 </g>
 <path class="dash" d="M450,138 V148" marker-end="url(#a3)"/>
 <text x="458" y="147" class="lbl">&lt;&lt;include&gt;&gt;</text>
-<path class="badln" d="M600,396 C660,396 660,116 600,116" marker-end="url(#a3)"/>
-<text x="672" y="256" class="lbl" transform="rotate(-90 672 256)" text-anchor="middle">&lt;&lt;extend&gt;&gt; UC7 extends UC2</text>
+<path class="badln" d="M600,396 C640,396 640,116 602,116" marker-end="url(#a3)"/>
+<text x="644" y="320" class="lbl" transform="rotate(-90 644 320)" text-anchor="middle">&lt;&lt;extend&gt;&gt;</text>
 <g>
 <circle cx="90" cy="150" r="12" fill="none" stroke="var(--fg)" stroke-width="1.5"/><path d="M90,162 V196 M70,174 H110 M90,196 L74,226 M90,196 L106,226" stroke="var(--fg)" stroke-width="1.5" fill="none"/>
-<text x="90" y="246" text-anchor="middle" class="md">On-call engineer</text>
+<text x="80" y="246" text-anchor="middle" class="md">On-call engineer</text>
 <circle cx="90" cy="400" r="12" fill="none" stroke="var(--fg)" stroke-width="1.5"/><path d="M90,412 V446 M70,424 H110 M90,446 L74,476 M90,446 L106,476" stroke="var(--fg)" stroke-width="1.5" fill="none"/>
 <text x="90" y="496" text-anchor="middle" class="md">Service owner</text>
 <text x="90" y="514" text-anchor="middle" class="lbl">(approver: either one)</text>
 <rect x="740" y="35" width="140" height="50" rx="6" class="box"/><text x="810" y="57" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="810" y="73" text-anchor="middle" class="md">Monitoring</text>
-<rect x="740" y="203" width="140" height="50" rx="6" class="box"/><text x="810" y="225" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="810" y="241" text-anchor="middle" class="md">Reviewer (other model)</text>
+<rect x="728" y="203" width="164" height="50" rx="6" class="box"/><text x="810" y="225" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="810" y="241" text-anchor="middle" class="md">Reviewer (other model)</text>
 </g>
 <g class="ln">
 <path d="M740,60 H600"/>
-<path d="M740,228 H600"/>
-<path d="M110,180 L303,175"/>
-<path d="M110,185 L306,287"/>
-<path d="M110,190 L310,399"/>
-<path d="M110,195 L320,510"/>
-<path d="M110,200 L330,562"/>
-<path d="M110,410 L305,62"/>
-<path d="M110,415 L306,290"/>
-<path d="M110,425 L303,452"/>
-<path d="M110,430 L320,512"/>
+<path d="M728,228 H600"/>
+<path d="M810,253 V452 H600"/>
+<path d="M110,180 L300,172"/>
+<path d="M110,185 L300,284"/>
+<path d="M110,190 L300,396"/>
+<path d="M110,195 L300,508"/>
+<path d="M110,200 L300,564"/>
+<path d="M110,410 L300,60"/>
+<path d="M110,415 L300,284"/>
+<path d="M110,425 L300,452"/>
+<path d="M110,430 L300,508"/>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 3. Use case diagram. Monitoring starts UC1. A reviewer that uses a different model takes part in UC4. Yellow = human decision. Red = escalation.</p>
+<p class="cap">Figure 5. Use case diagram. Monitoring starts UC1. A reviewer that uses a different model takes part in UC4 and UC8. UC7 extends UC2. Yellow = human decision. Red = escalation.</p>
 
 <table>
 <tr><th>ID</th><th>Use case</th><th>Result</th></tr>
@@ -371,7 +428,7 @@ svg .ac{fill:var(--muted)}
 <div class="fig">
 <svg viewBox="0 0 1100 300" role="img" aria-label="State diagram of an incident">
 <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="a4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker><marker id="a4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ok)"/></marker></defs>
-<circle cx="14" cy="82" r="6" fill="var(--fg)"/>
+<circle cx="10" cy="82" r="6" fill="var(--fg)"/>
 <g text-anchor="middle" class="md">
 <rect x="30" y="60" width="120" height="44" rx="10" class="box"/><text x="90" y="78">Received</text><text x="90" y="94" class="lbl">(alerts grouped)</text>
 <rect x="180" y="60" width="120" height="44" rx="10" class="uc"/><text x="240" y="86">Investigating</text>
@@ -379,11 +436,11 @@ svg .ac{fill:var(--muted)}
 <rect x="480" y="60" width="120" height="44" rx="10" class="hum"/><text x="540" y="78">Awaiting</text><text x="540" y="94">human approval</text>
 <rect x="630" y="60" width="120" height="44" rx="10" class="uc"/><text x="690" y="78">Monitoring</text><text x="690" y="94">same signals</text>
 <rect x="780" y="60" width="120" height="44" rx="10" class="okb"/><text x="840" y="86">Recovered</text>
-<rect x="930" y="60" width="120" height="44" rx="10" class="box"/><text x="990" y="78">Fix phase</text><text x="990" y="94" class="lbl">(Figure 4b)</text>
+<rect x="930" y="60" width="120" height="44" rx="10" class="box"/><text x="990" y="78">Fix phase</text><text x="990" y="94" class="lbl">(Figure 7)</text>
 <rect x="460" y="210" width="160" height="44" rx="10" class="bad"/><text x="540" y="228">Escalated to human</text><text x="540" y="244" class="lbl">(with explanation)</text>
 </g>
 <g class="ln">
-<path d="M20,82 H28" marker-end="url(#a4)"/>
+<path d="M16,82 H28" marker-end="url(#a4)"/>
 <path d="M150,82 H178" marker-end="url(#a4)"/><path d="M300,82 H328" marker-end="url(#a4)"/><path d="M450,82 H478" marker-end="url(#a4)"/><path d="M600,82 H628" marker-end="url(#a4)"/><path d="M750,82 H778" marker-end="url(#a4)"/><path d="M900,82 H928" marker-end="url(#a4)"/>
 </g>
 <path class="okln" d="M240,60 C240,14 690,14 690,58" marker-end="url(#a4g)"/>
@@ -395,7 +452,7 @@ svg .ac{fill:var(--muted)}
 <path d="M690,104 L620,232" marker-end="url(#a4b)"/>
 </g>
 <g class="lbl">
-<text x="270" y="113" transform="rotate(30 270 113)">evidence thin / no revert / limit hit</text>
+<g text-anchor="end"><text x="294" y="158">evidence thin /</text><text x="294" y="171">no revert /</text><text x="294" y="184">limit hit</text></g>
 <text x="442" y="150">review</text><text x="442" y="163">rejects</text>
 <text x="548" y="150">rejected or</text><text x="548" y="163">no answer</text>
 <text x="660" y="190">errors persist</text>
@@ -403,7 +460,7 @@ svg .ac{fill:var(--muted)}
 <text x="14" y="276" class="lbl">Solid = normal path. Red dashed = escalation. Green dashed = self-recovery.</text><text x="14" y="292" class="lbl">A human can stop the platform in any state. The incident then goes to "Escalated".</text>
 </svg>
 </div>
-<p class="cap">Figure 4. State diagram of an incident, phase 1: recovery. Every red path ends with a human.</p>
+<p class="cap">Figure 6. State diagram of an incident, phase 1: recovery. Every red path ends with a human.</p>
 
 <div class="fig">
 <svg viewBox="0 0 1000 300" role="img" aria-label="State diagram of the permanent fix phase">
@@ -429,7 +486,7 @@ svg .ac{fill:var(--muted)}
 <path d="M690,104 L620,232" marker-end="url(#a6b)"/>
 </g>
 <g class="lbl">
-<text x="262" y="118" transform="rotate(30 262 118)">proof fails / cannot reproduce</text>
+<g text-anchor="end"><text x="292" y="150">proof fails /</text><text x="292" y="163">cannot reproduce</text></g>
 <text x="442" y="150">review</text><text x="442" y="163">rejects</text>
 <text x="548" y="150">no answer</text>
 <text x="660" y="190">errors return:</text><text x="660" y="203">undo the fix</text>
@@ -437,7 +494,7 @@ svg .ac{fill:var(--muted)}
 <text x="14" y="284" class="lbl">Solid = normal path. Red dashed = escalation. Grey dashed = closed without the fix. A human can stop the platform in any state.</text>
 </svg>
 </div>
-<p class="cap">Figure 4b. State diagram, phase 2: permanent fix. When the fix path fails, the service stays on the recovered version.</p>
+<p class="cap">Figure 7. State diagram, phase 2: permanent fix. When the fix path fails, the service stays on the recovered version.</p>
 
 <h3>Human checkpoints (V1)</h3>
 <table>
@@ -459,28 +516,31 @@ svg .ac{fill:var(--muted)}
 <tr><td><b>System 1 / System 2 thinking</b> (fast / slow)</td><td>How much reasoning does this case need?</td><td><b>System 1 (fast):</b> fixed escalation rules (policies) are checked first. Example: no recent change matches the errors, so escalate.<br><b>System 2 (slow):</b> when no rule decides, the platform scores the evidence with a rubric that has context and guidance.<br><b>Gate:</b> a low rubric score, a new kind of incident, or a conflict in the evidence sends the incident to a human.</td></tr>
 </table>
 <div class="fig">
-<svg viewBox="0 0 1000 170" role="img" aria-label="Escalation decision flow">
-<defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<svg viewBox="0 0 1000 215" role="img" aria-label="Escalation decision flow">
+<defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="a5b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
 <g text-anchor="middle" class="md">
-<rect x="10" y="50" width="130" height="50" rx="6" class="box"/><text x="75" y="72">Evidence</text><text x="75" y="88">collected</text>
-<polygon points="250,30 340,75 250,120 160,75" class="uc"/><text x="250" y="70">System 1:</text><text x="250" y="86">a rule matches?</text>
-<polygon points="520,30 620,75 520,120 420,75" class="uc"/><text x="520" y="70">System 2:</text><text x="520" y="86">rubric score high?</text>
-<rect x="700" y="50" width="130" height="50" rx="6" class="uc"/><text x="765" y="72">Propose revert</text><text x="765" y="88">(Type 2 action)</text>
-<rect x="420" y="135" width="200" height="30" rx="6" class="bad"/><text x="520" y="155">Escalate to human</text>
-<rect x="860" y="50" width="130" height="50" rx="6" class="hum"/><text x="925" y="72">Human</text><text x="925" y="88">approves</text>
+<rect x="10" y="50" width="110" height="50" rx="6" class="box"/><text x="65" y="72">Evidence</text><text x="65" y="88">collected</text>
+<polygon points="215,30 300,75 215,120 130,75" class="uc"/><text x="215" y="70">System 1:</text><text x="215" y="86">a rule matches?</text>
+<polygon points="450,30 545,75 450,120 355,75" class="uc"/><text x="450" y="70">System 2:</text><text x="450" y="86">rubric score high?</text>
+<rect x="580" y="50" width="110" height="50" rx="6" class="uc"/><text x="635" y="72">Propose revert</text><text x="635" y="88">(Type 2 action)</text>
+<rect x="715" y="50" width="110" height="50" rx="6" class="uc"/><text x="770" y="72">Review by a</text><text x="770" y="88">different model</text>
+<rect x="850" y="50" width="110" height="50" rx="6" class="hum"/><text x="905" y="72">Human</text><text x="905" y="88">approves</text>
+<rect x="350" y="170" width="200" height="32" rx="6" class="bad"/><text x="450" y="191">Escalate to human</text>
 </g>
 <g class="ln">
-<path d="M140,75 H158" marker-end="url(#a5)"/>
-<path d="M340,75 H418" marker-end="url(#a5)"/>
-<path d="M620,75 H698" marker-end="url(#a5)"/>
-<path d="M830,75 H858" marker-end="url(#a5)"/>
-<path d="M250,120 V150 H418" marker-end="url(#a5)"/>
-<path d="M520,120 V133" marker-end="url(#a5)"/>
+<path d="M120,75 H128" marker-end="url(#a5)"/>
+<path d="M300,75 H353" marker-end="url(#a5)"/>
+<path d="M545,75 H578" marker-end="url(#a5)"/>
+<path d="M690,75 H713" marker-end="url(#a5)"/>
+<path d="M825,75 H848" marker-end="url(#a5)"/>
+<path d="M215,120 V186 H348" marker-end="url(#a5)"/>
+<path d="M450,120 V168" marker-end="url(#a5)"/>
 </g>
-<g class="lbl"><text x="350" y="68">no rule</text><text x="630" y="68">yes</text><text x="258" y="140">escalation rule</text><text x="528" y="130">low / new / conflict</text></g>
+<g class="badln"><path d="M770,100 V186 H552" marker-end="url(#a5b)"/><path d="M905,100 V186 H772"/></g>
+<g class="lbl"><text x="306" y="68">no rule</text><text x="551" y="68">yes</text><text x="223" y="160">escalation rule</text><text x="458" y="142">low score, new kind,</text><text x="458" y="155">or conflict</text><text x="778" y="142">review rejects</text><text x="913" y="142">declines or</text><text x="913" y="155">no answer</text><text x="635" y="117" text-anchor="middle">Type 1 (cannot undo):</text><text x="635" y="130" text-anchor="middle">not allowed in V1</text></g>
 </svg>
 </div>
-<p class="cap">Figure 5. Escalation decision flow. Fast rules first (System 1), then a rubric (System 2). Only a Type 2 action is proposed. The same flow applies to a permanent fix.</p>
+<p class="cap">Figure 8. Escalation decision flow. Fast rules first (System 1), then a rubric (System 2). Only a Type 2 action is proposed. A rejection, a decline, or no answer also escalates. The same flow applies to a permanent fix.</p>
 
 <h3>What gives engineers trust</h3>
 <ul>

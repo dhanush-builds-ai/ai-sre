@@ -76,6 +76,30 @@ svg .ac{fill:var(--muted)}
 <h2><span class="sec">2.1</span>Supported environments</h2>
 <p class="qs">Answers: Q2.1, Q2.3, Q2.4, Q2.5, Q2.6</p>
 
+<div class="fig">
+<svg viewBox="0 0 1000 420" role="img" aria-label="V1 scope at a glance: what is in scope, the provisional limits, what is not in V1, and the fixed rules">
+<rect x="10" y="10" width="316" height="262" rx="8" class="box"/><rect x="10" y="10" width="316" height="34" rx="8" class="okb"/>
+<rect x="342" y="10" width="316" height="262" rx="8" class="box"/><rect x="342" y="10" width="316" height="34" rx="8" class="uc"/>
+<rect x="674" y="10" width="316" height="262" rx="8" class="box"/><rect x="674" y="10" width="316" height="34" rx="8" class="bad"/>
+<g class="md" font-weight="600"><text x="24" y="32">In V1 scope (2.1, 2.2, 2.3, 2.5)</text><text x="356" y="32">V1 limits, provisional (2.4)</text><text x="688" y="32">Not in V1 (2.6)</text></g>
+<g class="md"><text x="24" y="70">One organization, one on-call schedule</text><text x="24" y="93">Python apps: one service to microservices</text><text x="24" y="116">Sanitized synthetic fixtures only</text><text x="24" y="139">CLI and HTTP API</text><text x="24" y="162">Docker, modular monolith, PostgreSQL</text><text x="24" y="185">Self-hosted main model + a different reviewer</text><text x="24" y="208">Existing GPUs only, no new spend</text><text x="24" y="231">Integrations: monitoring, Git, CI/CD, config</text><text x="24" y="254">Tools can be internal or approved hosted</text><text x="356" y="70">3 concurrent incidents (configurable)</text><text x="356" y="93">Queue: highest severity, then oldest</text><text x="356" y="116">Recovery (phase 1) pre-empts fix work</text><text x="356" y="139">Phase 1, propose the revert: 5 min</text><text x="356" y="162">Full investigation: 20 min</text><text x="356" y="185">Step limit: 30 tool calls</text><text x="356" y="208">Cost limit: 10 GPU-minutes per incident</text><text x="356" y="231">Not counted: approval waits, sandbox, apply</text><text x="356" y="254">Fix-phase limit: not set (see 2.7)</text><text x="688" y="70">Multi-tenancy</text><text x="688" y="93">Languages other than Python</text><text x="688" y="116">Real incident data</text><text x="688" y="139">A dashboard</text><text x="688" y="162">Kubernetes</text><text x="688" y="185">Microservices for the platform</text><text x="688" y="208">A custom or fine-tuned model</text><text x="688" y="231">Automatic or unapproved cloud model API</text><text x="688" y="254">A CPU fallback for the models</text></g>
+<rect x="10" y="288" width="980" height="122" rx="8" class="hum"/>
+<text x="24" y="310" class="md" font-weight="600">Fixed rules for every incident (2.1, 2.3, 2.5)</text>
+<g class="md">
+<text x="24" y="333">1. The agent has no production access and no production credentials.</text>
+<text x="24" y="354">2. Every write passes checks and human approval. The checks run outside the agent.</text>
+<text x="24" y="375">3. Recovery = redeploy the last known-good artifact, or restore the previous config version.</text>
+<text x="24" y="396">4. A fix = branch + pull request. Only a human merges it.</text>
+<text x="600" y="333">5. Incident data goes only to approved parties.</text>
+<text x="600" y="354">6. Cloud model APIs are off by default.</text>
+<text x="600" y="375">7. Inference down: halt and escalate.</text>
+<text x="600" y="396">8. Open items: 15 dependencies (2.7).</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 1. V1 scope at a glance. Green = in scope. Blue = provisional limits that the experiments tune. Red = not in V1. Yellow = fixed rules that apply to every incident.</p>
+
+
 <table>
 <tr><th>Item</th><th>V1 scope</th><th>Label</th></tr>
 <tr><td>Organizations</td><td>One engineering organization. One ownership list and one on-call schedule.</td><td><span class="L D">Decision</span></td></tr>
@@ -86,51 +110,53 @@ svg .ac{fill:var(--muted)}
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1000 580" role="img" aria-label="Context diagram with the organization boundary">
-<defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="c1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
-<rect x="15" y="30" width="815" height="535" rx="12" class="bound"/>
-<text x="30" y="52" class="md" font-weight="600" fill="var(--fix)">Trust boundary: no incident data to new external parties</text>
+<svg viewBox="0 0 1000 590" role="img" aria-label="Context diagram with the trust boundary">
+<defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="c1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
+<rect x="15" y="30" width="893" height="545" rx="12" class="bound"/>
+<text x="30" y="52" class="md" font-weight="600" fill="var(--fix)">Trust boundary: no incident data to a party that the organization has not approved</text>
 <g text-anchor="middle" class="md">
-<rect x="40" y="75" width="180" height="50" rx="6" class="hum"/><text x="130" y="96">Engineers</text><text x="130" y="112" class="lbl">CLI, HTTP API (chat: open, L11)</text>
-<rect x="40" y="215" width="180" height="60" rx="6" class="box"/><text x="130" y="238">Monitoring</text><text x="130" y="254" class="lbl">logs, metrics, traces</text>
-<rect x="320" y="225" width="230" height="90" rx="8" class="uc"/><text x="435" y="258" font-weight="600">AI SRE platform</text><text x="435" y="276" class="lbl">modular monolith, Docker</text><text x="435" y="292" class="lbl">no production credentials</text>
-<rect x="320" y="450" width="230" height="70" rx="6" class="uc"/><text x="435" y="476">Self-hosted inference</text><text x="435" y="494" class="lbl">existing GPUs: main + reviewer model</text>
-<rect x="640" y="110" width="170" height="50" rx="6" class="box"/><text x="725" y="139">Git repositories</text>
-<rect x="640" y="215" width="170" height="50" rx="6" class="box"/><text x="725" y="244">CI/CD pipeline</text>
-<rect x="640" y="320" width="170" height="50" rx="6" class="box"/><text x="725" y="349">Config store</text>
-<rect x="640" y="440" width="170" height="60" rx="6" class="okb"/><text x="725" y="464">Production services</text><text x="725" y="480" class="lbl">Python, can be distributed</text>
-<rect x="40" y="440" width="180" height="60" rx="6" class="box"/><text x="130" y="464">Sandbox</text><text x="130" y="480" class="lbl">Docker, per incident</text>
-<rect x="855" y="440" width="130" height="60" rx="6" class="bad"/><text x="920" y="464">Cloud model APIs</text><text x="920" y="480" class="lbl">off by default</text>
+<rect x="30" y="75" width="180" height="55" rx="6" class="hum"/><text x="120" y="98">Engineers, approver</text><text x="120" y="115" class="lbl">CLI, HTTP API (chat: open, L11)</text>
+<rect x="30" y="240" width="180" height="60" rx="6" class="box"/><text x="120" y="264">Monitoring</text><text x="120" y="281" class="lbl">logs, metrics, traces</text>
+<rect x="30" y="450" width="180" height="60" rx="6" class="box"/><text x="120" y="474">Sandbox</text><text x="120" y="491" class="lbl">Docker, per incident</text>
+<rect x="320" y="240" width="240" height="90" rx="8" class="uc"/><text x="440" y="268" font-weight="600">AI SRE platform</text><text x="440" y="286" class="lbl">modular monolith, Docker</text><text x="440" y="302" class="lbl">no production credentials</text><text x="440" y="318" class="lbl">its own credentials: secret store</text>
+<rect x="320" y="450" width="240" height="65" rx="6" class="uc"/><text x="440" y="476">Self-hosted inference</text><text x="440" y="494" class="lbl">existing GPUs: main + reviewer model</text>
+<rect x="660" y="75" width="160" height="50" rx="6" class="box"/><text x="740" y="104">Git repositories</text>
+<rect x="660" y="185" width="160" height="50" rx="6" class="box"/><text x="740" y="214">CI/CD pipeline</text>
+<rect x="660" y="300" width="160" height="50" rx="6" class="box"/><text x="740" y="329">Config store</text>
+<rect x="660" y="450" width="160" height="60" rx="6" class="okb"/><text x="740" y="474">Production services</text><text x="740" y="491" class="lbl">Python, can be distributed</text>
+<rect x="915" y="450" width="80" height="65" rx="6" class="bad"/><text x="955" y="472">Cloud</text><text x="955" y="488">model APIs</text><text x="955" y="505" class="lbl">off by default</text>
 </g>
 <g class="ln">
-<path d="M220,100 L340,222" marker-end="url(#c1)"/>
-<path d="M220,240 H318" marker-end="url(#c1)"/>
-<path d="M320,265 H222" marker-end="url(#c1)"/>
-<path d="M550,245 L638,140" marker-end="url(#c1)"/>
-<path d="M550,262 L638,242" marker-end="url(#c1)"/>
-<path d="M550,285 L638,343" marker-end="url(#c1)"/>
-<path d="M725,265 V438" marker-end="url(#c1)"/>
-<path d="M360,315 L210,438" marker-end="url(#c1)"/>
-<path d="M435,315 V448" marker-end="url(#c1)"/>
+<path d="M212,102 H380 V238" marker-start="url(#c1)" marker-end="url(#c1)"/>
+<path d="M210,258 H318" marker-end="url(#c1)"/>
+<path d="M320,284 H212" marker-end="url(#c1)"/>
+<path d="M520,240 V100 H658" marker-end="url(#c1)"/>
+<path d="M545,240 V210 H658" marker-end="url(#c1)"/>
+<path d="M560,318 H658" marker-end="url(#c1)"/>
+<path d="M820,210 H850 V480 H822" marker-end="url(#c1)"/>
+<path d="M740,350 V448" marker-end="url(#c1)"/>
+<path d="M320,320 H270 V480 H212" marker-end="url(#c1)"/>
+<path d="M440,330 V448" marker-end="url(#c1)"/>
 </g>
-<path class="badln" d="M530,315 L650,440" marker-end="url(#c1b)"/>
-<path class="badln" d="M435,520 V545 H920 V502" marker-end="url(#c1b)"/>
+<path class="badln" d="M555,330 L658,462" marker-end="url(#c1b)"/>
+<path class="badln" d="M440,515 V548 H955 V517" marker-end="url(#c1b)"/>
 <g class="lbl">
-<text x="240" y="150">findings, approval,</text><text x="240" y="163">takeover</text>
-<text x="232" y="232">alert webhook</text>
-<text x="232" y="282">read (API, MCP)</text>
-<text x="560" y="180">read; branch + PR</text>
-<text x="565" y="236">run pipeline</text>
-<text x="565" y="320">read changes; restore a</text><text x="565" y="333">version (after approval)</text>
-<text x="733" y="400">deploys</text>
-<text x="200" y="360">prove the fix</text>
-<text x="443" y="400">model calls</text>
-<text x="590" y="400" fill="var(--bad)">no direct access</text>
-<text x="660" y="560" fill="var(--bad)">blocked: new external party</text>
+<text x="226" y="95">findings, approval, takeover</text>
+<text x="222" y="251">alert webhook</text>
+<text x="222" y="299">read (API, MCP)</text>
+<text x="512" y="170" text-anchor="end">read; branch + PR</text>
+<text x="568" y="203">run the pipeline</text>
+<text x="570" y="310">read; restore</text>
+<text x="858" y="345">deploys</text>
+<text x="748" y="405">config</text>
+<text x="278" y="400">prove the fix</text>
+<text x="448" y="395">model calls</text>
+<text x="604" y="372" fill="var(--bad)">no direct access</text>
+<text x="600" y="541" fill="var(--bad)">blocked unless an admin enables it (2.5)</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
+<p class="cap">Figure 2. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval (Figure 3). Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
 
 <h3>Integrations</h3>
 <table>
@@ -171,40 +197,49 @@ svg .ac{fill:var(--muted)}
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1000 380" role="img" aria-label="Sequence diagram of the write path">
+<svg viewBox="0 0 1000 570" role="img" aria-label="Sequence diagram of the write path with the revert, config restore and fix paths">
 <defs><marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g text-anchor="middle" class="md">
-<rect x="30" y="15" width="120" height="36" rx="6" class="uc"/><text x="90" y="38">Agent</text>
-<rect x="200" y="15" width="120" height="36" rx="6" class="box"/><text x="260" y="38">Approval gate</text>
-<rect x="370" y="15" width="120" height="36" rx="6" class="uc"/><text x="430" y="38">Reviewer model</text>
-<rect x="540" y="15" width="120" height="36" rx="6" class="hum"/><text x="600" y="38">Human approver</text>
-<rect x="710" y="15" width="120" height="36" rx="6" class="box"/><text x="770" y="38">Git / CI/CD / config</text>
-<rect x="860" y="15" width="120" height="36" rx="6" class="okb"/><text x="920" y="38">Production</text>
-</g>
-<g class="life"><path d="M90,51 V340"/><path d="M260,51 V340"/><path d="M430,51 V340"/><path d="M600,51 V340"/><path d="M770,51 V340"/><path d="M920,51 V340"/></g>
+<g text-anchor="middle" class="md"><rect x="9" y="15" width="112" height="36" rx="6" class="uc"/><text x="65" y="38">Agent</text><rect x="134" y="15" width="112" height="36" rx="6" class="box"/><text x="190" y="38">Approval gate</text><rect x="259" y="15" width="112" height="36" rx="6" class="uc"/><text x="315" y="38">Reviewer model</text><rect x="384" y="15" width="112" height="36" rx="6" class="hum"/><text x="440" y="38">Human approver</text><rect x="509" y="15" width="112" height="36" rx="6" class="box"/><text x="565" y="38">Git</text><rect x="634" y="15" width="112" height="36" rx="6" class="box"/><text x="690" y="38">CI/CD pipeline</text><rect x="759" y="15" width="112" height="36" rx="6" class="box"/><text x="815" y="38">Config store</text><rect x="884" y="15" width="112" height="36" rx="6" class="okb"/><text x="940" y="38">Production</text></g>
+<g class="life"><path d="M65,51 V270"/><path d="M190,51 V530"/><path d="M315,51 V530"/><path d="M440,51 V530"/><path d="M565,51 V530"/><path d="M690,51 V530"/><path d="M815,51 V530"/><path d="M940,51 V530"/></g>
+<rect x="10" y="272" width="980" height="258" rx="4" fill="none" stroke="var(--muted)" stroke-width="1.2"/>
+<path d="M10,345 H990 M10,410 H990" class="dash"/>
+<g class="md" font-weight="600"><text x="18" y="292">alt: revert</text><text x="18" y="365">alt: config</text><text x="18" y="430">alt: fix</text></g>
+<g class="lbl"><text x="18" y="307">emergency path</text><text x="18" y="380">restore</text><text x="18" y="445">normal path,</text><text x="18" y="458">after sandbox</text><text x="18" y="471">proof</text></g>
 <g class="ln">
-<path d="M90,85 H258" marker-end="url(#s1)"/>
-<path d="M260,120 H428" marker-end="url(#s1)"/>
-<path d="M260,175 C300,175 300,200 262,200" marker-end="url(#s1)"/>
-<path d="M260,230 H598" marker-end="url(#s1)"/>
-<path d="M260,290 H768" marker-end="url(#s1)"/>
-<path d="M770,320 H918" marker-end="url(#s1)"/>
+<path d="M65,85 H188" marker-end="url(#s1)"/>
+<path d="M190,115 H313" marker-end="url(#s1)"/>
+<path d="M190,180 C230,180 230,205 192,205" marker-end="url(#s1)"/>
+<path d="M190,235 H438" marker-end="url(#s1)"/>
+<path d="M190,300 H688" marker-end="url(#s1)"/>
+<path d="M690,325 H938" marker-end="url(#s1)"/>
+<path d="M190,370 H813" marker-end="url(#s1)"/>
+<path d="M815,395 H938" marker-end="url(#s1)"/>
+<path d="M190,435 H563" marker-end="url(#s1)"/>
+<path d="M440,465 H563" marker-end="url(#s1)"/>
+<path d="M565,490 H688" marker-end="url(#s1)"/>
+<path d="M690,515 H938" marker-end="url(#s1)"/>
 </g>
-<g class="dash"><path d="M430,148 H262" marker-end="url(#s1)"/><path d="M600,258 H262" marker-end="url(#s1)"/></g>
+<g class="dash"><path d="M315,145 H192" marker-end="url(#s1)"/><path d="M440,262 H192" marker-end="url(#s1)"/></g>
 <g class="lbl">
-<text x="100" y="78">1 request a write (revert, config restore, or fix)</text>
-<text x="270" y="113">2 review the proposal</text>
-<text x="300" y="142">3 pass / reject</text>
-<text x="306" y="192">4 policy checks: scope, undo path, limits</text>
-<text x="270" y="223">5 ask for approval</text>
-<text x="300" y="252">6 approve / decline / no answer</text>
-<text x="270" y="283">7 branch + PR, run the pipeline, or restore a config version</text>
-<text x="780" y="313">8 deploy</text>
+<text x="72" y="78">1 request a write</text>
+<text x="198" y="108">2 review the proposal</text>
+<text x="198" y="138">3 pass / reject</text>
+<text x="238" y="197">4 policy checks: scope, undo path, limits</text>
+<text x="198" y="228">5 ask for approval</text>
+<text x="198" y="255">6 approve / decline / no answer</text>
+<text x="198" y="293">7a redeploy the last known-good artifact</text>
+<text x="698" y="318">8a deploy, no new staging or QA</text>
+<text x="198" y="363">7b restore the previous config version</text>
+<text x="823" y="388">8b config applied</text>
+<text x="198" y="428">7c open a branch + pull request</text>
+<text x="448" y="458">8c human merges</text>
+<text x="573" y="483">9c merge starts it</text>
+<text x="698" y="508">10c staging, QA, production</text>
 </g>
-<text x="30" y="368" class="lbl">The agent never talks to production. Only the pipeline deploys code; the config store restores a config version. If any step fails, the write stops and the incident escalates.</text>
+<text x="10" y="555" class="lbl">The agent never talks to production. Only the approval gate sends writes to Git, the pipeline or the config store. If any step fails, the write stops and the incident escalates.</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Sequence diagram of the write path. Every write passes a review, policy checks, and human approval before the pipeline deploys it.</p>
+<p class="cap">Figure 3. Sequence diagram of the write path. Every write passes a review, policy checks, and human approval. A revert or a config restore goes straight to production, because the artifact or version already passed staging and QA. A fix goes through a pull request that only the human approver merges, then through staging and QA.</p>
 
 <!-- ============ 2.4 ============ -->
 <h2><span class="sec">2.4</span>Budget constraints</h2>
@@ -241,20 +276,22 @@ svg .ac{fill:var(--muted)}
 
 <h3>When our inference service is not available</h3>
 <div class="fig">
-<svg viewBox="0 0 1000 170" role="img" aria-label="Flowchart for inference failure">
-<defs><marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<svg viewBox="0 0 1000 255" role="img" aria-label="Flowchart for an inference failure">
+<defs><marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="f1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
 <g text-anchor="middle" class="md">
-<rect x="10" y="50" width="140" height="50" rx="6" class="box"/><text x="80" y="72">Incident needs</text><text x="80" y="88">a model call</text>
-<polygon points="300,25 410,75 300,125 190,75" class="uc"/><text x="300" y="70">Main and reviewer</text><text x="300" y="86">model available?</text>
-<rect x="470" y="50" width="160" height="50" rx="6" class="uc"/><text x="550" y="80">Continue the incident</text>
-<rect x="190" y="138" width="440" height="28" rx="6" class="bad"/><text x="410" y="157">Halt. Escalate to a human with the alert and the evidence collected so far.</text>
+<rect x="20" y="60" width="150" height="50" rx="6" class="box"/><text x="95" y="82">Incident needs</text><text x="95" y="98">a model call</text>
+<polygon points="330,30 450,85 330,140 210,85" class="uc"/><text x="330" y="80">Main and reviewer</text><text x="330" y="96">model available?</text>
+<rect x="590" y="60" width="200" height="50" rx="6" class="okb"/><text x="690" y="81">Continue the incident</text><text x="690" y="98" class="lbl">high availability: 2+ copies</text>
+<rect x="240" y="180" width="180" height="60" rx="6" class="hum"/><text x="330" y="202" font-weight="600">Halt and escalate</text><text x="330" y="218" class="lbl">to a human, with the alert</text><text x="330" y="232" class="lbl">and the evidence so far</text>
+<rect x="20" y="180" width="180" height="60" rx="6" class="bad"/><text x="110" y="205">CPU fallback</text><text x="110" y="222" class="lbl">not allowed (2.6)</text>
+<rect x="460" y="180" width="200" height="60" rx="6" class="bad"/><text x="560" y="205">Automatic cloud fallback</text><text x="560" y="222" class="lbl">not allowed (2.6)</text>
 </g>
-<g class="ln"><path d="M150,75 H188" marker-end="url(#f1)"/><path d="M410,75 H468" marker-end="url(#f1)"/><path d="M300,125 V136" marker-end="url(#f1)"/></g>
-<g class="lbl"><text x="420" y="68">yes (high availability)</text><text x="308" y="134">no</text></g>
-<text x="660" y="80" class="lbl">No CPU fallback. No automatic cloud fallback.</text>
+<g class="ln"><path d="M170,85 H208" marker-end="url(#f1)"/><path d="M450,85 H588" marker-end="url(#f1)"/><path d="M330,140 V178" marker-end="url(#f1)"/></g>
+<path class="badln" d="M330,160 H110 V178" marker-end="url(#f1b)"/><path class="badln" d="M330,160 H560 V178" marker-end="url(#f1b)"/>
+<g class="lbl"><text x="500" y="78">yes</text><text x="338" y="154">no</text></g>
 </svg>
 </div>
-<p class="cap">Figure 3. Flowchart for an inference failure. Escalation is plain system logic. It does not need a model.</p>
+<p class="cap">Figure 4. Flowchart for an inference failure. Escalation is plain system logic. It does not need a model. Red dashed = paths that V1 does not allow.</p>
 
 <h3>Assumptions that can change the architecture (Q2.22)</h3>
 <table>

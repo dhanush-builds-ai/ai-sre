@@ -86,6 +86,64 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <!-- ============ 5.1 ============ -->
 <h2><span class="sec">5.1</span>Assets</h2>
 <p class="qs">Answers: Q5.3, Q5.6, Q5.7, Q5.8, Q5.9, Q5.12, Q5.13, Q5.20, Q5.26, Q5.28</p>
+<div class="fig">
+<svg viewBox="0 0 1150 495" role="img" aria-label="Threat model at a glance: threat actors enter through attack surfaces at six trust boundaries, controls outside the model check them, and the controls protect the assets">
+<defs><marker id="o5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g class="md" font-weight="600"><text x="10" y="24">Threat actors (8)</text><text x="285" y="24">enter through attack surfaces (9)</text><text x="610" y="24">are checked by controls (25)</text><text x="935" y="24">that protect assets (11)</text></g>
+<g class="sm">
+<rect x="10" y="40" width="230" height="32" rx="6" class="bad"/><text x="20" y="60">TA-1 External user of the app</text>
+<rect x="10" y="78" width="230" height="32" rx="6" class="bad"/><text x="20" y="98">TA-2 Engineer outside their scope</text>
+<rect x="10" y="116" width="230" height="32" rx="6" class="bad"/><text x="20" y="136">TA-3 Unauthorized person</text>
+<rect x="10" y="154" width="230" height="32" rx="6" class="bad"/><text x="20" y="174">TA-4 Insider on call, commit rights</text>
+<rect x="10" y="192" width="230" height="32" rx="6" class="box"/><text x="20" y="212">TA-5 Model: faulty or steered</text>
+<rect x="10" y="230" width="230" height="32" rx="6" class="box"/><text x="20" y="250">TA-6 Platform faults: retry, crash</text>
+<rect x="10" y="268" width="230" height="32" rx="6" class="bad"/><text x="20" y="288">TA-7 Compromised integration</text>
+<rect x="10" y="306" width="230" height="32" rx="6" class="bad"/><text x="20" y="326">TA-8 Rogue platform admin</text>
+
+<rect x="285" y="40" width="285" height="42" rx="6" class="box"/><text x="302" y="57">SF-1 Intake: webhook, HTTP API, CLI</text><text x="302" y="73" class="lbl">login or signature, role check</text>
+<rect x="285" y="91" width="285" height="42" rx="6" class="box"/><text x="302" y="108">SF-2 to SF-4 Evidence, repository, past incidents</text><text x="302" y="124" class="lbl">read-only tokens, redaction, "untrusted" label</text>
+<rect x="285" y="142" width="285" height="42" rx="6" class="box"/><text x="302" y="159">SF-5, SF-6 Model output, tool arguments</text><text x="302" y="175" class="lbl">schema check, tool allow list, scope lock</text>
+<rect x="285" y="193" width="285" height="42" rx="6" class="box"/><text x="302" y="210">SF-7 Sandbox: AI code and tests</text><text x="302" y="226" class="lbl">no network route out, dummy credentials</text>
+<rect x="285" y="244" width="285" height="42" rx="6" class="box"/><text x="302" y="261">SF-8 Approval channel</text><text x="302" y="277" class="lbl">approver role now, M11 rule, signed approval</text>
+<rect x="285" y="295" width="285" height="42" rx="6" class="box"/><text x="302" y="312">SF-9 Executor to pipeline, config store</text><text x="302" y="328" class="lbl">signature, hash, key, precondition</text>
+<rect x="285" y="350" width="285" height="34" rx="6" class="zb"/><text x="302" y="371">Removed in V1: agent shell, SQL, URL fetch</text>
+
+<rect x="610" y="40" width="285" height="92" rx="6" class="uc"/><text x="622" y="59" font-weight="600">Identity and access</text><text x="622" y="78">SC-01, SC-02, SC-25 login, webhook signature</text><text x="622" y="96">SC-03 roles checked now; SC-04 M11 rule</text><text x="622" y="114">SC-05 scope lock to one service</text>
+<rect x="610" y="142" width="285" height="92" rx="6" class="uc"/><text x="622" y="161" font-weight="600">Model input and output</text><text x="622" y="180">SC-06 tools hold credentials, model none</text><text x="622" y="198">SC-07, SC-08 allow list, outbound allow list</text><text x="622" y="216">SC-09 to SC-12 redaction, schema, reviewer</text>
+<rect x="610" y="244" width="285" height="93" rx="6" class="uc"/><text x="622" y="263" font-weight="600">Changes and execution</text><text x="622" y="282">SC-13 policy checks; SC-14 signed hash</text><text x="622" y="300">SC-15, SC-16 executor only, key, intent record</text><text x="622" y="318">SC-17 to SC-24 sandbox, verifier, audit</text>
+<rect x="610" y="350" width="285" height="34" rx="6" class="hum"/><text x="622" y="371">A rule in a prompt is never a control.</text>
+
+<rect x="935" y="40" width="205" height="42" rx="6" class="okb"/><text x="947" y="57">Production services</text><text x="947" y="73" class="lbl">AST-1 (I, A)</text>
+<rect x="935" y="91" width="205" height="42" rx="6" class="okb"/><text x="947" y="108">Secrets and personal data</text><text x="947" y="124" class="lbl">AST-2, AST-3, AST-4 (C)</text>
+<rect x="935" y="142" width="205" height="42" rx="6" class="okb"/><text x="947" y="159">Approval authority</text><text x="947" y="175" class="lbl">AST-5 (I)</text>
+<rect x="935" y="193" width="205" height="42" rx="6" class="okb"/><text x="947" y="210">Audit record</text><text x="947" y="226" class="lbl">AST-6 (I, N)</text>
+<rect x="935" y="244" width="205" height="42" rx="6" class="okb"/><text x="947" y="261">Repositories, incident data</text><text x="947" y="277" class="lbl">AST-7, AST-8 (I, C)</text>
+<rect x="935" y="295" width="205" height="42" rx="6" class="okb"/><text x="947" y="312">GPU, queue, prompts, config</text><text x="947" y="328" class="lbl">AST-9 to AST-11 (A, I)</text>
+
+<rect x="10" y="412" width="345" height="46" rx="6" class="bad"/><text x="22" y="431" font-weight="600">20 abuse cases (AB-01 to AB-20)</text><text x="22" y="448" class="lbl">worst goal: an unsafe change reaches production</text>
+<rect x="400" y="412" width="345" height="46" rx="6" class="hum"/><text x="412" y="431" font-weight="600">9 residual risks (RR-1 to RR-9)</text><text x="412" y="448" class="lbl">none high; accept, or reduce in a later layer</text>
+<rect x="790" y="412" width="350" height="46" rx="6" class="uc"/><text x="802" y="431" font-weight="600">19 security tests (ST-01 to ST-19)</text><text x="802" y="448" class="lbl">fixtures A, B, C and stub models</text>
+</g>
+<g>
+<circle cx="285" cy="61" r="9" class="tb"/><text x="285" y="65" text-anchor="middle" class="tbt">1</text>
+<circle cx="285" cy="112" r="9" class="tb"/><text x="285" y="116" text-anchor="middle" class="tbt">2</text>
+<circle cx="285" cy="163" r="9" class="tb"/><text x="285" y="167" text-anchor="middle" class="tbt">3</text>
+<circle cx="285" cy="214" r="9" class="tb"/><text x="285" y="218" text-anchor="middle" class="tbt">4</text>
+<circle cx="285" cy="265" r="9" class="tb"/><text x="285" y="269" text-anchor="middle" class="tbt">5</text>
+<circle cx="285" cy="316" r="9" class="tb"/><text x="285" y="320" text-anchor="middle" class="tbt">6</text>
+</g>
+<g class="ln">
+<path d="M240,189 H272" marker-end="url(#o5)"/>
+<path d="M570,189 H608" marker-end="url(#o5)"/>
+<path d="M895,189 H933" marker-end="url(#o5)"/>
+<path d="M355,435 H398" marker-end="url(#o5)"/>
+<path d="M745,435 H788" marker-end="url(#o5)"/>
+</g>
+<text x="10" y="485" class="lbl">Red = malicious actor or abuse case. White actor = no intent. Red circle = trust boundary TB-1 to TB-6. Grey text under each surface = check at the crossing. C, I, A, N = property kept.</text>
+</svg>
+</div>
+<p class="cap">Figure 1. The threat model at a glance. Eight threat actors enter through nine attack surfaces at six trust boundaries. Controls outside the model check each crossing and protect eleven assets. The bottom row gives the abuse cases, the residual risks and the tests.</p>
+
 <p>An asset is something that an attacker or a fault can damage. The property column names what must be kept: C = confidentiality, I = integrity, A = availability, N = non-repudiation (nobody can deny an action).</p>
 <table>
 <tr><th>ID</th><th>Asset</th><th>Property</th><th>Where it is kept</th><th>Q</th></tr>
@@ -153,7 +211,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="830" y="30" width="310" height="380" rx="8" class="zo"/>
 <g class="md" font-weight="600"><text x="20" y="50">Untrusted inputs</text><text x="255" y="50">AI SRE platform: trusted core</text><text x="662" y="230">Untrusted compute</text><text x="840" y="50">Outside the platform</text></g>
 <g text-anchor="middle" class="sm">
-<rect x="25" y="70" width="185" height="46" rx="6" class="box"/><text x="117" y="89">Engineer</text><text x="117" y="104" class="lbl">CLI, HTTP API</text>
+<rect x="25" y="70" width="185" height="46" rx="6" class="box"/><text x="117" y="89">Engineer, platform admin</text><text x="117" y="104" class="lbl">CLI, HTTP API, admin API</text>
 <rect x="25" y="140" width="185" height="46" rx="6" class="box"/><text x="117" y="159">Monitoring</text><text x="117" y="174" class="lbl">alert webhook</text>
 <rect x="25" y="235" width="185" height="70" rx="6" class="box"/><text x="117" y="255">Evidence sources</text><text x="117" y="271" class="lbl">logs, metrics, traces,</text><text x="117" y="286" class="lbl">repository, error tracker</text>
 <rect x="265" y="70" width="150" height="46" rx="6" class="uc"/><text x="340" y="89">Intake and auth</text><text x="340" y="104" class="lbl">SC-01 to SC-03</text>
@@ -170,8 +228,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="850" y="160" width="270" height="46" rx="6" class="box"/><text x="985" y="179">CI/CD pipeline, config store</text><text x="985" y="194" class="lbl">existing tools</text>
 <rect x="850" y="250" width="270" height="46" rx="6" class="okb"/><text x="985" y="269">Production</text><text x="985" y="284" class="lbl">changed only through the pipeline or config store</text>
 </g>
-<text x="617" y="325" text-anchor="middle" class="lbl">Output is data, never a command.</text>
-<text x="617" y="340" text-anchor="middle" class="lbl">No production route. No real credentials.</text>
+<g text-anchor="middle" class="lbl"><text x="592" y="320">Output is data, never a command.</text>
+<text x="592" y="334">No production route. No real credentials.</text>
+<text x="592" y="348">Self-hosted models, one inference gateway.</text>
+<text x="592" y="362">Cloud providers off by default (SC-24).</text></g>
 <g class="ln">
 <path d="M210,93 H263" marker-end="url(#a5)"/>
 <path d="M210,163 H235 V105 H263" marker-end="url(#a5)"/>
@@ -182,16 +242,16 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M590,245 V118" marker-end="url(#a5)"/>
 <path d="M525,70 V16 H985 V68" marker-start="url(#a5)" marker-end="url(#a5)"/>
 <path d="M600,93 H633" marker-end="url(#a5)"/>
-<path d="M785,93 H815 V183 H848" marker-end="url(#a5)"/>
+<path d="M785,93 H820 V176 H848" marker-end="url(#a5)"/>
 <path d="M985,206 V248" marker-end="url(#a5)"/>
-<path d="M848,273 H810 V163 H787" stroke-dasharray="4 3" marker-end="url(#a5)"/>
+<path d="M848,285 H818 V200 H710 V188" stroke-dasharray="4 3" marker-end="url(#a5)"/>
 <path d="M415,292 H428 V390 H735 V297" marker-end="url(#a5)"/>
 </g>
 <g class="lbl">
 <text x="348" y="216">read tokens</text>
 <text x="640" y="11" text-anchor="middle">approval request (action + hash) / signed approval</text>
 <text x="512" y="200">proposal</text>
-<text x="868" y="228">signed action</text>
+<text x="852" y="152">signed action</text><text x="993" y="231">deploy or restore</text>
 <text x="868" y="318">alert signals (read through monitoring)</text>
 <text x="560" y="385" text-anchor="middle">run tests</text>
 </g>
@@ -201,12 +261,12 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <circle cx="434" cy="270" r="9" class="tb"/><text x="434" y="274" text-anchor="middle" class="tbt">3</text>
 <circle cx="440" cy="390" r="9" class="tb"/><text x="440" y="394" text-anchor="middle" class="tbt">4</text>
 <circle cx="830" cy="16" r="9" class="tb"/><text x="830" y="20" text-anchor="middle" class="tbt">5</text>
-<circle cx="830" cy="183" r="9" class="tb"/><text x="830" y="187" text-anchor="middle" class="tbt">6</text>
+<circle cx="830" cy="176" r="9" class="tb"/><text x="830" y="180" text-anchor="middle" class="tbt">6</text>
 </g>
 <text x="20" y="425" class="lbl">Red dashed = untrusted zone. Blue dashed = trusted core. Grey dashed = outside the platform. Red circle = trust boundary TB-1 to TB-6. Every component also writes to the audit store (lines not drawn).</text>
 </svg>
 </div>
-<p class="cap">Figure 1. Component diagram with trust zones. The model and the sandbox sit inside the platform but in an untrusted zone. Only the executor crosses into the pipeline and the config store, and only with a signed approval.</p>
+<p class="cap">Figure 2. Component diagram with trust zones. The model and the sandbox sit inside the platform but in an untrusted zone. Only the executor crosses into the pipeline and the config store, and only with a signed approval.</p>
 
 <h3>Trust level of each component (Q5.12)</h3>
 <table>
@@ -243,7 +303,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <p>An abuse case is a use of the platform that causes harm. The reference scenario gives the examples: shop-api, config v42 with the value <code>"30s"</code>, HTTP 500 errors.</p>
 
 <div class="fig">
-<svg viewBox="0 0 1150 310" role="img" aria-label="Attack tree for the goal: an unsafe change reaches production">
+<svg viewBox="0 0 1150 320" role="img" aria-label="Attack tree for the goal: an unsafe change reaches production">
 <defs><marker id="b5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
 <rect x="375" y="15" width="400" height="46" rx="6" class="bad"/><text x="575" y="34" class="md" font-weight="600">Goal: an unsafe change reaches production</text><text x="575" y="51" class="lbl">any one branch is enough (OR)</text>
@@ -253,12 +313,12 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="580" y="110" width="170" height="54" rx="6" class="box"/><text x="665" y="132">Change the patch</text><text x="665" y="148" class="lbl">after approval (AB-08)</text>
 <rect x="770" y="110" width="170" height="54" rx="6" class="box"/><text x="855" y="132">Write without</text><text x="855" y="148" class="lbl">the executor (AB-02)</text>
 <rect x="960" y="110" width="170" height="54" rx="6" class="box"/><text x="1045" y="132">Run the action</text><text x="1045" y="148" class="lbl">twice (AB-10)</text>
-<rect x="10" y="215" width="170" height="54" rx="6" class="uc"/><text x="95" y="237">Allow list, review,</text><text x="95" y="253">human, verifier</text>
-<rect x="200" y="215" width="170" height="54" rx="6" class="uc"/><text x="285" y="237">Login, re-auth to approve,</text><text x="285" y="253">role checked now</text>
-<rect x="390" y="215" width="170" height="54" rx="6" class="uc"/><text x="475" y="237">A different person</text><text x="475" y="253">approves the fix</text>
-<rect x="580" y="215" width="170" height="54" rx="6" class="uc"/><text x="665" y="237">Approval bound to</text><text x="665" y="253">a hash, signed</text>
-<rect x="770" y="215" width="170" height="54" rx="6" class="uc"/><text x="855" y="237">Agent holds no</text><text x="855" y="253">write credentials</text>
-<rect x="960" y="215" width="170" height="54" rx="6" class="uc"/><text x="1045" y="237">Absolute target, key,</text><text x="1045" y="253">precondition check</text>
+<rect x="10" y="215" width="170" height="66" rx="6" class="uc"/><text x="95" y="237">Allow list, review,</text><text x="95" y="253">human, verifier</text><text x="95" y="270" class="lbl">SC-07, SC-10, SC-12, SC-18</text>
+<rect x="200" y="215" width="170" height="66" rx="6" class="uc"/><text x="285" y="237">Login, re-auth to approve,</text><text x="285" y="253">role checked now</text><text x="285" y="270" class="lbl">SC-01, SC-03, SC-14, SC-25</text>
+<rect x="390" y="215" width="170" height="66" rx="6" class="uc"/><text x="475" y="237">A different person</text><text x="475" y="253">approves the fix</text><text x="475" y="270" class="lbl">SC-04, SC-20</text>
+<rect x="580" y="215" width="170" height="66" rx="6" class="uc"/><text x="665" y="237">Approval bound to</text><text x="665" y="253">a hash, signed</text><text x="665" y="270" class="lbl">SC-14, SC-20</text>
+<rect x="770" y="215" width="170" height="66" rx="6" class="uc"/><text x="855" y="237">Agent holds no</text><text x="855" y="253">write credentials</text><text x="855" y="270" class="lbl">SC-06, SC-15, SC-23</text>
+<rect x="960" y="215" width="170" height="66" rx="6" class="uc"/><text x="1045" y="237">Absolute target, key,</text><text x="1045" y="253">precondition check</text><text x="1045" y="270" class="lbl">SC-15, SC-16</text>
 </g>
 <g class="ln">
 <path d="M575,61 V85"/><path d="M95,85 H1045"/>
@@ -266,10 +326,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M95,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M285,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M475,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M665,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M855,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M1045,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/>
 </g>
 <g class="lbl"><text x="100" y="192">blocked by</text><text x="290" y="192">blocked by</text><text x="480" y="192">blocked by</text><text x="670" y="192">blocked by</text><text x="860" y="192">blocked by</text><text x="1050" y="192">blocked by</text></g>
-<text x="10" y="295" class="lbl">White = attack step. Blue = control (section 5.6). The first branch is not fully blocked: a steered but allowed proposal stays a residual risk (RR-1).</text>
+<text x="10" y="306" class="lbl">White = attack step. Blue = control (section 5.6), with its control IDs. The first branch is not fully blocked: a steered but allowed proposal stays a residual risk (RR-1).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Attack tree for the most serious goal. Each branch must pass a control that is outside the model.</p>
+<p class="cap">Figure 3. Attack tree for the most serious goal. Each branch must pass a control that is outside the model.</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Abuse case</th><th>Actor</th><th>Surface</th><th>Harm if not stopped</th><th>Controls</th><th>Q</th></tr>
@@ -323,10 +383,11 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="200" y="98">yes</text><text x="390" y="98">yes</text><text x="574" y="90">no: fix</text><text x="770" y="98">no</text><text x="960" y="98">yes</text>
 <text x="680" y="30" text-anchor="middle">yes: the author can approve a revert</text>
 <text x="116" y="185">no</text><text x="306" y="185">no</text><text x="686" y="185">yes</text><text x="876" y="185">no</text>
+<g text-anchor="end"><text x="104" y="185">SC-01, SC-25</text><text x="294" y="185">SC-03</text><text x="674" y="185">SC-04 (M11)</text><text x="864" y="185">SC-14</text></g>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 3. Flowchart of the approval check at the approval gate and the executor. The M11 rule is the fourth check. It applies only to a permanent fix.</p>
+<p class="cap">Figure 4. Flowchart of the approval check at the approval gate and the executor. The M11 rule is the fourth check. It applies only to a permanent fix.</p>
 
 <div class="fig">
 <svg viewBox="0 0 1150 440" role="img" aria-label="Sequence diagram of an approved config restore">
@@ -355,9 +416,9 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M560,390 H1048" marker-end="url(#d5)"/>
 </g>
 <g class="sm halo">
-<text x="88" y="75">1 proposal: restore config v41 (schema-checked, reviewed)</text>
+<text x="88" y="75">1 proposal: restore v41</text><text x="88" y="95">schema-checked, reviewed</text>
 <text x="248" y="105">2 request: action + hash + evidence</text>
-<text x="248" y="135">3 approve (Figure 3 checks)</text>
+<text x="248" y="135">3 approve (Figure 4 checks)</text>
 <text x="248" y="165">4 signed approval record</text>
 <text x="248" y="195">5 action + signed approval</text>
 <text x="596" y="237">6 check signature, hash, expiry, not used</text>
@@ -367,10 +428,11 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="568" y="355">10 result</text>
 <text x="568" y="385">11 verify: alert signals against the baseline, in plain code</text>
 </g>
+<g class="lbl" text-anchor="end"><text x="1140" y="64" font-weight="600">control</text><text x="1140" y="84">SC-11, SC-12</text><text x="1140" y="140">SC-03, SC-04</text><text x="1140" y="170">SC-14</text><text x="1140" y="241">SC-14</text><text x="1140" y="274">SC-16</text><text x="1140" y="304">SC-15</text><text x="1140" y="334">SC-16</text><text x="1140" y="364">SC-19</text><text x="1140" y="394">SC-18</text></g>
 <text x="20" y="435" class="lbl">The agent never talks to the executor or the config store. Steps 7 and 8 use the absolute target "v41", not "previous version".</text>
 </svg>
 </div>
-<p class="cap">Figure 4. Sequence diagram of an approved config restore in incident A. It shows where SC-14, SC-15 and SC-16 act.</p>
+<p class="cap">Figure 5. Sequence diagram of an approved config restore in incident A. The right column names the control that acts at each step.</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Control</th><th>Label</th><th>Enforced by</th><th>Answers</th><th>Stops</th></tr>
@@ -410,27 +472,29 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <p>A residual risk stays after the controls. The team accepts it for V1, or a later layer reduces it. No residual risk is in the high zone.</p>
 
 <div class="fig">
-<svg viewBox="0 0 1150 300" role="img" aria-label="Risk matrix of likelihood against impact">
+<svg viewBox="0 0 1150 310" role="img" aria-label="Risk matrix of likelihood against impact">
 <g class="md" text-anchor="middle">
 <text x="70" y="70">High</text><text x="70" y="150">Medium</text><text x="70" y="230">Low</text>
-<text x="310" y="285">Low</text><text x="610" y="285">Medium</text><text x="910" y="285">High</text>
+<text x="310" y="280">Low</text><text x="610" y="280">Medium</text><text x="910" y="280">High</text>
 </g>
-<text x="20" y="20" class="lbl">Likelihood (rows) against impact (columns), after the controls</text>
+<text x="20" y="20" class="lbl">After the controls. Each risk shows its treatment.</text>
+<text x="22" y="144" class="md" font-weight="600" text-anchor="middle" transform="rotate(-90 22 144)">Likelihood</text>
+<text x="610" y="303" class="md" font-weight="600" text-anchor="middle">Impact</text>
 <g>
 <rect x="160" y="30" width="300" height="76" class="hum"/><rect x="460" y="30" width="300" height="76" class="bad"/><rect x="760" y="30" width="300" height="76" class="bad"/>
 <rect x="160" y="106" width="300" height="76" class="okb"/><rect x="460" y="106" width="300" height="76" class="hum"/><rect x="760" y="106" width="300" height="76" class="bad"/>
 <rect x="160" y="182" width="300" height="76" class="okb"/><rect x="460" y="182" width="300" height="76" class="okb"/><rect x="760" y="182" width="300" height="76" class="hum"/>
 </g>
 <g class="sm" text-anchor="middle">
-<text x="310" y="140">RR-7 reviewer shares blind spots</text><text x="310" y="156">RR-8 stale on-call data</text>
-<text x="610" y="140">RR-1 steered but allowed proposal</text><text x="610" y="156">RR-2 approver does not check (2 AM)</text>
-<text x="310" y="224">RR-5 author approves own revert</text>
-<text x="610" y="216">RR-3 redaction misses free-text personal data</text><text x="610" y="232">RR-9 read token leaks from a tool</text>
-<text x="910" y="216">RR-4 sandbox escape</text><text x="910" y="232">RR-6 approver account taken over</text>
+<text x="310" y="140">RR-7 reviewer shares blind spots: accept</text><text x="310" y="156">RR-8 stale on-call data: watch</text>
+<text x="610" y="140">RR-1 steered but allowed proposal: accept</text><text x="610" y="156">RR-2 approver does not check: reduce, L12</text>
+<text x="310" y="224">RR-5 author approves own revert: accept</text>
+<text x="610" y="216">RR-3 redaction misses free-text data: accept</text><text x="610" y="232">RR-9 read token leaks: reduce</text>
+<text x="910" y="216">RR-4 sandbox escape: reduce, L11</text><text x="910" y="232">RR-6 account takeover: no MFA in V1</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 5. Risk matrix after the controls. Green = accept. Yellow = accept and watch, or reduce in a later layer. Red = not acceptable for V1 (empty).</p>
+<p class="cap">Figure 6. Risk matrix after the controls. Green = accept. Yellow = accept and watch, or reduce in a later layer. Red = not acceptable for V1 (empty).</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Residual risk</th><th>Likelihood</th><th>Impact</th><th>Treatment</th><th>Owner</th><th>Q</th></tr>

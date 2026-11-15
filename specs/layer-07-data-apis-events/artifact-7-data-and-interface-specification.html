@@ -118,7 +118,7 @@ pre code{border:0;padding:0;background:none}
 <p class="qs">Answers: Q7.1, Q7.2, Q7.5 to Q7.9, Q7.18, Q7.19, Q7.22</p>
 <p>The platform has <b>35 tables</b> in 7 groups (Q7.18). Figure 1 shows every table, its keys and every foreign key. The ID of every record is a UUIDv7. A UUIDv7 sorts by time. The incident ID is also the Temporal workflow ID (A6 ADR-03).</p>
 <div class="fig erd">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2844 1984" width="2844" height="1984" role="img" aria-labelledby="l7-erd-title l7-erd-desc"><title id="l7-erd-title">Layer 7 entity relationship diagram, 35 tables</title><desc id="l7-erd-desc">Entity relationship diagram of the 45 PostgreSQL tables of the AI SRE platform in 7 groups, with 82 foreign-key relationships in crow's foot notation. Incident, user and service are the most referenced tables.</desc><rect class="bgr" width="2844" height="1984"/><rect class="reg" x="38" y="26" width="632" height="716" rx="8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2844 1984" width="2844" height="1984" role="img" aria-labelledby="l7-erd-title l7-erd-desc"><title id="l7-erd-title">Layer 7 entity relationship diagram, 35 tables</title><desc id="l7-erd-desc">Entity relationship diagram of the 35 PostgreSQL tables of the AI SRE platform in 7 groups, with 82 foreign-key relationships in crow's foot notation. Incident, user and service are the most referenced tables.</desc><rect class="bgr" width="2844" height="1984"/><rect class="reg" x="38" y="26" width="632" height="716" rx="8"/>
 <text class="rl" x="48" y="42">CONFIGURATION (3)</text>
 <rect class="reg" x="730" y="26" width="998" height="716" rx="8"/>
 <text class="rl" x="740" y="42">REFERENCE AND OWNERSHIP (6)</text>
@@ -400,6 +400,47 @@ class ModelCallRecord(BaseModel):            # Q7.14
 
 class Problem(BaseModel):                    # RFC 9457, Q7.38
     type: str; title: str; status: int; detail: str; request_id: str</code></pre>
+<div class="fig">
+<svg viewBox="0 0 1100 400" role="img" aria-label="Component diagram: callers produce Pydantic contracts; one model validates the API body, generates OpenAPI and checks JSONB and event data">
+<defs><marker id="p7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g class="sm">
+<rect x="20" y="44" width="150" height="86" rx="6" class="box"/>
+<text x="32" y="62" class="md" font-weight="700">Alert sources</text>
+<text x="32" y="80">Alertmanager</text><text x="32" y="95">Grafana Alerting</text><text x="32" y="110">Datadog</text><text x="32" y="125">AWS CloudWatch</text>
+</g>
+<g text-anchor="middle" class="md">
+<rect x="200" y="62" width="160" height="40" rx="6" class="box"/><text x="280" y="80">Source adapter</text><text x="280" y="95" class="sm">one per source</text>
+<rect x="200" y="110" width="160" height="36" rx="6" class="hum"/><text x="280" y="133">Engineer (CLI)</text>
+<rect x="200" y="156" width="160" height="36" rx="6" class="hum"/><text x="280" y="179">Approver</text>
+<rect x="200" y="202" width="160" height="36" rx="6" class="box"/><text x="280" y="225">Workflow workers</text>
+<rect x="200" y="248" width="160" height="36" rx="6" class="box"/><text x="280" y="271">Model gateway</text>
+<rect x="200" y="294" width="160" height="36" rx="6" class="uc"/><text x="280" y="310" class="sm">API server fills it</text><text x="280" y="324" class="sm">from the caller</text>
+</g>
+<rect x="390" y="20" width="340" height="370" rx="8" class="fx"/>
+<text x="560" y="42" text-anchor="middle" class="md" font-weight="700">Pydantic models: schema_version, extra = forbid</text>
+<rect x="402" y="62" width="316" height="40" rx="4" class="uc"/><text x="414" y="78" class="md" font-weight="700">AlertIn</text><text x="414" y="94" class="sm">source, alert ID, fingerprint, status, alert_rule</text><rect x="402" y="108" width="316" height="40" rx="4" class="uc"/><text x="414" y="124" class="md" font-weight="700">IncidentSubmit</text><text x="414" y="140" class="sm">service, environment, symptom, started_at</text><rect x="402" y="154" width="316" height="40" rx="4" class="uc"/><text x="414" y="170" class="md" font-weight="700">Decision</text><text x="414" y="186" class="sm">approve / reject, action_hash, reason, password</text><rect x="402" y="200" width="316" height="40" rx="4" class="uc"/><text x="414" y="216" class="md" font-weight="700">EvidenceRecord</text><text x="414" y="232" class="sm">untrusted; kind: log | metric | trace | config_change</text><rect x="402" y="246" width="316" height="40" rx="4" class="uc"/><text x="414" y="262" class="md" font-weight="700">ModelCallRecord</text><text x="414" y="278" class="sm">role, model, prompt_version, tokens, result</text><rect x="402" y="292" width="316" height="40" rx="4" class="uc"/><text x="414" y="308" class="md" font-weight="700">Actor</text><text x="414" y="324" class="sm">actor type, ID, role, auth_method, reason</text><rect x="402" y="338" width="316" height="40" rx="4" class="uc"/><text x="414" y="354" class="md" font-weight="700">Problem (RFC 9457)</text><text x="414" y="370" class="sm">type, title, status, detail, request_id</text>
+<g class="ln">
+<path d="M170,82 H200" marker-end="url(#p7)"/>
+<path d="M360,82 H402" marker-end="url(#p7)"/>
+<path d="M360,128 H402" marker-end="url(#p7)"/>
+<path d="M360,174 H402" marker-end="url(#p7)"/>
+<path d="M360,220 H402" marker-end="url(#p7)"/>
+<path d="M360,266 H402" marker-end="url(#p7)"/>
+<path d="M360,312 H402" marker-end="url(#p7)"/>
+<path d="M730,90 H780" marker-end="url(#p7)"/>
+<path d="M730,180 H780" marker-end="url(#p7)"/>
+<path d="M730,270 H780" marker-end="url(#p7)"/>
+</g>
+<text x="780" y="42" class="md" font-weight="700">One model, three uses</text>
+<g class="md">
+<rect x="780" y="60" width="300" height="60" rx="6" class="okb"/><text x="792" y="84" font-weight="700">1 Validate every API body</text><text x="792" y="104" class="sm">Invalid or unknown field: 422 problem+json</text>
+<rect x="780" y="150" width="300" height="60" rx="6" class="okb"/><text x="792" y="174" font-weight="700">2 Generate the OpenAPI document</text><text x="792" y="194" class="sm">CI flags a breaking change: it needs /v2</text>
+<rect x="780" y="240" width="300" height="60" rx="6" class="okb"/><text x="792" y="264" font-weight="700">3 Check JSONB columns and events</text><text x="792" y="284" class="sm">Every stored payload keeps its schema_version</text>
+<rect x="780" y="320" width="300" height="60" rx="6" class="hum"/><text x="792" y="344" class="sm">The patch holds the diff artifact ID.</text><text x="792" y="362" class="sm">The diff is never inline (Q7.8).</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 2. Pydantic contracts. Each caller produces one contract. Every source adapter maps its payload to AlertIn. The server fills the Actor block; a request body cannot set it. The same model validates the body, generates OpenAPI and checks the stored JSONB.</p>
 <p>The patch contract (Q7.8) holds the base commit, branch, head SHA, PR URL, counts and the diff artifact ID. The diff itself is never inline. The approval contract (Q7.10) is the <code>approval</code> row in section 7.2.</p>
 
 <!-- ============ 7.4 ============ -->
@@ -447,6 +488,22 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>GET /readyz</td><td>PostgreSQL reachable, migrations at head, Temporal reachable; else 503</td><td>Docker</td><td>Q7.36</td></tr>
 <tr><td>GET /metrics (internal port)</td><td>Prometheus metrics; never public</td><td>Prometheus</td><td>Q7.37</td></tr>
 </table></div>
+<div class="fig">
+<svg viewBox="0 0 1100 490" role="img" aria-label="API request checks in order with their error codes, and the endpoint groups each role may call">
+<defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<text x="20" y="20" class="lbl">Every write request passes four checks in this order (Q7.38, Q7.39)</text>
+<g text-anchor="middle" class="md">
+<rect x="20" y="30" width="125" height="50" rx="6" class="box"/><text x="82" y="51" font-weight="700">Request</text><text x="82" y="69" class="sm">/v1/…</text>
+<rect x="170" y="30" width="170" height="50" rx="6" class="box"/><text x="255" y="51" font-weight="700">1 Authenticate</text><text x="255" y="69" class="sm">session, token or webhook</text><rect x="170" y="110" width="170" height="30" rx="6" class="bad"/><text x="255" y="129" class="sm">401 not logged in</text><rect x="365" y="30" width="170" height="50" rx="6" class="box"/><text x="450" y="51" font-weight="700">2 Authorize role</text><text x="450" y="69" class="sm">team and on-call now</text><rect x="365" y="110" width="170" height="30" rx="6" class="bad"/><text x="450" y="129" class="sm">403 no right + audit event</text><rect x="560" y="30" width="170" height="50" rx="6" class="box"/><text x="645" y="51" font-weight="700">3 Validate body</text><text x="645" y="69" class="sm">Pydantic model</text><rect x="560" y="110" width="170" height="30" rx="6" class="bad"/><text x="645" y="129" class="sm">422 invalid body or key</text><rect x="755" y="30" width="170" height="50" rx="6" class="box"/><text x="840" y="51" font-weight="700">4 Check state</text><text x="840" y="69" class="sm">version or action hash</text><rect x="755" y="110" width="170" height="30" rx="6" class="bad"/><text x="840" y="129" class="sm">409 state or hash conflict</text>
+<rect x="950" y="30" width="130" height="110" rx="6" class="okb"/><text x="1015" y="54" font-weight="700">2xx</text><text x="1015" y="74" class="sm">Actor from caller.</text><text x="1015" y="90" class="sm">API sends a signal.</text><text x="1015" y="106" class="sm">The workflow writes</text><text x="1015" y="122" class="sm">incident state.</text>
+</g>
+<g class="ln"><path d="M145,55 H170" marker-end="url(#a7)"/><path d="M255,80 V110" marker-end="url(#a7)"/><path d="M340,55 H365" marker-end="url(#a7)"/><path d="M450,80 V110" marker-end="url(#a7)"/><path d="M535,55 H560" marker-end="url(#a7)"/><path d="M645,80 V110" marker-end="url(#a7)"/><path d="M730,55 H755" marker-end="url(#a7)"/><path d="M840,80 V110" marker-end="url(#a7)"/><path d="M925,55 H950" marker-end="url(#a7)"/></g>
+<path d="M10,165 H1090" class="ln" stroke-dasharray="3 4"/>
+<text x="20" y="188" class="lbl">Who may call what: the role is checked on every request; an admin account never approves</text>
+<g class="md"><rect x="20" y="200" width="200" height="32" rx="6" class="box"/><text x="120" y="220" text-anchor="middle">Alert source</text><path d="M220,216 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="200" width="820" height="32" rx="6" class="uc"/><text x="272" y="220">POST /v1/alerts: 202 {incident_id, grouped}; a resolved alert never opens one</text><rect x="20" y="240" width="200" height="32" rx="6" class="hum"/><text x="120" y="260" text-anchor="middle">Submitter</text><path d="M220,256 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="240" width="820" height="32" rx="6" class="uc"/><text x="272" y="260">POST /v1/incidents + Idempotency-Key: 202; a submission never groups</text><rect x="20" y="280" width="200" height="32" rx="6" class="hum"/><text x="120" y="300" text-anchor="middle">Submitter or approver</text><path d="M220,296 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="280" width="820" height="32" rx="6" class="uc"/><text x="272" y="300">POST /v1/incidents/{id}/cancel | takeover | resolve | severity | ack | feedback</text><rect x="20" y="320" width="200" height="32" rx="6" class="hum"/><text x="120" y="340" text-anchor="middle">Viewer</text><path d="M220,336 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="320" width="820" height="32" rx="6" class="uc"/><text x="272" y="340">GET incidents, records, events, events/stream (SSE), provenance, report, artifacts</text><rect x="20" y="360" width="200" height="32" rx="6" class="hum"/><text x="120" y="380" text-anchor="middle">Approver</text><path d="M220,376 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="360" width="820" height="32" rx="6" class="uc"/><text x="272" y="380">GET /v1/approvals; POST /v1/actions/{id}/decisions: re-auth, 201 signed approval</text><rect x="20" y="400" width="200" height="32" rx="6" class="fx"/><text x="120" y="420" text-anchor="middle">Admin (own account)</text><path d="M220,416 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="400" width="820" height="32" rx="6" class="uc"/><text x="272" y="420">/v1/admin/*: users, teams, services, integrations, settings, audit</text><rect x="20" y="440" width="200" height="32" rx="6" class="box"/><text x="120" y="460" text-anchor="middle">Docker, Prometheus</text><path d="M220,456 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="440" width="820" height="32" rx="6" class="uc"/><text x="272" y="460">/livez, /readyz, /metrics (internal port only)</text></g>
+</svg>
+</div>
+<p class="cap">Figure 3. API checks and roles. Top: each failed check returns one RFC 9457 error. Bottom: each caller and the endpoint group it may call. Admin endpoints need the separate admin account. A config change for a cloud model or the login mode needs a second admin.</p>
 <h3>Alert source adapters (Q7.28)</h3>
 <table>
 <tr><th>Source</th><th>How it pushes</th><th>How intake checks it</th></tr>
@@ -499,6 +556,31 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>S6</td><td>Lists across incidents sort by <code>recorded_at</code>. This order is approximate and is for display only.</td><td>Q7.48</td></tr>
 </table>
 
+<div class="fig">
+<svg viewBox="0 0 1100 420" role="img" aria-label="Event row fields, the writer transaction, and two hash-chained streams with sealing">
+<defs><marker id="e7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<rect x="20" y="20" width="330" height="330" rx="8" class="fx"/>
+<text x="34" y="42" class="md" font-weight="700">One event row (CloudEvents names)</text>
+<text x="34" y="66" class="sm" font-weight="700">id</text><text x="160" y="66" class="sm">UUIDv7</text><text x="34" y="91" class="sm" font-weight="700">source</text><text x="160" y="91" class="sm">ai-sre/executor</text><text x="34" y="116" class="sm" font-weight="700">type</text><text x="160" y="116" class="sm">ai-sre.action.executed</text><text x="34" y="141" class="sm" font-weight="700">subject</text><text x="160" y="141" class="sm">INC-0042</text><text x="34" y="166" class="sm" font-weight="700">time, recorded_at</text><text x="160" y="166" class="sm">02:19:04Z, stored time</text><text x="34" y="191" class="sm" font-weight="700">schema_version</text><text x="160" y="191" class="sm">1</text><text x="34" y="216" class="sm" font-weight="700">stream, sequence</text><text x="160" y="216" class="sm">incident:INC-0042, 37</text><text x="34" y="241" class="sm" font-weight="700">causation_id</text><text x="160" y="241" class="sm">the approval event</text><text x="34" y="266" class="sm" font-weight="700">actor</text><text x="160" y="266" class="sm">platform / executor, for approval X</text><text x="34" y="291" class="sm" font-weight="700">subject_type, _id</text><text x="160" y="291" class="sm">action, ACT-2</text><text x="34" y="316" class="sm" font-weight="700">data</text><text x="160" y="316" class="sm">redacted; pointer to the record</text><text x="34" y="341" class="sm" font-weight="700">prev_hash, hash</text><text x="160" y="341" class="sm">SHA-256 chain</text>
+<text x="380" y="26" class="lbl">Writer: one transaction for each event (S2, S4)</text>
+<g text-anchor="middle" class="md"><rect x="380" y="36" width="160" height="46" rx="6" class="box"/><text x="460" y="63">1 Lock the stream</text><rect x="558" y="36" width="160" height="46" rx="6" class="box"/><text x="638" y="55">2 Read last sequence</text><text x="638" y="71">and last hash</text><rect x="736" y="36" width="160" height="46" rx="6" class="box"/><text x="816" y="55">3 Insert sequence + 1</text><text x="816" y="71">with prev_hash, hash</text><rect x="914" y="36" width="160" height="46" rx="6" class="box"/><text x="994" y="55">4 Commit with the state</text><text x="994" y="71">and incident.version</text></g>
+<g class="ln"><path d="M540,59 H558" marker-end="url(#e7)"/><path d="M718,59 H736" marker-end="url(#e7)"/><path d="M896,59 H914" marker-end="url(#e7)"/></g>
+<text x="380" y="122" class="lbl">Incident stream incident:INC-0042 (arrow = prev_hash points back)</text>
+<g text-anchor="middle" class="md"><rect x="380" y="132" width="150" height="50" rx="6" class="uc"/><text x="455" y="153" font-weight="700">seq 35</text><text x="455" y="171" class="sm">action.approved</text><rect x="563" y="132" width="150" height="50" rx="6" class="uc"/><text x="638" y="153" font-weight="700">seq 36</text><text x="638" y="171" class="sm">action.dispatched</text><path d="M563,157 H530" class="ln" marker-end="url(#e7)"/><rect x="746" y="132" width="150" height="50" rx="6" class="uc"/><text x="821" y="153" font-weight="700">seq 37</text><text x="821" y="171" class="sm">action.executed</text><path d="M746,157 H713" class="ln" marker-end="url(#e7)"/><rect x="929" y="132" width="150" height="50" rx="6" class="uc"/><text x="1004" y="153" font-weight="700">seq 38</text><text x="1004" y="171" class="sm">incident.closed</text><path d="M929,157 H896" class="ln" marker-end="url(#e7)"/></g>
+<path d="M821,182 C821,226 455,226 455,186" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
+<text x="655" y="232" text-anchor="middle" class="lbl">causation_id</text>
+<text x="380" y="262" class="lbl">Platform stream (no incident_id)</text>
+<g text-anchor="middle" class="md"><rect x="380" y="272" width="150" height="50" rx="6" class="box"/><text x="455" y="293" font-weight="700">seq 1201</text><text x="455" y="311" class="sm">config.changed</text><rect x="563" y="272" width="150" height="50" rx="6" class="box"/><text x="638" y="293" font-weight="700">seq 1202</text><text x="638" y="311" class="sm">authz.denied</text><path d="M563,297 H530" class="ln" marker-end="url(#e7)"/><rect x="746" y="272" width="150" height="50" rx="6" class="box"/><text x="821" y="293" font-weight="700">seq 1203</text><text x="821" y="311" class="sm">incident.sealed</text><path d="M746,297 H713" class="ln" marker-end="url(#e7)"/></g>
+<path d="M1004,182 V250 H805 V272" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
+<text x="1012" y="232" class="lbl">head hash</text>
+<g class="sm">
+<text x="20" y="378">No global order (S1). Order by sequence, never by a timestamp (S3). A gap n &gt; last + 1 makes the SSE client reconnect (S5).</text>
+<text x="20" y="400">Lists across incidents sort by recorded_at, for display only (S6). Temporal history is never the timeline (Q7.53).</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 4. Event row and per-stream order. Each stream is a hash chain with its own sequence. The writer locks the stream and inserts sequence + 1. When an incident closes, incident.sealed on the platform stream records the head hash, so a cut stream is detected.</p>
+
 <!-- ============ 7.7 ============ -->
 <h2><span class="sec">7.7</span>Outbox design</h2>
 <p class="qs">Answers: Q7.54 to Q7.59, Q7.64</p>
@@ -508,41 +590,43 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>Start a workflow</td><td><code>incident.status = 'queued'</code></td><td>Admission loop (worker)</td><td>Temporal workflow start</td></tr>
 </table>
 <div class="fig">
-<svg viewBox="0 0 1150 470" role="img" aria-label="Sequence diagram of the outbox from intake to workflow start, with a crash and a retry">
+<svg viewBox="0 0 1100 490" role="img" aria-label="Sequence diagram of the outbox from intake to workflow start, with a crash and a retry">
 <defs><marker id="o7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g text-anchor="middle" class="sm">
-<rect x="60" y="20" width="160" height="40" rx="6" class="uc"/><text x="140" y="45">API (intake)</text>
-<rect x="360" y="20" width="160" height="40" rx="6" class="fx"/><text x="440" y="45">PostgreSQL</text>
-<rect x="660" y="20" width="160" height="40" rx="6" class="uc"/><text x="740" y="45">Admission loop</text>
-<rect x="940" y="20" width="160" height="40" rx="6" class="box"/><text x="1020" y="45">Temporal</text>
+<g text-anchor="middle" class="md">
+<rect x="25" y="20" width="170" height="40" rx="6" class="uc"/><text x="110" y="45">API (intake)</text>
+<rect x="315" y="20" width="170" height="40" rx="6" class="fx"/><text x="400" y="45">PostgreSQL</text>
+<rect x="615" y="20" width="170" height="40" rx="6" class="uc"/><text x="700" y="45">Admission loop</text>
+<rect x="895" y="20" width="170" height="40" rx="6" class="box"/><text x="980" y="45">Temporal</text>
 </g>
-<g class="ln" stroke-dasharray="3 4"><path d="M140,60 V455"/><path d="M440,60 V455"/><path d="M740,60 V455"/><path d="M1020,60 V455"/></g>
-<rect x="150" y="80" width="300" height="70" rx="4" class="zt"/>
+<g class="ln" stroke-dasharray="3 4"><path d="M110,60 V425"/><path d="M400,60 V425"/><path d="M700,60 V425"/><path d="M980,60 V425"/></g>
+<rect x="100" y="76" width="310" height="76" rx="4" class="zt"/>
 <g class="ln">
-<path d="M140,100 H440" marker-end="url(#o7)"/>
-<path d="M140,135 H440" marker-end="url(#o7)"/>
-<path d="M440,175 H740" marker-end="url(#o7)"/>
-<path d="M740,210 H440" marker-end="url(#o7)"/>
-<path d="M740,250 H1020" marker-end="url(#o7)"/>
-<path d="M740,330 H1020" marker-end="url(#o7)"/>
-<path d="M1020,365 H740" marker-end="url(#o7)" stroke-dasharray="5 4"/>
-<path d="M740,405 H440" marker-end="url(#o7)"/>
+<path d="M110,105 H400" marker-end="url(#o7)"/>
+<path d="M110,140 H400" marker-end="url(#o7)"/>
+<path d="M700,190 H400" marker-end="url(#o7)"/>
+<path d="M400,225 H700" marker-end="url(#o7)"/>
+<path d="M700,265 H980" marker-end="url(#o7)"/>
+<path d="M700,335 H980" marker-end="url(#o7)"/>
+<path d="M980,370 H700" marker-end="url(#o7)" stroke-dasharray="5 4"/>
+<path d="M700,410 H400" marker-end="url(#o7)"/>
 </g>
-<g class="lbl halo">
-<text x="150" y="93">1 INSERT incident, alert, event</text>
-<text x="150" y="128">2 COMMIT (one transaction)</text>
-<text x="450" y="168">3 poll every 1 s</text>
-<text x="450" y="203">4 SELECT queued … FOR UPDATE SKIP LOCKED</text>
-<text x="750" y="243">5 start workflow, ID = incident ID</text>
-<text x="750" y="280">crash here: incident is still queued</text>
-<text x="750" y="323">6 after restart: start again, same ID</text>
-<text x="750" y="358">7 "already started" = success</text>
-<text x="450" y="398">8 UPDATE status investigating + event</text>
+<path d="M692,290 L708,306 M708,290 L692,306" style="stroke:var(--bad);stroke-width:2.5"/>
+<g class="sm halo">
+<text x="120" y="98">1 INSERT incident (queued), alert, event</text>
+<text x="120" y="133">2 COMMIT: one transaction</text>
+<text x="410" y="183">3 every 1 s: SELECT queued, SKIP LOCKED</text>
+<text x="410" y="218">4 next incidents: severity, then arrival</text>
+<text x="710" y="258">5 start workflow, ID = incident ID</text>
+<text x="718" y="302" style="fill:var(--bad)">crash: the incident is still queued</text>
+<text x="710" y="328">6 after restart: start again, same ID</text>
+<text x="710" y="363">7 "already started" = success</text>
+<text x="410" y="403">8 UPDATE status investigating + event</text>
 </g>
-<text x="20" y="440" class="lbl">Temporal down at step 5: the incident stays queued; the loop retries with backoff; an alert fires if it stays queued too long (Q7.54).</text>
+<rect x="20" y="440" width="1060" height="38" rx="6" class="hum"/>
+<text x="32" y="464" class="sm">Temporal down at step 5: the incident stays queued, the loop retries with backoff, and a platform alert fires when it stays queued too long (Q7.54).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Outbox sequence for incident A. The workflow starts only after the incident row commits, so a workflow without an incident cannot exist (Q7.55). A crash between steps 5 and 8 is safe (Q7.59).</p>
+<p class="cap">Figure 5. Outbox sequence for incident A. The queued incident row is the outbox marker. The workflow starts only after the row commits, so a workflow without an incident cannot exist (Q7.55). A crash between steps 5 and 8 is safe (Q7.59).</p>
 <table>
 <tr><th>Case</th><th>What happens</th><th>Q</th></tr>
 <tr><td>Temporal is down after the incident is saved</td><td>The incident stays <code>queued</code>. The loop retries with backoff. A platform alert fires when an incident stays queued past a set time.</td><td>Q7.54</td></tr>
@@ -557,29 +641,33 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <h2><span class="sec">7.8</span>Idempotency rules</h2>
 <p class="qs">Answers: Q7.9, Q7.11, Q7.20, Q7.60 to Q7.63</p>
 <div class="fig">
-<svg viewBox="0 0 1150 260" role="img" aria-label="Flowchart of idempotency key handling">
+<svg viewBox="0 0 1100 456" role="img" aria-label="Flowchart of idempotency key handling for an engineer submission, and the duplicate guard of every other write">
 <defs><marker id="i7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g text-anchor="middle" class="sm">
-<rect x="20" y="70" width="170" height="56" rx="6" class="box"/><text x="105" y="94">POST /v1/incidents</text><text x="105" y="110">Idempotency-Key</text>
-<polygon points="330,48 420,98 330,148 240,98" class="hum"/><text x="330" y="94">Key seen for</text><text x="330" y="108">this user?</text>
-<rect x="470" y="160" width="230" height="70" rx="6" class="uc"/><text x="585" y="185">Insert the incident with</text><text x="585" y="201">key and request hash</text><text x="585" y="217">in one transaction</text>
-<polygon points="585,10 675,55 585,100 495,55" class="hum"/><text x="585" y="51">Same request</text><text x="585" y="65">hash?</text>
-<rect x="760" y="10" width="200" height="50" rx="6" class="okb"/><text x="860" y="32">202 with the existing</text><text x="860" y="48">incident; do nothing</text>
-<rect x="760" y="80" width="200" height="50" rx="6" class="bad"/><text x="860" y="102">422 problem+json</text><text x="860" y="118">key reused, other request</text>
-<rect x="760" y="170" width="200" height="50" rx="6" class="okb"/><text x="860" y="192">202 with the</text><text x="860" y="208">new incident</text>
+<g text-anchor="middle" class="md">
+<rect x="20" y="86" width="170" height="56" rx="6" class="box"/><text x="105" y="110">POST /v1/incidents</text><text x="105" y="127" class="sm">Idempotency-Key</text>
+<polygon points="310,66 395,114 310,162 225,114" class="hum"/><text x="310" y="110">Key seen for</text><text x="310" y="126">this user?</text>
+<polygon points="560,66 645,114 560,162 475,114" class="hum"/><text x="560" y="110">Same request</text><text x="560" y="126">hash?</text>
+<rect x="475" y="186" width="240" height="56" rx="6" class="uc"/><text x="595" y="209">Insert incident with key and</text><text x="595" y="226">request hash, one transaction</text>
+<rect x="770" y="14" width="310" height="46" rx="6" class="okb"/><text x="925" y="33">202 with the existing incident</text><text x="925" y="50" class="sm">nothing new is written</text>
+<rect x="770" y="91" width="310" height="46" rx="6" class="bad"/><text x="925" y="110">422 problem+json</text><text x="925" y="127" class="sm">same key, other request</text>
+<rect x="770" y="191" width="310" height="46" rx="6" class="okb"/><text x="925" y="219">202 with the new incident</text>
 </g>
 <g class="ln">
-<path d="M190,98 H240" marker-end="url(#i7)"/>
-<path d="M330,48 V30 H495 V55" marker-end="url(#i7)"/>
-<path d="M330,148 V195 H470" marker-end="url(#i7)"/>
-<path d="M675,40 H760" marker-end="url(#i7)"/>
-<path d="M585,100 V105 H760" marker-end="url(#i7)"/>
-<path d="M700,195 H760" marker-end="url(#i7)"/>
+<path d="M190,114 H225" marker-end="url(#i7)"/>
+<path d="M395,114 H475" marker-end="url(#i7)"/>
+<path d="M560,66 V37 H770" marker-end="url(#i7)"/>
+<path d="M645,114 H770" marker-end="url(#i7)"/>
+<path d="M310,162 V214 H475" marker-end="url(#i7)"/>
+<path d="M715,214 H770" marker-end="url(#i7)"/>
 </g>
-<g class="lbl halo"><text x="340" y="24">yes</text><text x="340" y="180">no</text><text x="690" y="34">yes</text><text x="600" y="118">no</text></g>
+<g class="lbl halo"><text x="420" y="106">yes</text><text x="318" y="190">no</text><text x="568" y="56">yes</text><text x="690" y="106">no</text></g>
+<text x="475" y="262" class="lbl">A parallel duplicate waits on the unique index, then reads the first incident.</text>
+<path d="M10,276 H1090" class="ln" stroke-dasharray="3 4"/>
+<text x="20" y="292" class="lbl">Every other write has its own duplicate guard. There is no key table.</text>
+<g class="sm"><rect x="20" y="306" width="340" height="62" rx="6" class="box"/><text x="32" y="325" class="md" font-weight="700">Alert from monitoring</text><text x="32" y="343">key: source + alert ID or fingerprint + status</text><text x="32" y="359">guard: unique alert ID; one open incident per key</text><rect x="380" y="306" width="340" height="62" rx="6" class="box"/><text x="392" y="325" class="md" font-weight="700">Workflow start</text><text x="392" y="343">key: workflow ID = incident ID</text><text x="392" y="359">guard: Temporal rejects a duplicate ID</text><rect x="740" y="306" width="340" height="62" rx="6" class="box"/><text x="752" y="325" class="md" font-weight="700">Production action</text><text x="752" y="343">key: incident ID + action ID, every attempt</text><text x="752" y="359">guard: precondition; reconcile before retry</text><rect x="20" y="378" width="340" height="62" rx="6" class="box"/><text x="32" y="397" class="md" font-weight="700">Decision, cancel, take-over</text><text x="32" y="415">key: none needed</text><text x="32" y="431">guard: unique request (409); signals repeat safely</text><rect x="380" y="378" width="340" height="62" rx="6" class="box"/><text x="392" y="397" class="md" font-weight="700">Approval use</text><text x="392" y="415">key: approval ID</text><text x="392" y="431">guard: approval_use primary key: used once</text><rect x="740" y="378" width="340" height="62" rx="6" class="box"/><text x="752" y="397" class="md" font-weight="700">Chat, pager, ticket message</text><text x="752" y="415">key: Temporal activity ID</text><text x="752" y="431">guard: Temporal retry; one notification row</text></g>
 </svg>
 </div>
-<p class="cap">Figure 3. Idempotency key handling for an engineer submission. The unique index on incident (created_by_user_id, idempotency_key) stops two parallel requests with the same key: the second insert waits, then finds the first incident.</p>
+<p class="cap">Figure 6. Idempotency. Top: key handling for an engineer submission; the unique index on incident (created_by_user_id, idempotency_key) stops two parallel requests with the same key. Bottom: the key and the guard of every other write.</p>
 <table>
 <tr><th>Operation</th><th>Key</th><th>Where it is enforced</th><th>Q</th></tr>
 <tr><td>Engineer submission</td><td>Client UUID for each submission (the CLI makes it)</td><td><code>incident</code> unique (created_by_user_id, idempotency_key); same key + other request hash &rarr; 422</td><td>Q7.60 to Q7.62</td></tr>
@@ -596,36 +684,41 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <p class="qs">Answers: Q7.30, Q7.51 to Q7.53</p>
 <p>The timeline is a read view over the <code>event</code> table in sequence order. There is no separate timeline table. Every event names its subject record and its cause. So a click on one item returns the full provenance chain: action &rarr; diagnosis &rarr; hypotheses &rarr; evidence &rarr; tool calls and model calls &rarr; approval &rarr; attempts &rarr; verification (Q7.30). A projection table is added only if the provenance query misses its latency target (Layer 12-A).</p>
 <div class="fig">
-<svg viewBox="0 0 1150 330" role="img" aria-label="Sequence diagram of an SSE timeline stream that drops and resumes">
+<svg viewBox="0 0 1100 420" role="img" aria-label="Sequence diagram of an SSE timeline stream that drops and resumes">
 <defs><marker id="s7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g text-anchor="middle" class="sm">
-<rect x="80" y="20" width="180" height="40" rx="6" class="hum"/><text x="170" y="45">CLI: incident watch</text>
-<rect x="480" y="20" width="180" height="40" rx="6" class="uc"/><text x="570" y="45">API (SSE)</text>
-<rect x="880" y="20" width="180" height="40" rx="6" class="fx"/><text x="970" y="45">PostgreSQL</text>
+<g text-anchor="middle" class="md">
+<rect x="60" y="20" width="180" height="40" rx="6" class="hum"/><text x="150" y="45">CLI: incident watch</text>
+<rect x="460" y="20" width="180" height="40" rx="6" class="uc"/><text x="550" y="45">API (SSE)</text>
+<rect x="860" y="20" width="180" height="40" rx="6" class="fx"/><text x="950" y="45">PostgreSQL</text>
 </g>
-<g class="ln" stroke-dasharray="3 4"><path d="M170,60 V315"/><path d="M570,60 V315"/><path d="M970,60 V315"/></g>
+<g class="ln" stroke-dasharray="3 4"><path d="M150,60 V355"/><path d="M550,60 V355"/><path d="M950,60 V355"/></g>
 <g class="ln">
-<path d="M170,90 H570" marker-end="url(#s7)"/>
-<path d="M570,120 H970" marker-end="url(#s7)"/>
-<path d="M570,150 H170" marker-end="url(#s7)"/>
-<path d="M170,215 H570" marker-end="url(#s7)"/>
-<path d="M570,245 H970" marker-end="url(#s7)"/>
-<path d="M570,275 H170" marker-end="url(#s7)"/>
-<path d="M970,300 H570" marker-end="url(#s7)" stroke-dasharray="5 4"/>
+<path d="M150,95 H550" marker-end="url(#s7)"/>
+<path d="M550,125 H950" marker-end="url(#s7)"/>
+<path d="M550,155 H150" marker-end="url(#s7)"/>
+<path d="M550,190 H150" marker-end="url(#s7)" stroke-dasharray="5 4"/>
+<path d="M150,250 H550" marker-end="url(#s7)"/>
+<path d="M550,280 H950" marker-end="url(#s7)"/>
+<path d="M550,310 H150" marker-end="url(#s7)"/>
+<path d="M950,340 H550" marker-end="url(#s7)" stroke-dasharray="5 4"/>
 </g>
-<g class="lbl halo">
-<text x="180" y="83">1 GET …/events/stream</text>
-<text x="580" y="113">2 SELECT events in order</text>
-<text x="180" y="143">3 id: incident:INC-0042:43 … events 41 to 43</text>
-<text x="180" y="185">— connection drops —</text>
-<text x="180" y="208">4 GET again, Last-Event-ID: incident:INC-0042:43</text>
-<text x="580" y="238">5 SELECT sequence &gt; 43</text>
-<text x="180" y="268">6 events 44, 45 … then live</text>
-<text x="580" y="293">7 poll every 1 s: new rows</text>
+<path d="M142,207 L158,223 M158,207 L142,223" style="stroke:var(--bad);stroke-width:2.5"/>
+<g class="sm halo">
+<text x="160" y="88">1 GET …/events/stream (role: Viewer)</text>
+<text x="560" y="118">2 SELECT events in sequence order</text>
+<text x="160" y="148">3 events 41 to 43; id: incident:INC-0042:43</text>
+<text x="160" y="183">heartbeat every 15 s; role check every 5 min</text>
+<text x="168" y="219" style="fill:var(--bad)">connection drops</text>
+<text x="160" y="243">4 GET again, Last-Event-ID: incident:INC-0042:43</text>
+<text x="560" y="273">5 SELECT sequence &gt; 43</text>
+<text x="160" y="303">6 events 44, 45 … then live</text>
+<text x="560" y="333">7 poll every 1 s: rows after last sequence</text>
 </g>
+<rect x="20" y="372" width="1060" height="38" rx="6" class="hum"/>
+<text x="32" y="396" class="sm">Gap rule (S5): if the client gets sequence n &gt; last + 1, it reconnects from last. The stream sends domain events only, never Temporal history.</text>
 </svg>
 </div>
-<p class="cap">Figure 4. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing. Events are kept for one year.</p>
+<p class="cap">Figure 7. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing. Events are kept for one year.</p>
 <table>
 <tr><th>Topic</th><th>Design</th><th>Q</th></tr>
 <tr><td>Mechanism</td><td>Server-Sent Events: one-way, plain HTTP, simple for the CLI (<code>ai-sre incident watch INC-0042</code>). No WebSocket, because the client sends nothing on the stream.</td><td>Q7.52</td></tr>

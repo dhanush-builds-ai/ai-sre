@@ -86,6 +86,49 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <!-- ============ 6.1 ============ -->
 <h2><span class="sec">6.1</span>Context diagram</h2>
 <p class="qs">Answers: Q6.9, Q6.12, Q6.14, Q6.19, Q6.34</p>
+<p>Figure 1 shows the whole architecture on one page. The sections below give the details.</p>
+<div class="fig">
+<svg viewBox="0 0 1150 520" role="img" aria-label="Architecture at a glance: incident path, four process types, shared services, items not in V1 and owners">
+<defs><marker id="c0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g class="md" font-weight="600"><text x="20" y="24">Path of one incident (V1 limits)</text><text x="20" y="232">Containers from one image (ADR-01), Docker Compose on one host</text><text x="20" y="422">Not in V1 (section 6.8)</text><text x="580" y="422">Owners (section 6.6)</text></g>
+<g text-anchor="middle" class="sm">
+<rect x="20" y="36" width="140" height="82" rx="6" class="box"/><text x="90" y="58" font-weight="600">Monitoring</text><text x="90" y="76" class="lbl">signed alert webhook</text><text x="90" y="92" class="lbl">shop-api: HTTP 500s</text>
+<rect x="180" y="36" width="140" height="82" rx="6" class="uc"/><text x="250" y="58" font-weight="600">API: intake</text><text x="250" y="76" class="lbl">save and queue in</text><text x="250" y="92" class="lbl">one transaction</text><text x="250" y="108" class="lbl">reply p95 &le; 30 s</text>
+<rect x="340" y="36" width="140" height="82" rx="6" class="fx"/><text x="410" y="58" font-weight="600">Waiting queue</text><text x="410" y="76" class="lbl">in PostgreSQL</text><text x="410" y="92" class="lbl">20 waiting: new ones</text><text x="410" y="108" class="lbl">go to humans</text>
+<rect x="500" y="36" width="140" height="82" rx="6" class="uc"/><text x="570" y="58" font-weight="600">Admission loop</text><text x="570" y="76" class="lbl">max 3 running</text><text x="570" y="92" class="lbl">(configurable); order:</text><text x="570" y="108" class="lbl">severity, then age</text>
+<rect x="660" y="36" width="140" height="82" rx="6" class="uc"/><text x="730" y="58" font-weight="600">Worker: workflow</text><text x="730" y="76" class="lbl">workflow ID = incident ID</text><text x="730" y="92" class="lbl">evidence, diagnosis,</text><text x="730" y="108" class="lbl">critic (other model)</text>
+<rect x="820" y="36" width="140" height="82" rx="6" class="hum"/><text x="890" y="58" font-weight="600">Human approver</text><text x="890" y="76" class="lbl">approval gate signs,</text><text x="890" y="92" class="lbl">bound to a hash;</text><text x="890" y="108" class="lbl">agent cannot approve</text>
+<rect x="980" y="36" width="150" height="82" rx="6" class="uc"/><text x="1055" y="58" font-weight="600">Executor</text><text x="1055" y="76" class="lbl">only production writer</text><text x="1055" y="92" class="lbl">checks signature,</text><text x="1055" y="108" class="lbl">hash, expiry</text>
+<rect x="640" y="150" width="180" height="54" rx="6" class="uc"/><text x="730" y="170" font-weight="600">Inference gateway</text><text x="730" y="186" class="lbl">down: halt and escalate</text>
+<rect x="420" y="150" width="190" height="54" rx="6" class="box"/><text x="515" y="170">Self-hosted models</text><text x="515" y="186" class="lbl">on (OpenAI-compatible)</text>
+<rect x="850" y="150" width="130" height="54" rx="6" class="bad" stroke-dasharray="6 4"/><text x="915" y="170">Cloud models</text><text x="915" y="186" class="lbl">off by default</text>
+<rect x="990" y="144" width="140" height="72" rx="6" class="okb"/><text x="1060" y="161">Pipeline: redeploy</text><text x="1060" y="176" class="lbl">last good artifact,</text><text x="1060" y="192">or config store:</text><text x="1060" y="207" class="lbl">restore a version</text>
+<rect x="20" y="244" width="170" height="86" rx="6" class="uc"/><text x="105" y="266" font-weight="600">API</text><text x="105" y="284" class="lbl">FastAPI, Pydantic, Typer</text><text x="105" y="300" class="lbl">ADR-02, ADR-05</text><text x="105" y="316" class="lbl">1 to n copies</text>
+<rect x="205" y="244" width="170" height="86" rx="6" class="uc"/><text x="290" y="266" font-weight="600">Worker</text><text x="290" y="284" class="lbl">workflows, agent steps</text><text x="290" y="300" class="lbl">ADR-03, 06, 09 (BM25)</text><text x="290" y="316" class="lbl">1 to n copies</text>
+<rect x="390" y="244" width="170" height="86" rx="6" class="uc"/><text x="475" y="266" font-weight="600">Executor</text><text x="475" y="284" class="lbl">only write tokens</text><text x="475" y="300" class="lbl">ADR-08</text><text x="475" y="316" class="lbl">1 copy</text>
+<rect x="575" y="244" width="170" height="86" rx="6" class="uc"/><text x="660" y="266" font-weight="600">Sandbox runner</text><text x="660" y="284" class="lbl">only Docker access</text><text x="660" y="300" class="lbl">ADR-07</text><text x="660" y="316" class="lbl">1 copy</text>
+<rect x="770" y="244" width="170" height="86" rx="6" class="fx"/><text x="855" y="266" font-weight="600">PostgreSQL</text><text x="855" y="284" class="lbl">SQLAlchemy, Alembic</text><text x="855" y="300" class="lbl">ADR-04</text><text x="855" y="316" class="lbl">also holds Temporal state</text>
+<rect x="955" y="244" width="175" height="86" rx="6" class="box"/><text x="1042" y="266" font-weight="600">Temporal server</text><text x="1042" y="284" class="lbl">durable workflows</text><text x="1042" y="300" class="lbl">ADR-03</text><text x="1042" y="316" class="lbl">no Celery, no RQ</text>
+<rect x="20" y="346" width="540" height="44" rx="6" class="box"/><text x="290" y="373">Telemetry: OpenTelemetry, Prometheus, Grafana for operators only (ADR-10)</text>
+<rect x="575" y="346" width="555" height="44" rx="6" class="fx"/><text x="852" y="373">Artifact volume: logs, diffs, test output (pointer and hash in the DB)</text>
+<rect x="20" y="434" width="540" height="64" rx="6" class="bad" stroke-dasharray="6 4"/><text x="290" y="460">Kubernetes; Kafka, Redis, Celery, RQ; a vector database;</text><text x="290" y="480">one service for each module (microservices)</text>
+<rect x="580" y="434" width="550" height="64" rx="6" class="box"/><text x="855" y="460">Dhanush: L7 data, L8 workflows, L9 agent, L12-A telemetry</text><text x="855" y="480">Irfan: L10 inference &middot; Rinisha: L11 remediation &middot; Chirag: L5 security</text>
+</g>
+<g class="ln">
+<path d="M160,77 H180" marker-end="url(#c0)"/>
+<path d="M320,77 H340" marker-end="url(#c0)"/>
+<path d="M480,77 H500" marker-end="url(#c0)"/>
+<path d="M640,77 H660" marker-end="url(#c0)"/>
+<path d="M800,77 H820" marker-end="url(#c0)"/>
+<path d="M960,77 H980" marker-end="url(#c0)"/>
+<path d="M730,118 V150" marker-end="url(#c0)"/>
+<path d="M640,177 H610" marker-end="url(#c0)"/>
+<path d="M820,177 H850" stroke-dasharray="6 4" marker-end="url(#c0)"/>
+<path d="M1060,118 V144" marker-end="url(#c0)"/>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 1. Architecture at a glance. Top: the path of one incident, with the V1 limits. The green box holds the only two ways to change production. Middle: the containers and their ADRs. Bottom: what V1 does not use, and who designs each part.</p>
 <p>The context diagram shows the platform as one box. It shows who and what the platform talks to. The platform reads from many systems. It changes production only through the CI/CD pipeline or the config store, and only with a signed human approval (A2 2.3, A5 SC-15).</p>
 <div class="fig">
 <svg viewBox="0 0 1150 440" role="img" aria-label="Context diagram of the AI SRE platform and its neighbours">
@@ -123,7 +166,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="240" y="62">incidents, approvals, stop</text>
 <text x="240" y="189">settings</text>
 <text x="240" y="282">alerts</text>
-<text x="812" y="95" text-anchor="end">write only:</text><text x="812" y="109" text-anchor="end">executor</text>
+<text x="812" y="95" text-anchor="end">write only:</text><text x="812" y="109" text-anchor="end">executor, after</text><text x="812" y="123" text-anchor="end">signed approval</text>
 <text x="770" y="204">read, branch, PR</text>
 <text x="842" y="292">read only</text>
 <text x="500" y="320">inference</text>
@@ -131,7 +174,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 </g>
 </svg>
 </div>
-<p class="cap">Figure 1. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
+<p class="cap">Figure 2. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
 <table>
 <tr><th>Neighbour</th><th>What crosses</th><th>Direction</th><th>Label</th></tr>
 <tr><td>On-call engineer, approver</td><td>Incidents, approvals, stop and take-over, timeline queries</td><td>In</td><td><span class="L F">Fixed</span> A2 2.3 (CLI, HTTP API, no dashboard)</td></tr>
@@ -153,14 +196,14 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <g text-anchor="middle" class="sm">
 <rect x="10" y="50" width="150" height="46" rx="6" class="hum"/><text x="85" y="70">Engineer</text><text x="85" y="86" class="lbl">CLI (Typer)</text>
 <rect x="10" y="115" width="150" height="46" rx="6" class="box"/><text x="85" y="135">Monitoring</text><text x="85" y="151" class="lbl">webhook</text>
-<rect x="200" y="60" width="190" height="80" rx="6" class="uc"/><text x="295" y="88" font-weight="600">API</text><text x="295" y="106" class="lbl">FastAPI, Pydantic</text><text x="295" y="122" class="lbl">intake, approvals, queries</text>
+<rect x="200" y="55" width="190" height="92" rx="6" class="uc"/><text x="295" y="76" font-weight="600">API</text><text x="295" y="94" class="lbl">FastAPI, Pydantic</text><text x="295" y="110" class="lbl">intake, approvals, queries</text><text x="295" y="126" class="lbl">signing key; notifier</text><text x="295" y="141" class="lbl">1 to n copies</text>
 <rect x="450" y="60" width="190" height="80" rx="6" class="fx"/><text x="545" y="88" font-weight="600">PostgreSQL</text><text x="545" y="106" class="lbl">incidents, waiting queue,</text><text x="545" y="122" class="lbl">audit record; Temporal DB</text>
-<rect x="700" y="60" width="190" height="80" rx="6" class="uc"/><text x="795" y="88" font-weight="600">Executor</text><text x="795" y="106" class="lbl">only writer to production</text><text x="795" y="122" class="lbl">task queue "executor"</text>
+<rect x="700" y="55" width="190" height="92" rx="6" class="uc"/><text x="795" y="76" font-weight="600">Executor</text><text x="795" y="94" class="lbl">only writer to production</text><text x="795" y="110" class="lbl">task queue "executor"</text><text x="795" y="126" class="lbl">holds the write tokens</text><text x="795" y="141" class="lbl">1 copy</text>
 <rect x="950" y="55" width="190" height="42" rx="6" class="okb"/><text x="1045" y="81">CI/CD pipeline</text>
 <rect x="950" y="105" width="190" height="42" rx="6" class="okb"/><text x="1045" y="131">Config store</text>
-<rect x="200" y="250" width="190" height="80" rx="6" class="uc"/><text x="295" y="278" font-weight="600">Worker</text><text x="295" y="296" class="lbl">admission loop, workflows,</text><text x="295" y="312" class="lbl">agent steps, inference gateway</text>
+<rect x="200" y="245" width="190" height="92" rx="6" class="uc"/><text x="295" y="266" font-weight="600">Worker</text><text x="295" y="284" class="lbl">admission loop, workflows,</text><text x="295" y="300" class="lbl">agent steps, inference gateway</text><text x="295" y="316" class="lbl">notifier; max 3 running</text><text x="295" y="331" class="lbl">1 to n copies</text>
 <rect x="450" y="250" width="190" height="80" rx="6" class="box"/><text x="545" y="278" font-weight="600">Temporal server</text><text x="545" y="296" class="lbl">durable workflows,</text><text x="545" y="312" class="lbl">timers, task queues</text>
-<rect x="700" y="250" width="190" height="80" rx="6" class="uc"/><text x="795" y="278" font-weight="600">Sandbox runner</text><text x="795" y="296" class="lbl">only container with Docker</text><text x="795" y="312" class="lbl">task queue "sandbox"</text>
+<rect x="700" y="245" width="190" height="92" rx="6" class="uc"/><text x="795" y="266" font-weight="600">Sandbox runner</text><text x="795" y="284" class="lbl">only container with Docker</text><text x="795" y="300" class="lbl">task queue "sandbox"</text><text x="795" y="316" class="lbl">returns a test report</text><text x="795" y="331" class="lbl">1 copy</text>
 <rect x="10" y="260" width="150" height="60" rx="6" class="box"/><text x="85" y="283">Evidence sources</text><text x="85" y="299" class="lbl">and Git host</text>
 <rect x="200" y="440" width="190" height="70" rx="6" class="box"/><text x="295" y="468" font-weight="600">Model server</text><text x="295" y="486" class="lbl">self-hosted, OpenAI-compatible</text>
 <rect x="10" y="440" width="150" height="70" rx="6" class="bad" stroke-dasharray="6 4"/><text x="85" y="468">Cloud model APIs</text><text x="85" y="486" class="lbl">config: disabled</text>
@@ -174,37 +217,37 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M700,100 H640" marker-end="url(#c2)"/>
 <path d="M890,76 H950" marker-end="url(#c2)"/>
 <path d="M890,120 H920 V126 H950" marker-end="url(#c2)"/>
-<path d="M370,250 L470,140" marker-end="url(#c2)"/>
+<path d="M370,245 L470,140" marker-end="url(#c2)"/>
 <path d="M545,250 V140" marker-end="url(#c2)"/>
 <path d="M390,290 H450" marker-end="url(#c2)" marker-start="url(#c2)"/>
 <path d="M700,290 H640" marker-end="url(#c2)" marker-start="url(#c2)"/>
-<path d="M745,140 L620,250" marker-start="url(#c2)" marker-end="url(#c2)"/>
-<path d="M200,290 H160" marker-end="url(#c2)"/>
-<path d="M295,330 V440" marker-end="url(#c2)"/>
-<path d="M230,330 L130,440" stroke-dasharray="6 4" marker-end="url(#c2)"/>
-<path d="M370,330 L480,440" marker-end="url(#c2)"/>
-<path d="M795,330 V440" marker-end="url(#c2)"/>
+<path d="M745,147 L620,250" marker-start="url(#c2)" marker-end="url(#c2)"/>
+<path d="M200,290 H160" marker-end="url(#c2)" marker-start="url(#c2)"/>
+<path d="M295,337 V440" marker-end="url(#c2)"/>
+<path d="M230,337 L130,440" stroke-dasharray="6 4" marker-end="url(#c2)"/>
+<path d="M370,337 L480,440" marker-end="url(#c2)"/>
+<path d="M795,337 V440" marker-end="url(#c2)"/>
 </g>
 <g class="lbl halo">
 <text x="420" y="92" text-anchor="middle">save +</text><text x="420" y="118" text-anchor="middle">queued</text>
 <text x="670" y="92" text-anchor="middle">intent,</text><text x="670" y="118" text-anchor="middle">audit</text>
-<text x="300" y="200">next queued:</text><text x="300" y="214">severity, age</text>
+<text x="300" y="196">next queued:</text><text x="300" y="210">severity, then age</text>
 <text x="553" y="200">own DB</text>
 <text x="420" y="282" text-anchor="middle">start,</text><text x="420" y="308" text-anchor="middle">poll</text>
 <text x="670" y="282" text-anchor="middle">poll</text>
 <text x="690" y="200">poll</text>
-<text x="165" y="282">read</text>
+<text x="163" y="282">read;</text><text x="163" y="306">PR</text>
 <text x="303" y="390">inference</text>
 <text x="190" y="400">off</text>
 <text x="440" y="390">blobs</text>
 <text x="803" y="390">create, run, destroy</text>
 </g>
-<text x="20" y="560" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). This is not a product dashboard (A2 2.3).</text>
+<text x="20" y="548" class="lbl">The notifier (in the API and the worker) posts directly to the chat or pager webhook, also when the database is down (A4 NFR-03).</text><text x="20" y="566" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). This is not a product dashboard (A2 2.3).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
+<p class="cap">Figure 3. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
 <div class="fig">
-<svg viewBox="0 0 1150 400" role="img" aria-label="Sequence diagram of incident A from alert to the first workflow step">
+<svg viewBox="0 0 1150 440" role="img" aria-label="Sequence diagram of incident A from alert to the first workflow step">
 <defs><marker id="c4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
 <rect x="25" y="20" width="130" height="40" rx="6" class="box"/><text x="90" y="45">Monitoring</text>
@@ -214,7 +257,9 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="785" y="20" width="130" height="40" rx="6" class="box"/><text x="850" y="45">Temporal</text>
 <rect x="975" y="20" width="150" height="40" rx="6" class="uc"/><text x="1050" y="45">Workflow (worker)</text>
 </g>
-<g class="ln" stroke-dasharray="3 4"><path d="M90,60 V385"/><path d="M280,60 V385"/><path d="M470,60 V385"/><path d="M660,60 V385"/><path d="M850,60 V385"/><path d="M1050,60 V385"/></g>
+<g class="ln" stroke-dasharray="3 4"><path d="M90,60 V375"/><path d="M280,60 V375"/><path d="M470,60 V375"/><path d="M660,60 V375"/><path d="M850,60 V375"/><path d="M1050,60 V375"/></g>
+<text x="20" y="405" class="lbl">If 20 incidents wait, a new incident goes to humans. The platform does not drop it (A4 QR-07).</text>
+<text x="20" y="424" class="lbl">While 3 incidents run, a new incident waits in PostgreSQL with status "queued".</text>
 <g class="ln">
 <path d="M90,95 H280" marker-end="url(#c4)"/>
 <path d="M280,125 h30 v18 h-30" marker-end="url(#c4)"/>
@@ -228,16 +273,18 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <g class="lbl halo">
 <text x="100" y="88">1 alert: shop-api 500s (signed)</text>
 <text x="318" y="138">2 check signature, validate, group</text>
-<text x="290" y="163">3 INSERT incident A, status queued</text>
+<text x="290" y="163">3 save incident A, "queued"</text>
 <text x="100" y="193">4 202 accepted, incident ID</text>
-<text x="480" y="228">5 running &lt; 3? next by severity, age</text>
+<text x="480" y="228">5 if running &lt; 3: take next</text>
 <text x="670" y="263">6 start workflow, ID = incident A</text>
 <text x="860" y="298">7 task on queue "incident"</text>
 <text x="480" y="338">8 step 1 done: checkpoint, audit entry</text>
+<text x="100" y="218">steps 1 to 4: p95 &le; 30 s</text>
+<text x="480" y="250">(severity, then age)</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 3. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
+<p class="cap">Figure 4. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
 <h3>Processes and their responsibilities</h3>
 <table>
 <tr><th>Process</th><th>Synchronous work</th><th>Asynchronous work</th><th>Scale</th><th>Label</th></tr>
@@ -270,28 +317,28 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="15" y="470" width="1120" height="110" rx="8" class="zo"/>
 <g class="md" font-weight="600"><text x="25" y="50">API process</text><text x="295" y="50">Worker process</text><text x="905" y="50">Executor process</text><text x="905" y="190">Sandbox runner process</text><text x="25" y="490">Shared modules (used by every process)</text></g>
 <g text-anchor="middle" class="sm">
-<rect x="35" y="70" width="210" height="44" rx="6" class="uc"/><text x="140" y="89">Intake</text><text x="140" y="104" class="lbl">Q6.9</text>
-<rect x="35" y="130" width="210" height="44" rx="6" class="uc"/><text x="140" y="149">Approval gate</text><text x="140" y="164" class="lbl">Q6.18; signs approvals</text>
-<rect x="35" y="190" width="210" height="44" rx="6" class="uc"/><text x="140" y="209">Notifier</text><text x="140" y="224" class="lbl">also in the worker; no DB needed</text>
-<rect x="305" y="70" width="250" height="44" rx="6" class="uc"/><text x="430" y="89">Workflow orchestrator</text><text x="430" y="104" class="lbl">Q6.11; admission loop</text>
-<rect x="305" y="140" width="250" height="44" rx="6" class="uc"/><text x="430" y="159">Evidence collector (tool layer)</text><text x="430" y="174" class="lbl">Q6.14; adapters, redaction</text>
-<rect x="305" y="210" width="250" height="44" rx="6" class="uc"/><text x="430" y="229">Knowledge retriever</text><text x="430" y="244" class="lbl">Q6.13; BM25</text>
-<rect x="305" y="280" width="250" height="44" rx="6" class="uc"/><text x="430" y="299">Diagnoser</text><text x="430" y="314" class="lbl">Q6.15</text>
-<rect x="305" y="350" width="250" height="44" rx="6" class="uc"/><text x="430" y="369">Critic</text><text x="430" y="384" class="lbl">Q6.16; different model</text>
-<rect x="605" y="70" width="250" height="44" rx="6" class="uc"/><text x="730" y="89">Policy gate</text><text x="730" y="104" class="lbl">fixed rules, patch checks</text>
-<rect x="605" y="140" width="250" height="44" rx="6" class="uc"/><text x="730" y="159">Verifier</text><text x="730" y="174" class="lbl">Q6.20; plain code</text>
-<rect x="605" y="250" width="250" height="44" rx="6" class="uc"/><text x="730" y="269">Inference gateway</text><text x="730" y="284" class="lbl">Q6.12; budget, retries, halt</text>
+<rect x="35" y="70" width="210" height="44" rx="6" class="uc"/><text x="140" y="89">Intake</text><text x="140" y="104" class="lbl">Q6.9; L7</text>
+<rect x="35" y="130" width="210" height="44" rx="6" class="uc"/><text x="140" y="149">Approval gate</text><text x="140" y="164" class="lbl">Q6.18; signs approvals; L11</text>
+<rect x="35" y="190" width="210" height="44" rx="6" class="uc"/><text x="140" y="209">Notifier</text><text x="140" y="224" class="lbl">also in worker; no DB; L8</text>
+<rect x="305" y="70" width="250" height="44" rx="6" class="uc"/><text x="430" y="89">Workflow orchestrator</text><text x="430" y="104" class="lbl">Q6.11; admission loop; L8</text>
+<rect x="305" y="140" width="250" height="44" rx="6" class="uc"/><text x="430" y="159">Evidence collector (tool layer)</text><text x="430" y="174" class="lbl">Q6.14; adapters, redaction; L9</text>
+<rect x="305" y="210" width="250" height="44" rx="6" class="uc"/><text x="430" y="229">Knowledge retriever</text><text x="430" y="244" class="lbl">Q6.13; BM25; L10</text>
+<rect x="305" y="280" width="250" height="44" rx="6" class="uc"/><text x="430" y="299">Diagnoser</text><text x="430" y="314" class="lbl">Q6.15; rules, then model; L9</text>
+<rect x="305" y="350" width="250" height="44" rx="6" class="uc"/><text x="430" y="369">Critic</text><text x="430" y="384" class="lbl">Q6.16; different model; L9</text>
+<rect x="605" y="70" width="250" height="44" rx="6" class="uc"/><text x="730" y="89">Policy gate</text><text x="730" y="104" class="lbl">fixed rules (L9), patch checks (L11)</text>
+<rect x="605" y="140" width="250" height="44" rx="6" class="uc"/><text x="730" y="159">Verifier</text><text x="730" y="174" class="lbl">Q6.20; plain code; L11</text>
+<rect x="605" y="250" width="250" height="44" rx="6" class="uc"/><text x="730" y="269">Inference gateway</text><text x="730" y="284" class="lbl">Q6.12; budget, retries, halt; L10</text>
 <rect x="605" y="330" width="120" height="44" rx="6" class="box"/><text x="665" y="349">OpenAI-compat.</text><text x="665" y="364" class="lbl">adapter: on</text>
 <rect x="735" y="330" width="120" height="44" rx="6" class="box" stroke-dasharray="6 4"/><text x="795" y="349">Anthropic</text><text x="795" y="364" class="lbl">adapter: off</text>
 <rect x="605" y="395" width="120" height="40" rx="6" class="box"/><text x="665" y="419">Self-hosted</text>
 <rect x="735" y="395" width="120" height="40" rx="6" class="bad" stroke-dasharray="6 4"/><text x="795" y="419">Cloud (off)</text>
-<rect x="915" y="70" width="200" height="56" rx="6" class="uc"/><text x="1015" y="93">Executor</text><text x="1015" y="110" class="lbl">Q6.19; checks signature, hash</text>
-<rect x="915" y="210" width="200" height="56" rx="6" class="uc"/><text x="1015" y="233">Sandbox runner</text><text x="1015" y="250" class="lbl">Q6.17; test report only</text>
-<rect x="35" y="510" width="200" height="50" rx="6" class="fx"/><text x="135" y="532">Incident store</text><text x="135" y="548" class="lbl">Q6.10</text>
-<rect x="255" y="510" width="200" height="50" rx="6" class="fx"/><text x="355" y="532">Audit log</text><text x="355" y="548" class="lbl">append-only, hash-chained</text>
-<rect x="475" y="510" width="200" height="50" rx="6" class="fx"/><text x="575" y="532">Ownership directory</text><text x="575" y="548" class="lbl">owner, on-call, repo, pipeline</text>
-<rect x="695" y="510" width="200" height="50" rx="6" class="fx"/><text x="795" y="532">Artifact store</text><text x="795" y="548" class="lbl">Q6.21; pointer + hash in DB</text>
-<rect x="915" y="510" width="200" height="50" rx="6" class="fx"/><text x="1015" y="532">Platform telemetry</text><text x="1015" y="548" class="lbl">Q6.22; OpenTelemetry</text>
+<rect x="915" y="70" width="200" height="56" rx="6" class="uc"/><text x="1015" y="93">Executor</text><text x="1015" y="110" class="lbl">Q6.19; signature, hash; L11</text>
+<rect x="915" y="210" width="200" height="56" rx="6" class="uc"/><text x="1015" y="233">Sandbox runner</text><text x="1015" y="250" class="lbl">Q6.17; test report only; L11</text>
+<rect x="35" y="510" width="200" height="50" rx="6" class="fx"/><text x="135" y="532">Incident store</text><text x="135" y="548" class="lbl">Q6.10; L7</text>
+<rect x="255" y="510" width="200" height="50" rx="6" class="fx"/><text x="355" y="532">Audit log</text><text x="355" y="548" class="lbl">append-only, hash-chained; L7</text>
+<rect x="475" y="510" width="200" height="50" rx="6" class="fx"/><text x="575" y="532">Ownership directory</text><text x="575" y="548" class="lbl">owner, on-call, pipeline; L7</text>
+<rect x="695" y="510" width="200" height="50" rx="6" class="fx"/><text x="795" y="532">Artifact store</text><text x="795" y="548" class="lbl">Q6.21; pointer + hash in DB; L7</text>
+<rect x="915" y="510" width="200" height="50" rx="6" class="fx"/><text x="1015" y="532">Platform telemetry</text><text x="1015" y="548" class="lbl">Q6.22; OpenTelemetry; L12-A</text>
 </g>
 <g class="ln">
 <path d="M430,114 V140" marker-end="url(#c3)"/>
@@ -306,9 +353,16 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M665,374 V395" marker-end="url(#c3)"/>
 <path d="M795,374 V395" stroke-dasharray="6 4" marker-end="url(#c3)"/>
 </g>
+<g class="sm"><text x="905" y="330" font-weight="600">Owner of each module</text>
+<text x="905" y="350" class="lbl">L = layer that designs it</text>
+<text x="905" y="370">L7, L8, L9, L12-A: Dhanush</text>
+<text x="905" y="388">L10: Irfan</text>
+<text x="905" y="406">L11: Rinisha</text>
+<text x="905" y="424">L5: Chirag reviews the</text>
+<text x="905" y="440">security of every module</text></g>
 </svg>
 </div>
-<p class="cap">Figure 4. Component diagram. Each dashed outline is a process (deploy unit). Each box is a module (code package). Every model call goes through the inference gateway. The dashed adapters and providers are off by default (Q6.36).</p>
+<p class="cap">Figure 5. Component diagram. Each dashed outline is a process (deploy unit). Each box is a module (code package). Every model call goes through the inference gateway. The dashed adapters and providers are off by default (Q6.36). "L" tags give the owner layer (section 6.6).</p>
 <table>
 <tr><th>Component</th><th>Responsibility</th><th>Process</th><th>Q</th><th>Label</th></tr>
 <tr><td>Intake</td><td>Authenticate the caller, validate, group duplicates, save and queue in one transaction, reply</td><td>API</td><td>Q6.9</td><td><span class="L D">Decision</span></td></tr>
@@ -407,14 +461,14 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <!-- ============ 6.7 ============ -->
 <h2><span class="sec">6.7</span>Trust boundaries</h2>
 <p class="qs">Answers: Q6.17 to Q6.19, Q6.37, Q6.38, Q6.39</p>
-<p>The trust zones come from Artifact 5 (Figure 1, TB-1 to TB-6). This section places them on the containers. A container that runs untrusted code or holds a production credential is a separate container (Q6.5 rule).</p>
+<p>The trust zones come from Artifact 5 (Figure 2, TB-1 to TB-6). This section places them on the containers. A container that runs untrusted code or holds a production credential is a separate container (Q6.5 rule).</p>
 <div class="fig">
 <svg viewBox="0 0 1150 460" role="img" aria-label="Deployment diagram with trust zones and credential holders">
 <defs><marker id="c6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <rect x="170" y="30" width="560" height="410" rx="8" class="zt"/>
 <rect x="750" y="30" width="390" height="190" rx="8" class="zb"/>
 <rect x="750" y="250" width="390" height="190" rx="8" class="zo"/>
-<g class="md" font-weight="600"><text x="180" y="22">Trusted core (Docker host)</text><text x="760" y="22">Untrusted compute</text><text x="760" y="244">Outside the platform</text></g>
+<g class="md" font-weight="600"><text x="180" y="22">Trusted core (Docker host)</text><text x="760" y="22">Untrusted compute</text><text x="760" y="272">Outside the platform</text></g>
 <g text-anchor="middle" class="sm">
 <rect x="10" y="80" width="145" height="70" rx="6" class="hum"/><text x="82" y="105">Engineers,</text><text x="82" y="120">approvers,</text><text x="82" y="135">monitoring</text>
 <rect x="190" y="80" width="160" height="70" rx="6" class="uc"/><text x="270" y="105" font-weight="600">API</text><text x="270" y="122" class="lbl">key: approval signing key</text>
@@ -439,6 +493,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M450,80 V55 H1040 V150" marker-end="url(#c6)"/>
 <path d="M530,140 H540 V235 H1040 V285" marker-end="url(#c6)"/>
 <path d="M710,315 H770" marker-end="url(#c6)"/>
+<path d="M600,150 V250 H510 V260" marker-end="url(#c6)" marker-start="url(#c6)"/>
 </g>
 <g><circle cx="172" cy="100" r="11" class="tb"/><text x="172" y="104" text-anchor="middle" class="tbt">1,5</text>
 <circle cx="900" cy="235" r="11" class="tb"/><text x="900" y="239" text-anchor="middle" class="tbt">2</text>
@@ -447,48 +502,53 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <circle cx="740" cy="315" r="11" class="tb"/><text x="740" y="319" text-anchor="middle" class="tbt">6</text></g>
 </svg>
 </div>
-<p class="cap">Figure 5. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
+<p class="cap">Figure 6. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
 <div class="fig">
-<svg viewBox="0 0 1150 470" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
+<svg viewBox="0 0 1150 510" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
 <defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
-<rect x="20" y="20" width="130" height="40" rx="6" class="uc"/><text x="85" y="45">Sandbox runner</text>
-<rect x="180" y="20" width="130" height="40" rx="6" class="uc"/><text x="245" y="45">Workflow (worker)</text>
-<rect x="340" y="20" width="130" height="40" rx="6" class="uc"/><text x="405" y="45">Policy gate</text>
-<rect x="500" y="20" width="130" height="40" rx="6" class="uc"/><text x="565" y="45">Critic</text>
-<rect x="660" y="20" width="130" height="40" rx="6" class="uc"/><text x="725" y="45">Approval gate</text>
-<rect x="820" y="20" width="130" height="40" rx="6" class="hum"/><text x="885" y="45">Human approver</text>
-<rect x="980" y="20" width="150" height="40" rx="6" class="uc"/><text x="1055" y="45">Executor</text>
+<rect x="13" y="20" width="124" height="40" rx="6" class="uc"/><text x="75" y="45">Sandbox runner</text>
+<rect x="153" y="20" width="124" height="40" rx="6" class="uc"/><text x="215" y="45">Workflow (worker)</text>
+<rect x="293" y="20" width="124" height="40" rx="6" class="uc"/><text x="355" y="45">Policy gate</text>
+<rect x="433" y="20" width="124" height="40" rx="6" class="uc"/><text x="495" y="45">Critic</text>
+<rect x="573" y="20" width="124" height="40" rx="6" class="uc"/><text x="635" y="45">Approval gate</text>
+<rect x="713" y="20" width="124" height="40" rx="6" class="hum"/><text x="775" y="45">Human approver</text>
+<rect x="853" y="20" width="124" height="40" rx="6" class="uc"/><text x="915" y="45">Executor</text>
+<rect x="995" y="20" width="140" height="40" rx="6" class="okb"/><text x="1065" y="45">Pipeline, config store</text>
 </g>
-<g class="ln" stroke-dasharray="3 4"><path d="M85,60 V450"/><path d="M245,60 V450"/><path d="M405,60 V450"/><path d="M565,60 V450"/><path d="M725,60 V450"/><path d="M885,60 V450"/><path d="M1055,60 V450"/></g>
+<g class="ln" stroke-dasharray="3 4"><path d="M75,60 V465"/><path d="M215,60 V465"/><path d="M355,60 V465"/><path d="M495,60 V465"/><path d="M635,60 V465"/><path d="M775,60 V465"/><path d="M915,60 V465"/><path d="M1065,60 V465"/></g>
 <g class="ln">
-<path d="M85,95 H245" marker-end="url(#c5)"/>
-<path d="M245,135 H405" marker-end="url(#c5)"/>
-<path d="M405,170 H245" marker-end="url(#c5)"/>
-<path d="M245,205 H565" marker-end="url(#c5)"/>
-<path d="M565,240 H245" marker-end="url(#c5)"/>
-<path d="M245,275 H725" marker-end="url(#c5)"/>
-<path d="M725,305 H885" marker-end="url(#c5)"/>
-<path d="M885,335 H725" marker-end="url(#c5)"/>
-<path d="M725,365 H245" marker-end="url(#c5)"/>
-<path d="M245,395 H1055" marker-end="url(#c5)"/>
+<path d="M75,95 H215" marker-end="url(#c5)"/>
+<path d="M215,130 H355" marker-end="url(#c5)"/>
+<path d="M355,160 H215" marker-end="url(#c5)"/>
+<path d="M215,190 H495" marker-end="url(#c5)"/>
+<path d="M495,220 H215" marker-end="url(#c5)"/>
+<path d="M215,255 H635" marker-end="url(#c5)"/>
+<path d="M635,285 H775" marker-end="url(#c5)"/>
+<path d="M775,315 H635" marker-end="url(#c5)"/>
+<path d="M635,345 H215" marker-end="url(#c5)"/>
+<path d="M215,375 H915" marker-end="url(#c5)"/>
+<path d="M915,440 H1065" marker-end="url(#c5)"/>
+<path d="M915,400 h30 v18 h-30" marker-end="url(#c5)"/>
 </g>
 <g class="lbl halo">
-<text x="95" y="88">1 test report only</text>
-<text x="255" y="128">2 patch, evidence</text>
-<text x="255" y="163">3 pass (fixed rules)</text>
-<text x="255" y="198">4 review in a new context</text>
-<text x="255" y="233">5 verdict (signal only)</text>
-<text x="255" y="268">6 request approval: evidence, contradicting evidence, action, hash</text>
-<text x="735" y="298">7 show request</text>
-<text x="735" y="328">8 approve (login)</text>
-<text x="255" y="358">9 signed approval, bound to the hash</text>
-<text x="255" y="388">10 task on queue "executor": action + signed approval</text>
-<text x="1045" y="425" text-anchor="end">11 check signature, hash, expiry, single use; then pipeline or config store</text>
+<text x="85" y="88">1 test report only</text>
+<text x="225" y="123">2 patch, evidence</text>
+<text x="225" y="153">3 pass (fixed rules)</text>
+<text x="225" y="183">4 review in a new context</text>
+<text x="225" y="213">5 verdict (signal only)</text>
+<text x="225" y="248">6 request approval: evidence, contradicting evidence, action, hash</text>
+<text x="645" y="278">7 show request</text>
+<text x="645" y="308">8 approve (login)</text>
+<text x="225" y="338">9 signed approval, bound to the hash</text>
+<text x="225" y="368">10 task on queue "executor": action + signed approval</text>
+<text x="925" y="433">12 redeploy or restore</text>
+<text x="905" y="413" text-anchor="end">11 check signature, hash, expiry, single use</text>
 </g>
+<text x="20" y="492" class="lbl">If a check fails in step 3 or step 11, no production action runs. The critic verdict in step 5 cannot approve an action.</text>
 </svg>
 </div>
-<p class="cap">Figure 6. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
+<p class="cap">Figure 7. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
 <table>
 <tr><th>Container</th><th>Zone</th><th>Holds</th><th>Network reach</th><th>A5 boundary</th></tr>
 <tr><td>API</td><td>Trusted</td><td>Approval signing key</td><td>Clients in; PostgreSQL; chat and pager</td><td>TB-1, TB-5</td></tr>
