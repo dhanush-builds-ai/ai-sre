@@ -118,10 +118,10 @@ pre code{border:0;padding:0;background:none}
 <h2><span class="sec">8.1</span>Temporal workflow definition</h2>
 <p class="qs">Answers: Q8.1 to Q8.3, Q8.5, Q8.6, Q8.10, Q8.12 to Q8.16, Q8.24</p>
 <div class="fig">
-<svg viewBox="0 0 1100 490" role="img" aria-label="Overview of Layer 8: the path from alert to production write, the human approval, the two end states, the durable state stores and the safety rules of sections 8.5 to 8.10">
+<svg viewBox="0 0 1100 530" role="img" aria-label="Overview of Layer 8: the path from alert to production write, the human approval, the two end states, the durable state stores and the safety rules of sections 8.5 to 8.10">
 <defs><marker id="w0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <text x="18" y="20" class="lbl">1. Path of one incident (sections 8.1, 8.2, 8.6)</text>
-<g text-anchor="middle"><rect x="18" y="30" width="140" height="70" rx="6" class="uc"/><text x="88" y="54" class="md" font-weight="600">Monitoring</text><text x="88" y="72" class="lbl">alert: HTTP 500s</text><text x="88" y="87" class="lbl">after a config deploy</text><rect x="172" y="30" width="140" height="70" rx="6" class="uc"/><text x="242" y="54" class="md" font-weight="600">API</text><text x="242" y="72" class="lbl">saves incident: queued</text><text x="242" y="87" class="lbl">returns its ID in 30 s</text><rect x="326" y="30" width="140" height="70" rx="6" class="box"/><text x="396" y="54" class="md" font-weight="600">Admission loop</text><text x="396" y="72" class="lbl">max 3 running</text><text x="396" y="87" class="lbl">severity, then age</text><rect x="480" y="30" width="140" height="70" rx="6" class="box"/><text x="550" y="54" class="md" font-weight="600">IncidentWorkflow</text><text x="550" y="72" class="lbl">evidence, diagnosis,</text><text x="550" y="87" class="lbl">critic, propose actions</text><rect x="634" y="30" width="140" height="70" rx="6" class="fx"/><text x="704" y="54" class="md" font-weight="600">ActionWorkflow</text><text x="704" y="72" class="lbl">recovery child first,</text><text x="704" y="87" class="lbl">then fix child</text><rect x="788" y="30" width="140" height="70" rx="6" class="bad"/><text x="858" y="54" class="md" font-weight="600">Executor</text><text x="858" y="72" class="lbl">only production writer</text><text x="858" y="87" class="lbl">intent_at, then dispatch</text><rect x="942" y="30" width="140" height="70" rx="6" class="box"/><text x="1012" y="54" class="md" font-weight="600">Production</text><text x="1012" y="72" class="lbl">pipeline: redeploy</text><text x="1012" y="87" class="lbl">config store: restore</text></g>
+<g text-anchor="middle"><rect x="18" y="30" width="140" height="70" rx="6" class="uc"/><text x="88" y="54" class="md" font-weight="600">Monitoring</text><text x="88" y="72" class="lbl">alert: HTTP 500s</text><text x="88" y="87" class="lbl">after a config deploy</text><rect x="172" y="30" width="140" height="70" rx="6" class="uc"/><text x="242" y="54" class="md" font-weight="600">API</text><text x="242" y="72" class="lbl">saves incident: queued</text><text x="242" y="87" class="lbl">ID back: p95 ≤ 30 s</text><rect x="326" y="30" width="140" height="70" rx="6" class="box"/><text x="396" y="54" class="md" font-weight="600">Admission loop</text><text x="396" y="72" class="lbl">max 3 running</text><text x="396" y="87" class="lbl">severity, then age</text><rect x="480" y="30" width="140" height="70" rx="6" class="box"/><text x="550" y="50" class="md" font-weight="600">IncidentWorkflow</text><text x="550" y="66" class="lbl">baseline, fixed rules,</text><text x="550" y="80" class="lbl">investigator, diagnoser,</text><text x="550" y="94" class="lbl">critic, propose</text><rect x="634" y="30" width="140" height="70" rx="6" class="fx"/><text x="704" y="54" class="md" font-weight="600">ActionWorkflow</text><text x="704" y="72" class="lbl">recovery child first,</text><text x="704" y="87" class="lbl">then fix child</text><rect x="788" y="30" width="140" height="70" rx="6" class="bad"/><text x="858" y="54" class="md" font-weight="600">Executor</text><text x="858" y="72" class="lbl">only production writer</text><text x="858" y="87" class="lbl">intent_at, then dispatch</text><rect x="942" y="30" width="140" height="70" rx="6" class="box"/><text x="1012" y="54" class="md" font-weight="600">Production</text><text x="1012" y="72" class="lbl">pipeline: redeploy</text><text x="1012" y="87" class="lbl">config store: restore</text></g>
 <g class="ln"><path d="M158,65 H170" marker-end="url(#w0)"/><path d="M312,65 H324" marker-end="url(#w0)"/><path d="M466,65 H478" marker-end="url(#w0)"/><path d="M620,65 H632" marker-end="url(#w0)"/><path d="M774,65 H786" marker-end="url(#w0)"/><path d="M928,65 H940" marker-end="url(#w0)"/>
 <path d="M550,100 V124 H396 V146" marker-end="url(#w0)"/><path d="M550,124 V146" marker-end="url(#w0)"/>
 <path d="M704,148 V102" stroke-dasharray="5 4" marker-end="url(#w0)"/>
@@ -141,7 +141,7 @@ pre code{border:0;padding:0;background:none}
 </g>
 <g class="ln"><path d="M364,298 H383" marker-end="url(#w0)" marker-start="url(#w0)"/><path d="M715,298 H734" marker-end="url(#w0)"/></g>
 <text x="18" y="372" class="lbl">3. Rules that keep long-running work safe</text>
-<rect x="18" y="382" width="170" height="96" rx="6" class="box"/><text x="28" y="402" class="md" font-weight="600">8.5 Retry</text><text x="28" y="422" class="sm">Only the Temporal activity</text><text x="28" y="437" class="sm">policy retries. SDK, HTTP</text><text x="28" y="452" class="sm">and gateway retries: off.</text><text x="28" y="467" class="sm">1 s, doubles, max 60 s.</text><rect x="197" y="382" width="170" height="96" rx="6" class="hum"/><text x="207" y="402" class="md" font-weight="600">8.6 Approval wait</text><text x="207" y="422" class="sm">Durable timer; no process</text><text x="207" y="437" class="sm">is held. Signal has an ID.</text><text x="207" y="452" class="sm">Backup approver: 10 min</text><text x="207" y="467" class="sm">(SEV1) or 15 min; 24 h expiry.</text><rect x="376" y="382" width="170" height="96" rx="6" class="box"/><text x="386" y="402" class="md" font-weight="600">8.7 Cancel</text><text x="386" y="422" class="sm">A signal, used only at safe</text><text x="386" y="437" class="sm">points. Before applying:</text><text x="386" y="452" class="sm">cancelled. A running write</text><text x="386" y="467" class="sm">is never cut: escalated.</text><rect x="555" y="382" width="170" height="96" rx="6" class="uc"/><text x="565" y="402" class="md" font-weight="600">8.8 Replay</text><text x="565" y="422" class="sm">After a crash, a new worker</text><text x="565" y="437" class="sm">replays the history. Code</text><text x="565" y="452" class="sm">is deterministic; CI runs</text><text x="565" y="467" class="sm">a replay test on change.</text><rect x="734" y="382" width="170" height="96" rx="6" class="bad"/><text x="744" y="402" class="md" font-weight="600">8.9 Reconciliation</text><text x="744" y="422" class="sm">Intent before dispatch.</text><text x="744" y="437" class="sm">Unknown outcome: look up</text><text x="744" y="452" class="sm">the target; never send the</text><text x="744" y="467" class="sm">write again blindly.</text><rect x="913" y="382" width="170" height="96" rx="6" class="box"/><text x="923" y="402" class="md" font-weight="600">8.10 Failure</text><text x="923" y="422" class="sm">PostgreSQL down: the whole</text><text x="923" y="437" class="sm">platform pauses. Nothing</text><text x="923" y="452" class="sm">is lost; humans are told.</text><text x="923" y="467" class="sm">Temporal down: queued.</text>
+<rect x="18" y="382" width="170" height="130" rx="6" class="box"/><text x="28" y="402" class="md" font-weight="600">8.5 Retry</text><text x="28" y="422" class="sm">Only the Temporal policy</text><text x="28" y="437" class="sm">retries. SDK, HTTP, gateway:</text><text x="28" y="452" class="sm">off. Other activities: 1 s,</text><text x="28" y="467" class="sm">doubles, max 60 s. Model</text><text x="28" y="482" class="sm">calls: 60 s, 1 retry.</text><rect x="197" y="382" width="170" height="130" rx="6" class="hum"/><text x="207" y="402" class="md" font-weight="600">8.6 Approval wait</text><text x="207" y="422" class="sm">Durable timer; no process</text><text x="207" y="437" class="sm">is held. Signal has an ID.</text><text x="207" y="452" class="sm">Backup approver: 10 min</text><text x="207" y="467" class="sm">(SEV1) or 15 min; 24 h expiry.</text><rect x="376" y="382" width="170" height="130" rx="6" class="box"/><text x="386" y="402" class="md" font-weight="600">8.7 Cancel</text><text x="386" y="422" class="sm">A signal, used only at safe</text><text x="386" y="437" class="sm">points. Before applying:</text><text x="386" y="452" class="sm">cancelled. A running write</text><text x="386" y="467" class="sm">is never cut: escalated.</text><rect x="555" y="382" width="170" height="130" rx="6" class="uc"/><text x="565" y="402" class="md" font-weight="600">8.8 Replay</text><text x="565" y="422" class="sm">After a crash, a new worker</text><text x="565" y="437" class="sm">replays the history. Code</text><text x="565" y="452" class="sm">is deterministic; CI runs</text><text x="565" y="467" class="sm">a replay test on change.</text><rect x="734" y="382" width="170" height="130" rx="6" class="bad"/><text x="744" y="402" class="md" font-weight="600">8.9 Reconciliation</text><text x="744" y="422" class="sm">Intent before dispatch.</text><text x="744" y="437" class="sm">Unknown outcome: look up</text><text x="744" y="452" class="sm">the target; never send the</text><text x="744" y="467" class="sm">write again blindly.</text><rect x="913" y="382" width="170" height="130" rx="6" class="box"/><text x="923" y="402" class="md" font-weight="600">8.10 Failure</text><text x="923" y="422" class="sm">PostgreSQL down: intake</text><text x="923" y="437" class="sm">503; after 5 min, 1 message</text><text x="923" y="452" class="sm">to chat or pager, then 1</text><text x="923" y="467" class="sm">per 15 min. Temporal down:</text><text x="923" y="482" class="sm">incidents stay queued.</text>
 </svg>
 </div>
 <p class="cap">Figure 1. Layer 8 at a glance. The API saves the incident, and a durable workflow does the rest. Each action runs in its own child workflow and waits for a human. Only the executor writes to production. Temporal and PostgreSQL keep every step, so a crash loses no work.</p>
@@ -162,48 +162,52 @@ pre code{border:0;padding:0;background:none}
 </table>
 <p>The order is in the workflow code (Q8.1). The workflow only decides the next step. Activities do every outside call (Q8.10, Q8.16). The recovery child runs to its end before the fix child starts. This keeps "recovery before fix" (A6) in one visible place. The parent always waits for its children. Its parent-close policy is <code>ABANDON</code>, so the engine never cancels a child that is in a production write (section 8.7).</p>
 <div class="fig">
-<svg viewBox="0 0 1100 440" role="img" aria-label="Component diagram of the incident workflow, its action child workflow, the task queues and the containers that run each step">
+<svg viewBox="0 0 1100 462" role="img" aria-label="Component diagram of the incident workflow, its action child workflow, the task queues and the containers that run each step">
 <defs><marker id="w1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<rect x="20" y="20" width="1060" height="120" rx="8" class="zt"/>
-<text x="32" y="40" class="md" font-weight="600">IncidentWorkflow (parent) &#183; ID = incident ID &#183; task queue incident &#183; worker container</text>
+<rect x="20" y="20" width="1060" height="124" rx="8" class="zt"/>
+<text x="32" y="40" class="md" font-weight="600">IncidentWorkflow (parent) &#183; ID = incident ID &#183; task queue incident &#183; worker container &#183; starts in <tspan font-style="italic">investigating</tspan></text>
 <g text-anchor="middle" class="sm">
-<rect x="35" y="58" width="118" height="58" rx="6" class="uc"/><text x="94" y="82">Start</text><text x="94" y="98" class="lbl">investigating</text>
-<rect x="165" y="58" width="118" height="58" rx="6" class="box"/><text x="224" y="82">Collect evidence</text><text x="224" y="98" class="lbl">per source, parallel</text>
-<rect x="295" y="58" width="118" height="58" rx="6" class="box"/><text x="354" y="82">Diagnose</text><text x="354" y="98" class="lbl">2 agents (A9 9.1)</text>
-<rect x="425" y="58" width="118" height="58" rx="6" class="box"/><text x="484" y="82">Critic review</text><text x="484" y="98" class="lbl">other model</text>
-<rect x="555" y="58" width="118" height="58" rx="6" class="box"/><text x="614" y="82">Propose actions</text><text x="614" y="98" class="lbl">recovery, fix</text>
-<rect x="685" y="58" width="118" height="58" rx="6" class="fx"/><text x="744" y="82">Recovery child</text><text x="744" y="98" class="lbl">runs first</text>
-<rect x="815" y="58" width="118" height="58" rx="6" class="fx"/><text x="874" y="82">Fix child</text><text x="874" y="98" class="lbl">after recovery</text>
-<rect x="945" y="58" width="118" height="58" rx="6" class="okb"/><text x="1004" y="82">Close</text><text x="1004" y="98" class="lbl">report, seal</text>
+<rect x="33" y="54" width="106" height="58" rx="6" class="box"/><text x="86" y="78">Baseline evidence</text><text x="86" y="94" class="lbl">code, tool layer</text>
+<rect x="149" y="54" width="106" height="58" rx="6" class="box"/><text x="202" y="78">Fixed rules</text><text x="202" y="94" class="lbl">rule hypotheses</text>
+<rect x="265" y="54" width="106" height="58" rx="6" class="box"/><text x="318" y="78">Investigator</text><text x="318" y="94" class="lbl">≤ 3 rounds</text>
+<rect x="381" y="54" width="106" height="58" rx="6" class="box"/><text x="434" y="78">Diagnoser</text><text x="434" y="94" class="lbl">≤ 2 revisions</text>
+<rect x="497" y="54" width="106" height="58" rx="6" class="box"/><text x="550" y="78">Critic</text><text x="550" y="94" class="lbl">other model</text>
+<rect x="613" y="54" width="106" height="58" rx="6" class="box"/><text x="666" y="78">Propose actions</text><text x="666" y="94" class="lbl">recovery, fix</text>
+<rect x="729" y="54" width="106" height="58" rx="6" class="fx"/><text x="782" y="78">Recovery child</text><text x="782" y="94" class="lbl">runs first</text>
+<rect x="845" y="54" width="106" height="58" rx="6" class="fx"/><text x="898" y="78">Fix child</text><text x="898" y="94" class="lbl">after recovery</text>
+<rect x="961" y="54" width="106" height="58" rx="6" class="okb"/><text x="1014" y="78">Close</text><text x="1014" y="94" class="lbl">report, seal</text>
 </g>
 <g class="ln">
-<path d="M153,87 H163" marker-end="url(#w1)"/><path d="M283,87 H293" marker-end="url(#w1)"/><path d="M413,87 H423" marker-end="url(#w1)"/><path d="M543,87 H553" marker-end="url(#w1)"/><path d="M673,87 H683" marker-end="url(#w1)"/><path d="M803,87 H813" marker-end="url(#w1)"/><path d="M933,87 H943" marker-end="url(#w1)"/>
-<path d="M744,116 V188" stroke-dasharray="5 4" marker-end="url(#w1)"/><path d="M874,116 V188" stroke-dasharray="5 4" marker-end="url(#w1)"/>
+<path d="M139,83 H147" marker-end="url(#w1)"/><path d="M255,83 H263" marker-end="url(#w1)"/><path d="M371,83 H379" marker-end="url(#w1)"/><path d="M487,83 H495" marker-end="url(#w1)"/><path d="M603,83 H611" marker-end="url(#w1)"/><path d="M719,83 H727" marker-end="url(#w1)"/><path d="M835,83 H843" marker-end="url(#w1)"/><path d="M951,83 H959" marker-end="url(#w1)"/>
+<path d="M782,112 V188" stroke-dasharray="5 4" marker-end="url(#w1)"/><path d="M898,112 V188" stroke-dasharray="5 4" marker-end="url(#w1)"/>
 </g>
-<rect x="20" y="190" width="1060" height="120" rx="8" class="zt"/>
+<text x="32" y="133" class="lbl">Evidence per source: 30 s, 3 tries. Model request: 60 s, 2 tries. If no worker takes a task in 5 min, the incident escalates.</text>
+<rect x="20" y="190" width="1060" height="124" rx="8" class="zt"/>
 <text x="32" y="210" class="md" font-weight="600">ActionWorkflow (child) &#183; one for each action &#183; ID = incident ID:action:action ID</text>
 <g text-anchor="middle" class="sm">
-<rect x="40" y="228" width="180" height="58" rx="6" class="box"/><text x="130" y="252">Checks</text><text x="130" y="268" class="lbl">policy, critic (worker)</text>
-<rect x="250" y="228" width="180" height="58" rx="6" class="box"/><text x="340" y="252">Sandbox tests</text><text x="340" y="268" class="lbl">fix only (sandbox queue)</text>
-<rect x="460" y="228" width="180" height="58" rx="6" class="hum"/><text x="550" y="252">Approval wait</text><text x="550" y="268" class="lbl">signal + durable timers</text>
-<rect x="670" y="228" width="180" height="58" rx="6" class="bad"/><text x="760" y="252">Execute</text><text x="760" y="268" class="lbl">executor queue</text>
-<rect x="880" y="228" width="180" height="58" rx="6" class="box"/><text x="970" y="252">Verify</text><text x="970" y="268" class="lbl">verifier (worker)</text>
+<rect x="40" y="226" width="156" height="72" rx="6" class="box"/><text x="118" y="249">Checks</text><text x="118" y="265" class="lbl">policy (worker)</text><text x="118" y="281" class="lbl">10 s, retries until up</text>
+<rect x="210" y="226" width="156" height="72" rx="6" class="box"/><text x="288" y="249">Sandbox tests</text><text x="288" y="265" class="lbl">fix only (sandbox queue)</text><text x="288" y="281" class="lbl">15 min, 2 tries</text>
+<rect x="380" y="226" width="156" height="72" rx="6" class="hum"/><text x="458" y="249">Approval wait</text><text x="458" y="265" class="lbl">signal + durable timers</text><text x="458" y="281" class="lbl">backup 10/15 min; 24 h</text>
+<rect x="550" y="226" width="156" height="72" rx="6" class="fx"/><text x="628" y="249">Merge wait</text><text x="628" y="265" class="lbl">fix only: poll every 1 min</text><text x="628" y="281" class="lbl">merged = approved SHA</text>
+<rect x="720" y="226" width="156" height="72" rx="6" class="bad"/><text x="798" y="249">Execute</text><text x="798" y="265" class="lbl">executor queue</text><text x="798" y="281" class="lbl">2 min, 3 tries, reconcile</text>
+<rect x="890" y="226" width="156" height="72" rx="6" class="box"/><text x="968" y="249">Verify</text><text x="968" y="265" class="lbl">verifier (worker)</text><text x="968" y="281" class="lbl">watch + 1 min, 2 tries</text>
 </g>
 <g class="ln">
-<path d="M220,257 H248" marker-end="url(#w1)"/><path d="M430,257 H458" marker-end="url(#w1)"/><path d="M640,257 H668" marker-end="url(#w1)"/><path d="M850,257 H878" marker-end="url(#w1)"/>
-<path d="M340,286 V358" marker-end="url(#w1)"/><path d="M760,286 V358" marker-end="url(#w1)"/>
-<path d="M95,358 V335 H550 V288" marker-end="url(#w1)"/>
+<path d="M196,262 H208" marker-end="url(#w1)"/><path d="M366,262 H378" marker-end="url(#w1)"/><path d="M536,262 H548" marker-end="url(#w1)"/><path d="M706,262 H718" marker-end="url(#w1)"/><path d="M876,262 H888" marker-end="url(#w1)"/>
+<path d="M288,298 V368" marker-end="url(#w1)"/><path d="M798,298 V368" marker-end="url(#w1)"/>
+<path d="M95,368 V342 H458 V300" marker-end="url(#w1)"/>
 </g>
 <g text-anchor="middle" class="sm">
-<rect x="40" y="360" width="110" height="50" rx="6" class="uc"/><text x="95" y="390">API</text>
-<rect x="250" y="360" width="180" height="50" rx="6" class="box"/><text x="340" y="382">Sandbox runner</text><text x="340" y="398" class="lbl">only Docker access</text>
-<rect x="670" y="360" width="180" height="50" rx="6" class="box"/><text x="760" y="382">Executor</text><text x="760" y="398" class="lbl">only production writer</text>
+<rect x="40" y="370" width="110" height="50" rx="6" class="uc"/><text x="95" y="400">API</text>
+<rect x="198" y="370" width="180" height="50" rx="6" class="box"/><text x="288" y="392">Sandbox runner</text><text x="288" y="408" class="lbl">only Docker access</text>
+<rect x="708" y="370" width="180" height="50" rx="6" class="box"/><text x="798" y="392">Executor</text><text x="798" y="408" class="lbl">only production writer</text>
 </g>
-<g class="lbl halo"><text x="105" y="328">signal decision(approval_id)</text></g>
-<text x="20" y="432" class="lbl">The API also sends cancel, take_over, resolve and alert_resolved to the parent (section 8.7). Containers share work only through PostgreSQL and the task queues (A6).</text>
+<g class="lbl halo"><text x="105" y="335">signal decision(approval_id)</text></g>
+<text x="20" y="440" class="lbl">The API also sends cancel, take_over, resolve and alert_resolved to the parent (section 8.7). Containers share work only through PostgreSQL and the task queues (A6).</text>
+<text x="20" y="456" class="lbl">The recovery child skips the sandbox tests and the merge wait.</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Workflow structure. Dashed boxes are workflows. The recovery child and the fix child run the same steps. Only the sandbox and execute steps leave the worker container.</p>
+<p class="cap">Figure 2. Workflow structure. Dashed boxes are workflows. The fix child runs every step. The recovery child skips the sandbox tests and the merge wait. Only the sandbox and execute steps leave the worker container.</p>
 <table>
 <tr><th>Question</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Where is progress kept? (Q8.5, Q8.13)</td><td>Temporal history: completed steps and results, timers, received signals, the workflow input. It is in its own database on the PostgreSQL server. PostgreSQL tables: incident, evidence, actions, approvals, execution attempts, events. Workers keep no state.</td><td><span class="L D">Decision</span></td></tr>
@@ -246,7 +250,7 @@ pre code{border:0;padding:0;background:none}
 <p class="qs">Answers: Q8.25, Q8.26, Q8.39</p>
 <p>Two state machines work together. The <b>incident</b> machine is for people and has 7 states. The <b>action</b> machine runs once for each child workflow and holds the detail. PostgreSQL owns both states (Q8.39). Only workflow activities change them. A CHECK constraint lists the allowed values.</p>
 <div class="fig">
-<svg viewBox="0 0 1100 360" role="img" aria-label="State machine diagram of the incident with seven states">
+<svg viewBox="0 0 1100 376" role="img" aria-label="State machine diagram of the incident with seven states">
 <defs><marker id="w2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <circle cx="25" cy="70" r="8" fill="var(--fg)"/>
 <g text-anchor="middle" class="md">
@@ -272,14 +276,14 @@ pre code{border:0;padding:0;background:none}
 </g>
 <g class="lbl halo" text-anchor="middle">
 <text x="215" y="62">admitted</text><text x="215" y="86">max 3 running</text>
-<text x="420" y="62">cause_found</text>
+<text x="420" y="36">guard: cause_found, evidence rule (A9 9.7), critic recorded</text><text x="420" y="62">guard met</text>
 <text x="625" y="62">action starts</text>
-<text x="845" y="62">recovery</text><text x="845" y="86">verified</text>
+<text x="845" y="62">recovery verified,</text><text x="845" y="86">no action open</text>
 </g>
 <g class="lbl halo">
 <text x="110" y="164">cancel (no write started)</text>
 <text x="755" y="204">escalate</text>
-<text x="640" y="325" text-anchor="middle">to escalated: inconclusive, no safe action, rejected, expired, blocked, failed, not recovered,</text><text x="640" y="341" text-anchor="middle">unknown outcome past its limit, take-over, cancel during a write</text>
+<text x="640" y="325" text-anchor="middle">to escalated: inconclusive, model or source failure after retries, no safe action, rejected, expired,</text><text x="640" y="341" text-anchor="middle">blocked, failed, not recovered, unknown outcome past its limit, no worker in 5 min, take-over,</text><text x="640" y="357" text-anchor="middle">cancel during a write</text>
 <text x="728" y="274">human resolves</text>
 </g>
 </svg>
@@ -297,7 +301,7 @@ pre code{border:0;padding:0;background:none}
 <rect x="790" y="48" width="110" height="44" rx="22" class="box"/><text x="845" y="75">applied</text>
 <rect x="960" y="48" width="115" height="44" rx="22" class="okb"/><text x="1017" y="75">verified</text>
 <rect x="205" y="208" width="115" height="44" rx="22" class="bad"/><text x="262" y="235">blocked</text>
-<rect x="340" y="208" width="190" height="44" rx="22" class="bad"/><text x="435" y="235">rejected / expired / cancelled</text>
+<rect x="340" y="208" width="190" height="54" rx="27" class="bad"/><text x="435" y="231">rejected / expired / cancelled</text><text x="435" y="248" class="lbl">by reject / 24 h timer / cancel</text>
 <rect x="600" y="208" width="125" height="44" rx="22" class="hum"/><text x="662" y="235">outcome_unknown</text>
 <rect x="790" y="208" width="110" height="44" rx="22" class="bad"/><text x="845" y="235">not_recovered</text>
 <rect x="560" y="328" width="130" height="44" rx="22" class="bad"/><text x="625" y="355">failed</text>
@@ -311,6 +315,8 @@ pre code{border:0;padding:0;background:none}
 <path d="M900,70 H958" marker-end="url(#w3)"/>
 <path d="M262,92 V206" marker-end="url(#w3)"/>
 <path d="M437,92 V206" marker-end="url(#w3)"/>
+<path d="M300,92 V190 H380 V206" marker-end="url(#w3)"/>
+<path d="M70,92 V300 H400 V264" marker-end="url(#w3)"/>
 <path d="M565,92 V326" marker-end="url(#w3)"/>
 <path d="M620,92 V206" marker-end="url(#w3)"/>
 <path d="M705,206 V94" marker-end="url(#w3)"/>
@@ -327,17 +333,20 @@ pre code{border:0;padding:0;background:none}
 </g>
 <g class="lbl halo">
 <text x="256" y="150" text-anchor="end">any check fails</text>
-<text x="431" y="150" text-anchor="end">reject, expiry, cancel</text>
+<text x="443" y="140">reject, expiry,</text><text x="443" y="154">cancel, take_over</text>
+<text x="306" y="184">cancel, take_over</text><text x="76" y="294">cancel, take_over</text>
 <text x="559" y="290" text-anchor="end">definite error</text>
 <text x="626" y="150">timeout,</text><text x="626" y="164">no outcome</text>
 <text x="711" y="118">re-dispatch,</text><text x="711" y="132">same key</text>
 <text x="754" y="196">lookup: applied</text>
-<text x="851" y="150">verify fails</text>
+<text x="851" y="150">verify fails or inconclusive</text><text x="851" y="164">→ not_recovered</text>
 <text x="668" y="290">target changed, or</text><text x="668" y="304">precondition false</text>
+<text x="262" y="276" text-anchor="middle">no automatic fix retry</text><text x="262" y="290" text-anchor="middle">(A9 9.9)</text>
+<text x="845" y="276" text-anchor="middle">incident escalated;</text><text x="845" y="290" text-anchor="middle">undo = a new action,</text><text x="845" y="304" text-anchor="middle">with its own approval</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 4. Action state machine (one per child workflow). <code>verified</code>, <code>blocked</code>, <code>rejected</code>, <code>expired</code>, <code>cancelled</code>, <code>failed</code> and <code>not_recovered</code> are end states. <code>proposed</code> and <code>testing</code> can also go to <code>cancelled</code>. An action in <code>outcome_unknown</code> past its limit stays there, and its incident goes to <code>escalated</code>.</p>
+<p class="cap">Figure 4. Action state machine (one per child workflow). <code>verified</code>, <code>blocked</code>, <code>rejected</code>, <code>expired</code>, <code>cancelled</code>, <code>failed</code> and <code>not_recovered</code> are end states. Signals <code>cancel</code> and <code>take_over</code> reach <code>cancelled</code> from <code>proposed</code>, <code>testing</code> and <code>review</code>; a reject or the 24 h timer leaves only <code>review</code>. An action in <code>outcome_unknown</code> past its limit stays there, and its incident goes to <code>escalated</code>.</p>
 
 <!-- ============ 8.4 ============ -->
 <h2><span class="sec">8.4</span>State transition table</h2>
@@ -453,11 +462,12 @@ pre code{border:0;padding:0;background:none}
 <text x="250" y="323">9 read approval; check hash, signature</text>
 <text x="95" y="358">10 execute_action (executor queue)</text>
 <text x="405" y="388">11 check guards; approval_use; intent_at; dispatch</text>
+<text x="405" y="412">guards: signature valid; approver eligible; action hash equal; approval valid and unused;</text><text x="405" y="426">precondition true; no cancel; target not locked</text>
 <text x="118" y="210">wait:</text>
 <text x="118" y="224">timers</text>
 </g>
-<text x="20" y="470" class="lbl">Timers: after 10 min (SEV1) or 15 min, stage backup and the backup approver is notified. After 24 h, the action is expired and the incident escalated.</text>
-<text x="20" y="488" class="lbl">The signal carries only an ID. The child trusts the database record, not the signal. A recovery approval is valid 30 min after the decision.</text>
+<text x="20" y="470" class="lbl">Timers: after 10 min (SEV1) or 15 min, stage backup and the backup approver is notified. With no decision after 24 h, the request expires: action expired, incident escalated.</text>
+<text x="20" y="488" class="lbl">The signal carries only an ID. The child trusts the database record, not the signal. After the decision, an approval is valid 30 min (recovery) or 24 h (fix).</text>
 </svg>
 </div>
 <p class="cap">Figure 5. Approval sequence for one action. Steps 5 to 7 come from outside the workflow; the workflow holds no process while it waits. A second decision for the same request fails at step 6.</p>
@@ -547,10 +557,10 @@ pre code{border:0;padding:0;background:none}
 <polygon points="300,285 400,320 300,355 200,320" class="box"/><text x="300" y="317">Pipeline run</text><text x="300" y="331">in progress?</text>
 <polygon points="300,390 400,425 300,460 200,425" class="box"/><text x="300" y="422">Precondition</text><text x="300" y="436">still true?</text>
 <rect x="540" y="190" width="260" height="50" rx="6" class="okb"/><text x="670" y="212">applied (outcome_source = lookup)</text><text x="670" y="228" class="lbl">then verify</text>
-<rect x="540" y="295" width="260" height="50" rx="6" class="hum"/><text x="670" y="317">Wait 30 s, then look again</text><text x="670" y="333" class="lbl">past the limit (L8-A2): stay, escalate</text>
-<rect x="540" y="400" width="260" height="50" rx="6" class="box"/><text x="670" y="422">Re-dispatch: same key, same approval</text><text x="670" y="438" class="lbl">attempt + 1, no new approval_use</text>
+<rect x="540" y="289" width="260" height="62" rx="6" class="hum"/><text x="670" y="311">Wait 30 s, then look again</text><text x="670" y="327" class="lbl">limit: pipeline run timeout + 2 min</text><text x="670" y="342" class="lbl">(config restore 2 min); then stay, escalate</text>
+<rect x="540" y="394" width="260" height="62" rx="6" class="box"/><text x="670" y="416">Re-dispatch: same key, same approval</text><text x="670" y="432" class="lbl">attempt + 1, no new approval_use</text><text x="670" y="447" class="lbl">at most one re-dispatch</text>
 <rect x="860" y="403" width="120" height="44" rx="22" class="box"/><text x="920" y="429">applying</text>
-<rect x="180" y="495" width="240" height="50" rx="6" class="bad"/><text x="300" y="517">failed</text><text x="300" y="533" class="lbl">target changed by someone else; escalate</text>
+<rect x="140" y="495" width="320" height="50" rx="6" class="bad"/><text x="300" y="517">failed</text><text x="300" y="533" class="lbl">target changed, or precondition false; escalate</text>
 </g>
 <g class="ln">
 <path d="M300,65 V98" marker-end="url(#w5)"/>

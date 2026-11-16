@@ -109,8 +109,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="285" y="350" width="285" height="34" rx="6" class="zb"/><text x="302" y="371">Removed in V1: agent shell, SQL, URL fetch</text>
 
 <rect x="610" y="40" width="285" height="92" rx="6" class="uc"/><text x="622" y="59" font-weight="600">Identity and access</text><text x="622" y="78">SC-01, SC-02, SC-25 login, webhook signature</text><text x="622" y="96">SC-03 roles checked now; SC-04 M11 rule</text><text x="622" y="114">SC-05 scope lock to one service</text>
-<rect x="610" y="142" width="285" height="92" rx="6" class="uc"/><text x="622" y="161" font-weight="600">Model input and output</text><text x="622" y="180">SC-06 tools hold credentials, model none</text><text x="622" y="198">SC-07, SC-08 allow list, outbound allow list</text><text x="622" y="216">SC-09 to SC-12 redaction, schema, reviewer</text>
-<rect x="610" y="244" width="285" height="93" rx="6" class="uc"/><text x="622" y="263" font-weight="600">Changes and execution</text><text x="622" y="282">SC-13 policy checks; SC-14 signed hash</text><text x="622" y="300">SC-15, SC-16 executor only, key, intent record</text><text x="622" y="318">SC-17 to SC-24 sandbox, verifier, audit</text>
+<rect x="610" y="142" width="285" height="92" rx="6" class="uc"/><text x="622" y="160" font-weight="600">Model input and output</text><text x="622" y="176">SC-06 tools hold credentials, model none</text><text x="622" y="192">SC-07, SC-08 tool and host allow lists</text><text x="622" y="208">SC-09 to 12 redaction, prompt, schema, review</text><text x="622" y="224">SC-24 cloud models off by default</text>
+<rect x="610" y="244" width="285" height="93" rx="6" class="uc"/><text x="622" y="263" font-weight="600">Changes and execution</text><text x="622" y="282">SC-13 policy checks; SC-14 signed hash</text><text x="622" y="300">SC-15, SC-16 executor only, key, intent record</text><text x="622" y="318">SC-17 to SC-23 sandbox, verifier, Git, audit</text>
 <rect x="610" y="350" width="285" height="34" rx="6" class="hum"/><text x="622" y="371">A rule in a prompt is never a control.</text>
 
 <rect x="935" y="40" width="205" height="42" rx="6" class="okb"/><text x="947" y="57">Production services</text><text x="947" y="73" class="lbl">AST-1 (I, A)</text>
@@ -214,16 +214,17 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="25" y="70" width="185" height="46" rx="6" class="box"/><text x="117" y="89">Engineer, platform admin</text><text x="117" y="104" class="lbl">CLI, HTTP API, admin API</text>
 <rect x="25" y="140" width="185" height="46" rx="6" class="box"/><text x="117" y="159">Monitoring</text><text x="117" y="174" class="lbl">alert webhook</text>
 <rect x="25" y="235" width="185" height="70" rx="6" class="box"/><text x="117" y="255">Evidence sources</text><text x="117" y="271" class="lbl">logs, metrics, traces,</text><text x="117" y="286" class="lbl">repository, error tracker</text>
-<rect x="265" y="70" width="150" height="46" rx="6" class="uc"/><text x="340" y="89">Intake and auth</text><text x="340" y="104" class="lbl">SC-01 to SC-03</text>
+<rect x="25" y="325" width="185" height="70" rx="6" class="hum"/><text x="117" y="343">Platform admin limits</text><text x="117" y="359" class="lbl">admin cannot approve (SC-04);</text><text x="117" y="373" class="lbl">cloud provider needs a</text><text x="117" y="387" class="lbl">second admin (SC-24)</text>
+<rect x="265" y="70" width="150" height="46" rx="6" class="uc"/><text x="340" y="89">Intake and auth</text><text x="340" y="104" class="lbl">SC-01 to SC-03, SC-25</text>
 <rect x="265" y="140" width="150" height="46" rx="6" class="box"/><text x="340" y="159">Secret store</text><text x="340" y="174" class="lbl">SC-23</text>
-<rect x="265" y="235" width="150" height="70" rx="6" class="uc"/><text x="340" y="255">Tool layer</text><text x="340" y="271" class="lbl">scope lock, allow list,</text><text x="340" y="286" class="lbl">redaction, read tokens</text>
-<rect x="450" y="70" width="150" height="46" rx="6" class="uc"/><text x="525" y="89">Approval gate</text><text x="525" y="104" class="lbl">SC-04, SC-14</text>
+<rect x="265" y="235" width="150" height="85" rx="6" class="uc"/><text x="340" y="255">Tool layer</text><text x="340" y="271" class="lbl">scope lock, allow list,</text><text x="340" y="286" class="lbl">redaction, read tokens</text><text x="340" y="300" class="lbl">SC-05 to SC-07,</text><text x="340" y="313" class="lbl">SC-09 to SC-11</text>
+<rect x="450" y="70" width="150" height="46" rx="6" class="uc"/><text x="525" y="85">Approval gate</text><text x="525" y="98" class="lbl">SC-03, SC-04,</text><text x="525" y="110" class="lbl">SC-14, SC-25</text>
 <rect x="265" y="330" width="150" height="46" rx="6" class="box"/><text x="340" y="349">Audit store</text><text x="340" y="364" class="lbl">append-only, SC-19</text>
-<rect x="635" y="70" width="150" height="46" rx="6" class="uc"/><text x="710" y="89">Executor</text><text x="710" y="104" class="lbl">only writer, SC-15</text>
+<rect x="635" y="70" width="150" height="46" rx="6" class="uc"/><text x="710" y="89">Executor</text><text x="710" y="104" class="lbl">only writer, SC-15, SC-16</text>
 <rect x="635" y="140" width="150" height="46" rx="6" class="uc"/><text x="710" y="159">Verifier</text><text x="710" y="174" class="lbl">plain code, SC-18</text>
 <rect x="455" y="245" width="100" height="50" rx="6" class="bad"/><text x="505" y="266">Agent model</text><text x="505" y="281" class="lbl">no credentials</text>
-<rect x="570" y="245" width="100" height="50" rx="6" class="bad"/><text x="620" y="266">Reviewer</text><text x="620" y="281" class="lbl">model</text>
-<rect x="685" y="245" width="100" height="50" rx="6" class="bad"/><text x="735" y="266">Sandbox</text><text x="735" y="281" class="lbl">AI code, tests</text>
+<rect x="570" y="245" width="100" height="50" rx="6" class="bad"/><text x="620" y="266">Reviewer</text><text x="620" y="281" class="lbl">model, SC-12</text>
+<rect x="685" y="245" width="100" height="50" rx="6" class="bad"/><text x="735" y="266">Sandbox</text><text x="735" y="281" class="lbl">AI code, SC-17</text>
 <rect x="850" y="70" width="270" height="46" rx="6" class="hum"/><text x="985" y="89">Human approver</text><text x="985" y="104" class="lbl">on-call or owner, logged in</text>
 <rect x="850" y="160" width="270" height="46" rx="6" class="box"/><text x="985" y="179">CI/CD pipeline, config store</text><text x="985" y="194" class="lbl">existing tools</text>
 <rect x="850" y="250" width="270" height="46" rx="6" class="okb"/><text x="985" y="269">Production</text><text x="985" y="284" class="lbl">changed only through the pipeline or config store</text>
@@ -244,7 +245,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M600,93 H633" marker-end="url(#a5)"/>
 <path d="M785,93 H820 V176 H848" marker-end="url(#a5)"/>
 <path d="M985,206 V248" marker-end="url(#a5)"/>
-<path d="M848,285 H818 V200 H710 V188" stroke-dasharray="4 3" marker-end="url(#a5)"/>
+<path d="M117,140 V122 H620 V163 H633" stroke-dasharray="4 3" marker-end="url(#a5)"/>
 <path d="M415,292 H428 V390 H735 V297" marker-end="url(#a5)"/>
 </g>
 <g class="lbl">
@@ -252,7 +253,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="640" y="11" text-anchor="middle">approval request (action + hash) / signed approval</text>
 <text x="512" y="200">proposal</text>
 <text x="852" y="152">signed action</text><text x="993" y="231">deploy or restore</text>
-<text x="868" y="318">alert signals (read through monitoring)</text>
+<text x="262" y="135">alert signals (read from monitoring)</text><text x="598" y="205">verdict (signal only)</text>
 <text x="560" y="385" text-anchor="middle">run tests</text>
 </g>
 <g>
@@ -303,33 +304,45 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <p>An abuse case is a use of the platform that causes harm. The reference scenario gives the examples: shop-api, config v42 with the value <code>"30s"</code>, HTTP 500 errors.</p>
 
 <div class="fig">
-<svg viewBox="0 0 1150 320" role="img" aria-label="Attack tree for the goal: an unsafe change reaches production">
+<svg viewBox="0 0 1150 660" role="img" aria-label="Two attack trees: an unsafe change reaches production, and incident data or secrets leave the organization">
 <defs><marker id="b5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
 <rect x="375" y="15" width="400" height="46" rx="6" class="bad"/><text x="575" y="34" class="md" font-weight="600">Goal: an unsafe change reaches production</text><text x="575" y="51" class="lbl">any one branch is enough (OR)</text>
 <rect x="10" y="110" width="170" height="54" rx="6" class="box"/><text x="95" y="132">Steer the model</text><text x="95" y="148" class="lbl">text in logs or code (AB-01)</text>
+<rect x="10" y="215" width="170" height="80" rx="6" class="uc"/><text x="95" y="237">Allow list, redaction,</text><text x="95" y="253">prompt, review, verifier</text><text x="95" y="270" class="lbl">SC-07, SC-09, SC-10,</text><text x="95" y="284" class="lbl">SC-12, SC-18</text>
 <rect x="200" y="110" width="170" height="54" rx="6" class="box"/><text x="285" y="132">Approve without</text><text x="285" y="148" class="lbl">authority (AB-06)</text>
+<rect x="200" y="215" width="170" height="80" rx="6" class="uc"/><text x="285" y="237">Login, re-auth to approve,</text><text x="285" y="253">role checked now</text><text x="285" y="270" class="lbl">SC-01, SC-03, SC-04,</text><text x="285" y="284" class="lbl">SC-14, SC-25</text>
 <rect x="390" y="110" width="170" height="54" rx="6" class="box"/><text x="475" y="132">Insider approves</text><text x="475" y="148" class="lbl">own steered fix (AB-07)</text>
+<rect x="390" y="215" width="170" height="80" rx="6" class="uc"/><text x="475" y="237">A different person</text><text x="475" y="253">approves the fix</text><text x="475" y="270" class="lbl">SC-04, SC-20</text>
 <rect x="580" y="110" width="170" height="54" rx="6" class="box"/><text x="665" y="132">Change the patch</text><text x="665" y="148" class="lbl">after approval (AB-08)</text>
-<rect x="770" y="110" width="170" height="54" rx="6" class="box"/><text x="855" y="132">Write without</text><text x="855" y="148" class="lbl">the executor (AB-02)</text>
-<rect x="960" y="110" width="170" height="54" rx="6" class="box"/><text x="1045" y="132">Run the action</text><text x="1045" y="148" class="lbl">twice (AB-10)</text>
-<rect x="10" y="215" width="170" height="66" rx="6" class="uc"/><text x="95" y="237">Allow list, review,</text><text x="95" y="253">human, verifier</text><text x="95" y="270" class="lbl">SC-07, SC-10, SC-12, SC-18</text>
-<rect x="200" y="215" width="170" height="66" rx="6" class="uc"/><text x="285" y="237">Login, re-auth to approve,</text><text x="285" y="253">role checked now</text><text x="285" y="270" class="lbl">SC-01, SC-03, SC-14, SC-25</text>
-<rect x="390" y="215" width="170" height="66" rx="6" class="uc"/><text x="475" y="237">A different person</text><text x="475" y="253">approves the fix</text><text x="475" y="270" class="lbl">SC-04, SC-20</text>
-<rect x="580" y="215" width="170" height="66" rx="6" class="uc"/><text x="665" y="237">Approval bound to</text><text x="665" y="253">a hash, signed</text><text x="665" y="270" class="lbl">SC-14, SC-20</text>
-<rect x="770" y="215" width="170" height="66" rx="6" class="uc"/><text x="855" y="237">Agent holds no</text><text x="855" y="253">write credentials</text><text x="855" y="270" class="lbl">SC-06, SC-15, SC-23</text>
-<rect x="960" y="215" width="170" height="66" rx="6" class="uc"/><text x="1045" y="237">Absolute target, key,</text><text x="1045" y="253">precondition check</text><text x="1045" y="270" class="lbl">SC-15, SC-16</text>
+<rect x="580" y="215" width="170" height="80" rx="6" class="uc"/><text x="665" y="237">Approval bound to</text><text x="665" y="253">a hash, signed</text><text x="665" y="270" class="lbl">SC-14, SC-20</text>
+<rect x="770" y="110" width="170" height="54" rx="6" class="box"/><text x="855" y="132">Destructive change</text><text x="855" y="148" class="lbl">or patch (AB-02)</text>
+<rect x="770" y="215" width="170" height="80" rx="6" class="uc"/><text x="855" y="237">Allow list, policy check,</text><text x="855" y="253">executor only, sandbox</text><text x="855" y="270" class="lbl">SC-06, SC-07, SC-13,</text><text x="855" y="284" class="lbl">SC-15, SC-17</text>
+<rect x="960" y="110" width="170" height="54" rx="6" class="box"/><text x="1045" y="132">Run twice or lose</text><text x="1045" y="148" class="lbl">the reply (AB-10, AB-11)</text>
+<rect x="960" y="215" width="170" height="80" rx="6" class="uc"/><text x="1045" y="237">Absolute target, key,</text><text x="1045" y="253">intent record, precondition</text><text x="1045" y="270" class="lbl">SC-15, SC-16</text>
+<rect x="180" y="330" width="400" height="46" rx="6" class="bad"/><text x="380" y="349" class="md" font-weight="600">Goal: incident data or secrets leave the organization</text><text x="380" y="366" class="lbl">any one branch is enough (OR)</text>
+<rect x="10" y="420" width="170" height="54" rx="6" class="box"/><text x="95" y="442">Fetch a URL from a log</text><text x="95" y="458" class="lbl">(AB-12)</text>
+<rect x="10" y="525" width="170" height="80" rx="6" class="uc"/><text x="95" y="547">No URL tool, outbound</text><text x="95" y="563">host allow list</text><text x="95" y="580" class="lbl">SC-07, SC-08</text>
+<rect x="200" y="420" width="170" height="54" rx="6" class="box"/><text x="285" y="442">Secret in model output</text><text x="285" y="458" class="lbl">(AB-14)</text>
+<rect x="200" y="525" width="170" height="80" rx="6" class="uc"/><text x="285" y="547">Redaction of evidence</text><text x="285" y="563">and of model output</text><text x="285" y="580" class="lbl">SC-09</text>
+<rect x="390" y="420" width="170" height="54" rx="6" class="box"/><text x="475" y="442">Unapproved cloud model</text><text x="475" y="458" class="lbl">(AB-19)</text>
+<rect x="390" y="525" width="170" height="80" rx="6" class="uc"/><text x="475" y="547">Off by default, second admin,</text><text x="475" y="563">allow list, redaction</text><text x="475" y="580" class="lbl">SC-08, SC-09, SC-24</text>
+<rect x="580" y="420" width="170" height="54" rx="6" class="box"/><text x="665" y="442">Patch sends credentials</text><text x="665" y="458" class="lbl">(AB-09)</text>
+<rect x="580" y="525" width="170" height="80" rx="6" class="uc"/><text x="665" y="547">Policy check, sandbox</text><text x="665" y="563">without network route</text><text x="665" y="580" class="lbl">SC-13, SC-17</text>
 </g>
 <g class="ln">
 <path d="M575,61 V85"/><path d="M95,85 H1045"/>
 <path d="M95,85 V108" marker-end="url(#b5)"/><path d="M285,85 V108" marker-end="url(#b5)"/><path d="M475,85 V108" marker-end="url(#b5)"/><path d="M665,85 V108" marker-end="url(#b5)"/><path d="M855,85 V108" marker-end="url(#b5)"/><path d="M1045,85 V108" marker-end="url(#b5)"/>
 <path d="M95,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M285,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M475,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M665,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M855,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M1045,164 V213" stroke-dasharray="4 3" marker-end="url(#b5)"/>
+<path d="M380,376 V395"/><path d="M95,395 H665"/>
+<path d="M95,395 V418" marker-end="url(#b5)"/><path d="M285,395 V418" marker-end="url(#b5)"/><path d="M475,395 V418" marker-end="url(#b5)"/><path d="M665,395 V418" marker-end="url(#b5)"/>
+<path d="M95,474 V523" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M285,474 V523" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M475,474 V523" stroke-dasharray="4 3" marker-end="url(#b5)"/><path d="M665,474 V523" stroke-dasharray="4 3" marker-end="url(#b5)"/>
 </g>
-<g class="lbl"><text x="100" y="192">blocked by</text><text x="290" y="192">blocked by</text><text x="480" y="192">blocked by</text><text x="670" y="192">blocked by</text><text x="860" y="192">blocked by</text><text x="1050" y="192">blocked by</text></g>
-<text x="10" y="306" class="lbl">White = attack step. Blue = control (section 5.6), with its control IDs. The first branch is not fully blocked: a steered but allowed proposal stays a residual risk (RR-1).</text>
+<g class="lbl"><text x="100" y="192">blocked by</text><text x="290" y="192">blocked by</text><text x="480" y="192">blocked by</text><text x="670" y="192">blocked by</text><text x="860" y="192">blocked by</text><text x="1050" y="192">blocked by</text><text x="100" y="502">blocked by</text><text x="290" y="502">blocked by</text><text x="480" y="502">blocked by</text><text x="670" y="502">blocked by</text></g>
+<text x="10" y="632" class="lbl">White = attack step. Blue = control (section 5.6), with its control IDs. The first branch of the first tree is not fully blocked: a steered but allowed proposal stays a residual risk (RR-1).</text>
 </svg>
 </div>
-<p class="cap">Figure 3. Attack tree for the most serious goal. Each branch must pass a control that is outside the model.</p>
+<p class="cap">Figure 3. Two attack trees. The first has the most serious goal: an unsafe change reaches production. The second has the goal that incident data or secrets leave the organization. Each branch must pass a control that is outside the model.</p>
 
 <div class="tw"><table class="reg">
 <tr><th>ID</th><th>Abuse case</th><th>Actor</th><th>Surface</th><th>Harm if not stopped</th><th>Controls</th><th>Q</th></tr>
@@ -366,7 +379,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <svg viewBox="0 0 1150 290" role="img" aria-label="Flowchart of the approval check">
 <defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
-<polygon points="110,60 195,105 110,150 25,105" class="hum"/><text x="110" y="100">Logged in?</text><text x="110" y="114">re-entered password</text>
+<polygon points="110,60 195,105 110,150 25,105" class="hum"/><text x="110" y="94">Logged in and</text><text x="110" y="108">re-authenticated</text><text x="110" y="122">just now?</text>
 <polygon points="300,60 385,105 300,150 215,105" class="hum"/><text x="300" y="100">On-call or owner</text><text x="300" y="114">of this service now?</text>
 <polygon points="490,60 575,105 490,150 405,105" class="hum"/><text x="490" y="100">Revert or</text><text x="490" y="114">config restore?</text>
 <polygon points="680,60 765,105 680,150 595,105" class="hum"/><text x="680" y="100">Approver is author</text><text x="680" y="114">of faulty change?</text>
@@ -428,8 +441,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="568" y="355">10 result</text>
 <text x="568" y="385">11 verify: alert signals against the baseline, in plain code</text>
 </g>
-<g class="lbl" text-anchor="end"><text x="1140" y="64" font-weight="600">control</text><text x="1140" y="84">SC-11, SC-12</text><text x="1140" y="140">SC-03, SC-04</text><text x="1140" y="170">SC-14</text><text x="1140" y="241">SC-14</text><text x="1140" y="274">SC-16</text><text x="1140" y="304">SC-15</text><text x="1140" y="334">SC-16</text><text x="1140" y="364">SC-19</text><text x="1140" y="394">SC-18</text></g>
-<text x="20" y="435" class="lbl">The agent never talks to the executor or the config store. Steps 7 and 8 use the absolute target "v41", not "previous version".</text>
+<g class="lbl" text-anchor="end"><text x="1140" y="64" font-weight="600">control</text><text x="1140" y="84">SC-11, SC-12</text><text x="1140" y="125">SC-01, SC-25,</text><text x="1140" y="138">SC-03, SC-04,</text><text x="1140" y="151">SC-14</text><text x="1140" y="170">SC-14</text><text x="1140" y="241">SC-14</text><text x="1140" y="274">SC-16</text><text x="1140" y="304">SC-15</text><text x="1140" y="334">SC-16</text><text x="1140" y="364">SC-19</text><text x="1140" y="394">SC-18</text></g>
+<text x="20" y="435" class="lbl">The agent never talks to the executor or the config store. Step 8 names the absolute target "v41", not "previous version".</text>
 </svg>
 </div>
 <p class="cap">Figure 5. Sequence diagram of an approved config restore in incident A. The right column names the control that acts at each step.</p>
@@ -442,6 +455,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>SC-03</td><td>Roles from the ownership list and the on-call schedule, checked on the server for every request. <b>Viewer:</b> owning team. <b>Submitter:</b> owning team, on-call of that service, platform team on-call (FR-03). <b>Approver:</b> on-call or owner of that service at that time. <b>Platform admin:</b> configures the platform. A failed check returns 403 and writes an audit entry. Depends on L5-A5.</td><td><span class="L D">Decision</span></td><td>Intake and auth, approval gate</td><td>Q5.6, Q5.7, Q5.22</td><td>AB-05, AB-06, AB-17, AB-18</td></tr>
 <tr><td>SC-04</td><td>Separation of duties. The author of the faulty change can approve a revert or a config restore, but not the permanent fix (M11). If no eligible approver other than the author exists, the fix request goes to the backup approver (QR-05). If there is none, the request stays open and is escalated. The service is already recovered, so nothing is applied meanwhile. The platform admin cannot approve: the admin role is held by a separate admin account (Layer 7). The platform's own identity cannot approve.</td><td><span class="L D">Decision</span></td><td>Approval gate</td><td>Q5.7</td><td>AB-06, AB-07</td></tr>
 <tr><td>SC-05</td><td>Target scope lock. The incident's service is fixed at intake. The tool layer accepts queries only for that service and its declared dependencies (read only, A1 1.5). Any other target is rejected and logged.</td><td><span class="L D">Decision</span></td><td>Tool layer</td><td>Q5.24</td><td>AB-05, AB-18</td></tr>
+<tr><td>SC-25</td><td>Login modes (added in Layer 7). Each deployment uses <b>one</b> mode, set by configuration: <b>own login</b> (default) or the organization's single sign-on. Own login: a platform admin creates every account (no self-signup); passwords are hashed with Argon2id; 5 failed attempts lock the account; rate limits per IP address; every login, failure, lockout and reset writes an audit event. To approve a production action, the approver enters the password again (or logs in again with single sign-on). <b>No MFA in V1</b> (RR-6).</td><td><span class="L D">Decision</span></td><td>Intake and auth, approval gate</td><td>Q5.21</td><td>AB-06, AB-20</td></tr>
 <tr class="grp"><td colspan="6">Model input and output</td></tr>
 <tr><td>SC-06</td><td>Mediated access. The tool layer holds the credentials. The agent calls typed tools. The model never sees a credential.</td><td><span class="L F">Fixed</span> A2 2.1, 2.3</td><td>Tool layer, secret store</td><td>Q5.13</td><td>AB-02</td></tr>
 <tr><td>SC-07</td><td>A tool allow list for each phase. Every argument is checked against a schema and against SC-05. V1 has <b>no</b> general shell (a shell exists only in the sandbox), <b>no</b> SQL tool, and <b>no</b> URL-fetch tool. Investigation tools are read only. The agent's only writes are to its own incident record, the sandbox, and a branch with a pull request.</td><td><span class="L D">Decision</span></td><td>Tool layer</td><td>Q5.3, Q5.14, Q5.15, Q5.16, Q5.17</td><td>AB-01, AB-02, AB-12, AB-13</td></tr>
@@ -450,6 +464,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>SC-10</td><td>Prompt structure. Instructions only in the system role. Evidence only in untrusted-data blocks with random boundary markers, after SC-09 and a length cap. Control characters are removed. A pattern check flags text such as "ignore previous instructions" in the audit record. The flag is a signal, not a block.</td><td><span class="L D">Decision</span></td><td>Tool layer</td><td>Q5.1, Q5.2, Q5.23</td><td>AB-01</td></tr>
 <tr><td>SC-11</td><td>Every model output is checked against its schema. The platform never repairs an output and never acts on part of it. Retry with the parse error, at most 3 attempts (QR-04), then escalate. An output that cites an evidence ID that is not in the incident record is rejected. Builds on A4 QR-04 (3 attempts).</td><td><span class="L D">Decision</span></td><td>Tool layer</td><td>Q5.5</td><td>AB-04</td></tr>
 <tr><td>SC-12</td><td>A reviewer with a different model checks every proposal in a new context. The approval screen shows the supporting <b>and</b> the contradicting evidence (FR-07).</td><td><span class="L F">Fixed</span> A1 1.5, A4 FR-11</td><td>Review step</td><td>Q5.4, Q5.23</td><td>AB-01, AB-03</td></tr>
+<tr><td>SC-24</td><td>Cloud model providers (added after Layer 6, Q6.12). Off by default. Only a platform admin enables one, through the admin API, and a <b>second platform admin approves</b> the change; the change record keeps before and after values (revised in Layer 7). The API key is in the secret store (SC-23); the configuration holds its name only. The provider host is added to the outbound allow list (SC-08). Redaction (SC-09) runs before every model call. No automatic fallback to a cloud provider. The platform does not start if the reviewer model equals the main model.</td><td><span class="L D">Decision</span></td><td>Inference gateway, network rules</td><td>Q5.16</td><td>AB-19</td></tr>
 <tr class="grp"><td colspan="6">Changes and execution</td></tr>
 <tr><td>SC-13</td><td>Policy checks on every patch before review: reject a Type 1 effect (data deletion, a destructive migration), code that logs, prints, or sends environment variables or secret-named values, and a new outbound call.</td><td><span class="L D">Decision</span></td><td>Policy checks</td><td>Q5.3, Q5.9</td><td>AB-02, AB-09</td></tr>
 <tr><td>SC-14</td><td>Each approval is bound to a hash of what was reviewed: the pull request head commit SHA (fix), the artifact digest and target version (redeploy), or the config version ID and content hash (restore). The platform signs the approval record with a key that the agent cannot reach. The executor checks the signature, the hash, the expiry (QR-05), and single use. A mismatch is rejected and goes back to review.</td><td><span class="L D">Decision</span></td><td>Approval gate, executor</td><td>Q5.8, Q5.27</td><td>AB-06, AB-08</td></tr>
@@ -462,8 +477,6 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>SC-21</td><td>Budgets and limits for each incident: time, tool calls, GPU-minutes, tokens; queue limit with overflow to humans.</td><td><span class="L F">Fixed</span> A4 NFR-05, NFR-06, QR-06, QR-07</td><td>Orchestration</td><td>Q5.6</td><td>AB-17</td></tr>
 <tr><td>SC-22</td><td>Human approval of every production change, recovery verification on the alert signals, and an undo path for every change.</td><td><span class="L F">Fixed</span> A1 1.5, A4 FR-11 to FR-13</td><td>Approval gate, verifier</td><td>Q5.4</td><td>AB-03</td></tr>
 <tr><td>SC-23</td><td>Platform credentials. One read-only service account for each integration, with least privilege. Short-lived tokens come from the secret store. The secret store encrypts at rest, has an access policy for each credential, audits every read, and supports rotation. Depends on L5-A2.</td><td><span class="L D">Decision</span></td><td>Secret store, tool layer</td><td>Q5.13</td><td>AB-02, AB-09</td></tr>
-<tr><td>SC-24</td><td>Cloud model providers (added after Layer 6, Q6.12). Off by default. Only a platform admin enables one, through the admin API, and a <b>second platform admin approves</b> the change; the change record keeps before and after values (revised in Layer 7). The API key is in the secret store (SC-23); the configuration holds its name only. The provider host is added to the outbound allow list (SC-08). Redaction (SC-09) runs before every model call. No automatic fallback to a cloud provider. The platform does not start if the reviewer model equals the main model.</td><td><span class="L D">Decision</span></td><td>Inference gateway, network rules</td><td>Q5.16</td><td>AB-19</td></tr>
-<tr><td>SC-25</td><td>Login modes (added in Layer 7). Each deployment uses <b>one</b> mode, set by configuration: <b>own login</b> (default) or the organization's single sign-on. Own login: a platform admin creates every account (no self-signup); passwords are hashed with Argon2id; 5 failed attempts lock the account; rate limits per IP address; every login, failure, lockout and reset writes an audit event. To approve a production action, the approver enters the password again (or logs in again with single sign-on). <b>No MFA in V1</b> (RR-6).</td><td><span class="L D">Decision</span></td><td>Intake and auth, approval gate</td><td>Q5.21</td><td>AB-06, AB-20</td></tr>
 </table></div>
 
 <!-- ============ 5.7 ============ -->

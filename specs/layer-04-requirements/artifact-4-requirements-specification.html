@@ -114,34 +114,40 @@ svg .ac{fill:var(--muted)}
 <p>A description says <b>what</b> the system must do, in one or two sentences, with "must". It does not say <b>how</b> to build it. It refers to the earlier decision where one exists (for example A1 E6).</p>
 
 <div class="fig">
-<svg viewBox="0 0 1150 320" role="img" aria-label="Functional requirements placed on the incident flow, with the escalation branch, the fix loop and the stop control">
+<svg viewBox="0 0 1150 462" role="img" aria-label="Functional requirements placed on the incident flow, with the queue, the escalation branches, the fix loop, the failure rules and the stop control">
 <defs><marker id="q1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g class="ln"><path d="M13,30 V24 H1003 V30"/><path d="M1013,30 V24 H1137 V30"/></g>
-<text x="508" y="18" class="lbl" text-anchor="middle">Phase 1: recovery (redeploy last known-good artifact or restore previous config) (Must)</text>
-<text x="1075" y="18" class="lbl" text-anchor="middle">Phase 2 (Should)</text>
+<g class="ln"><path d="M13,30 V24 H885 V30"/><path d="M895,30 V24 H1011 V30"/></g>
+<text x="449" y="18" class="lbl" text-anchor="middle">Phase 1: recovery (redeploy last known-good artifact or restore previous config) (Must)</text>
+<text x="953" y="18" class="lbl" text-anchor="middle">Phase 2 (Should)</text>
 <g text-anchor="middle">
-<rect x="13" y="40" width="116" height="80" rx="6" class="box"/><text x="71" y="58" class="md">Intake</text><text x="71" y="74" class="sm" font-weight="600">FR-01, FR-03</text><text x="71" y="94" class="lbl">alert, CLI or API</text><text x="71" y="108" class="lbl">unmapped: fallback</text>
-<rect x="139" y="40" width="116" height="80" rx="6" class="uc"/><text x="197" y="58" class="md">Group alerts</text><text x="197" y="74" class="sm" font-weight="600">FR-02</text><text x="197" y="94" class="lbl">same key joins</text><text x="197" y="108" class="lbl">1 incident</text>
-<rect x="265" y="40" width="116" height="80" rx="6" class="uc"/><text x="323" y="58" class="md">Collect evidence</text><text x="323" y="74" class="sm" font-weight="600">FR-04</text><text x="323" y="94" class="lbl">parallel, timeouts</text><text x="323" y="108" class="lbl">failed = "missing"</text>
-<rect x="391" y="40" width="116" height="80" rx="6" class="uc"/><text x="449" y="58" class="md">Diagnose</text><text x="449" y="74" class="sm" font-weight="600">FR-05 to FR-08</text><text x="449" y="94" class="lbl">rules, then rubric</text><text x="449" y="108" class="lbl">ranked hypotheses</text>
-<rect x="517" y="40" width="116" height="80" rx="6" class="hum"/><text x="575" y="58" class="md">Review, approve</text><text x="575" y="74" class="sm" font-weight="600">FR-11</text><text x="575" y="94" class="lbl">other model, policy</text><text x="575" y="108" class="lbl">human approves</text>
-<rect x="643" y="40" width="116" height="80" rx="6" class="uc"/><text x="701" y="58" class="md">Execute</text><text x="701" y="74" class="sm" font-weight="600">FR-12</text><text x="701" y="94" class="lbl">pipeline or config</text><text x="701" y="108" class="lbl">store; never agent</text>
-<rect x="769" y="40" width="116" height="80" rx="6" class="okb"/><text x="827" y="58" class="md">Verify recovery</text><text x="827" y="74" class="sm" font-weight="600">FR-13</text><text x="827" y="94" class="lbl">alert signals at</text><text x="827" y="108" class="lbl">baseline, for period</text>
-<rect x="895" y="40" width="116" height="80" rx="6" class="fx"/><text x="953" y="58" class="md">Patch, sandbox</text><text x="953" y="74" class="sm" font-weight="600">FR-09, FR-10</text><text x="953" y="94" class="lbl">branch, repro test</text><text x="953" y="108" class="lbl">3 test sets pass</text>
-<rect x="1021" y="40" width="116" height="80" rx="6" class="box"/><text x="1079" y="58" class="md">Close</text><text x="1079" y="74" class="sm" font-weight="600">FR-15</text><text x="1079" y="94" class="lbl">timeline of</text><text x="1079" y="108" class="lbl">every action</text>
-<rect x="329" y="182" width="240" height="46" rx="6" class="bad"/><text x="449" y="201" class="md">Escalate; no guessed cause</text><text x="449" y="218" class="lbl">inconclusive or unresolved conflict</text>
+<rect x="13" y="40" width="116" height="124" rx="6" class="box"/><text x="71" y="58" class="md">Intake</text><text x="71" y="74" class="sm" font-weight="600">FR-01, FR-03</text><text x="71" y="94" class="lbl">alert, CLI or API</text><text x="71" y="108" class="lbl">unmapped: fallback</text>
+<rect x="139" y="40" width="116" height="124" rx="6" class="uc"/><text x="197" y="58" class="md">Group alerts</text><text x="197" y="74" class="sm" font-weight="600">FR-02</text><text x="197" y="94" class="lbl">same key joins</text><text x="197" y="108" class="lbl">1 incident</text>
+<rect x="265" y="40" width="116" height="124" rx="6" class="uc"/><text x="323" y="58" class="md">Collect evidence</text><text x="323" y="74" class="sm" font-weight="600">FR-04, NFR-08/12</text><text x="323" y="94" class="lbl">timeout per source;</text><text x="323" y="108" class="lbl">failed source =</text><text x="323" y="122" class="lbl">missing; secrets</text><text x="323" y="136" class="lbl">removed first</text>
+<rect x="391" y="40" width="116" height="124" rx="6" class="uc"/><text x="449" y="58" class="md">Diagnose</text><text x="449" y="74" class="sm" font-weight="600">FR-05 to FR-08</text><text x="449" y="94" class="lbl">rules, then rubric</text><text x="449" y="108" class="lbl">ranked hypotheses</text>
+<rect x="517" y="40" width="116" height="124" rx="6" class="hum"/><text x="575" y="58" class="md">Review, approve</text><text x="575" y="74" class="sm" font-weight="600">FR-11, QR-05</text><text x="575" y="94" class="lbl">other model; policy</text><text x="575" y="108" class="lbl">human approves;</text><text x="575" y="122" class="lbl">silence is never</text><text x="575" y="136" class="lbl">approval; timeout:</text><text x="575" y="150" class="lbl">backup approver</text>
+<rect x="643" y="40" width="116" height="124" rx="6" class="uc"/><text x="701" y="58" class="md">Execute</text><text x="701" y="74" class="sm" font-weight="600">FR-12</text><text x="701" y="94" class="lbl">pipeline or config</text><text x="701" y="108" class="lbl">store; never agent</text>
+<rect x="769" y="40" width="116" height="124" rx="6" class="okb"/><text x="827" y="58" class="md">Verify recovery</text><text x="827" y="74" class="sm" font-weight="600">FR-13</text><text x="827" y="94" class="lbl">alert signals at</text><text x="827" y="108" class="lbl">baseline, for period</text>
+<rect x="895" y="40" width="116" height="124" rx="6" class="fx"/><text x="953" y="58" class="md">Patch, sandbox</text><text x="953" y="74" class="sm" font-weight="600">FR-09, FR-10</text><text x="953" y="94" class="lbl">branch, repro test</text><text x="953" y="108" class="lbl">3 test sets pass</text>
+<rect x="1021" y="40" width="116" height="124" rx="6" class="box"/><text x="1079" y="58" class="md">Close</text><text x="1079" y="94" class="lbl">final step</text>
+<rect x="13" y="190" width="242" height="58" rx="6" class="box"/><text x="134" y="208" class="md">Queue (NFR-07, QR-07)</text><text x="134" y="224" class="lbl">max 3 active, queue 20,</text><text x="134" y="238" class="lbl">overflow to humans, recovery before fix</text>
+<rect x="334" y="190" width="230" height="46" rx="6" class="bad"/><text x="449" y="209" class="md">Escalate; no guessed cause</text><text x="449" y="226" class="lbl">inconclusive or unresolved conflict</text>
+<rect x="747" y="190" width="160" height="46" rx="6" class="bad"/><text x="827" y="209" class="md">Escalate</text><text x="827" y="226" class="lbl">not at baseline (FR-13)</text>
 </g>
 <g class="ln">
-<path d="M129,80 H137" marker-end="url(#q1)"/><path d="M255,80 H263" marker-end="url(#q1)"/><path d="M381,80 H389" marker-end="url(#q1)"/><path d="M507,80 H515" marker-end="url(#q1)"/><path d="M633,80 H641" marker-end="url(#q1)"/><path d="M759,80 H767" marker-end="url(#q1)"/><path d="M885,80 H893" marker-end="url(#q1)"/><path d="M1011,80 H1019" marker-end="url(#q1)"/>
-<path d="M449,120 V180" marker-end="url(#q1)"/>
+<path d="M129,102 H137" marker-end="url(#q1)"/><path d="M255,102 H263" marker-end="url(#q1)"/><path d="M381,102 H389" marker-end="url(#q1)"/><path d="M507,102 H515" marker-end="url(#q1)"/><path d="M633,102 H641" marker-end="url(#q1)"/><path d="M759,102 H767" marker-end="url(#q1)"/><path d="M885,102 H893" marker-end="url(#q1)"/><path d="M1011,102 H1019" marker-end="url(#q1)"/>
+<path d="M71,164 V188" marker-end="url(#q1)"/><path d="M449,164 V188" marker-end="url(#q1)"/><path d="M827,164 V188" marker-end="url(#q1)"/>
 </g>
-<text x="455" y="158" class="lbl">FR-07, FR-08</text>
-<path class="ln" stroke-dasharray="4 4" d="M953,120 V150 H575 V122" marker-end="url(#q1)"/>
-<text x="764" y="166" class="lbl" text-anchor="middle">the fix PR goes back through review and approval;</text>
-<text x="764" y="180" class="lbl" text-anchor="middle">the human approver merges it, the pipeline deploys it</text>
-<rect x="13" y="246" width="1124" height="36" rx="6" class="bad"/>
-<text x="575" y="269" class="md" text-anchor="middle">An engineer can stop or take over at any step: stopped within 10 s, 0 pending writes (FR-14)</text>
-<text x="13" y="308" class="lbl">Blue = platform. Yellow = human. Green = verified. Purple = fix phase. Red = escalation and human control.</text>
+<text x="455" y="182" class="lbl">FR-07, FR-08</text>
+<path class="ln" stroke-dasharray="4 4" d="M953,164 V258 H575 V166" marker-end="url(#q1)"/>
+<text x="764" y="276" class="lbl" text-anchor="middle">the fix PR goes back through review and approval;</text>
+<text x="764" y="290" class="lbl" text-anchor="middle">the human approver merges it, the pipeline deploys it</text>
+<rect x="13" y="302" width="1124" height="34" rx="6" class="box"/>
+<text x="575" y="324" class="md" text-anchor="middle">Failures: DB down: pause, notify at 5 min (NFR-03). Crash: resume, 0 duplicate actions (NFR-02). Model down: escalate, no fallback (NFR-12)</text>
+<rect x="13" y="346" width="1124" height="34" rx="6" class="bad"/>
+<text x="575" y="368" class="md" text-anchor="middle">An engineer can stop or take over at any step: stopped within 10 s, 0 pending writes (FR-14)</text>
+<rect x="13" y="390" width="1124" height="34" rx="6" class="box"/>
+<text x="575" y="412" class="md" text-anchor="middle">Timeline on every step: every read, claim, decision and action is recorded (FR-15)</text>
+<text x="13" y="448" class="lbl">Blue = platform. Yellow = human. Green = verified. Purple = fix phase. Red = escalation and human control.</text>
 </svg>
 </div>
 <p class="cap">Figure 2. Functional requirements on the incident flow. Recovery comes before the fix phase. An inconclusive result escalates to a human.</p>
@@ -164,15 +170,15 @@ svg .ac{fill:var(--muted)}
 <g text-anchor="start" class="md">
 <rect x="20" y="20" width="1110" height="44" rx="6" class="box"/><text x="30" y="47">Whole incident (human waits not counted): <tspan font-weight="600">60 min</tspan> hard cap, then escalate (NFR-05)</text>
 <rect x="20" y="74" width="360" height="44" rx="6" class="uc"/><text x="30" y="101">Investigation: <tspan font-weight="600">20 min</tspan> (NFR-05)</text>
-<rect x="20" y="128" width="130" height="44" rx="6" class="bad"/><text x="28" y="148">Phase 1:</text><text x="28" y="164" font-weight="600">5 min (NFR-05)</text>
+<rect x="20" y="128" width="200" height="44" rx="6" class="bad"/><text x="28" y="148">Phase 1 (propose revert):</text><text x="28" y="164" font-weight="600">5 min (NFR-05)</text>
 <rect x="395" y="74" width="360" height="44" rx="6" class="hum"/><text x="405" y="94">Approval wait (not counted)</text><text x="405" y="110" class="lbl">revert valid 30 min; backup after 10 / 15 min (QR-05)</text>
-<rect x="770" y="74" width="360" height="44" rx="6" class="fx"/><text x="780" y="94">Fix phase: sandbox tests, patch</text><text x="780" y="110" class="lbl">fix approval valid 24 h (QR-05)</text>
-<rect x="165" y="128" width="965" height="44" rx="6" class="okb"/><text x="175" y="148">Budget for each incident (starting values): 10 GPU-minutes, 30 tool calls, 200k input and 64k output tokens.</text><text x="175" y="164">Each model call: 32k context, 60 s, then 1 retry. Malformed output: 3 attempts (NFR-06, QR-03, QR-04, QR-06)</text>
+<rect x="770" y="74" width="360" height="44" rx="6" class="fx"/><text x="780" y="94">Fix phase: sandbox tests, patch</text><text x="780" y="110" class="lbl">fix approval valid 24 h (human wait, not counted) (QR-05)</text>
+<rect x="235" y="128" width="895" height="44" rx="6" class="okb"/><text x="245" y="148">Budget for each incident (starting values): 10 GPU-minutes, 30 tool calls, 200k input and 64k output tokens.</text><text x="245" y="164">Each model call: 32k context, 60 s, then 1 retry. Malformed output: 3 attempts (NFR-06, QR-03, QR-04, QR-06)</text>
 </g>
 <text x="20" y="200" class="lbl">Not to scale. Every value is provisional until the Q2.16 experiments measure it.</text>
 </svg>
 </div>
-<p class="cap">Figure 3. Nested limits for one incident. Each limit stops the work and escalates to a human.</p>
+<p class="cap">Figure 3. Nested limits for one incident. A time or budget limit stops the work and escalates to a human. An approval limit asks again or goes to the backup approver.</p>
 
 <!-- ============ 4.5 ============ -->
 <h2><span class="sec">4.5</span>Acceptance criterion</h2>
@@ -194,7 +200,7 @@ svg .ac{fill:var(--muted)}
 <div class="fig">
 <svg viewBox="0 0 1150 420" role="img" aria-label="Validation methods: the input or injected condition for each method, and the acceptance criterion that must be true">
 <defs><marker id="v1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g class="md" font-weight="600"><text x="10" y="20">Method</text><text x="200" y="20">Input or injected condition</text><text x="600" y="20">Passes only if (acceptance criterion)</text></g>
+<g class="md" font-weight="600"><text x="10" y="20">Method</text><text x="200" y="20">Input, fault or inspection</text><text x="600" y="20">Passes only if (acceptance criterion)</text></g>
 <g text-anchor="middle" class="md" font-weight="600">
 <rect x="10" y="32" width="160" height="44" rx="6" class="uc"/><text x="90" y="59">Fixture test</text>
 <rect x="10" y="84" width="160" height="96" rx="6" class="bad"/><text x="90" y="137">Fault test</text>
@@ -226,7 +232,7 @@ svg .ac{fill:var(--muted)}
 <text x="10" y="410" class="lbl">Key examples only. The register gives the method and criterion for all 34 requirements. Numbers are provisional.</text>
 </svg>
 </div>
-<p class="cap">Figure 4. Validation methods. Each method feeds a known input or fault. The requirement passes only when its criterion is true.</p>
+<p class="cap">Figure 4. Validation methods. Each method uses a known input, a fault, or an inspection of records. The requirement passes only when its criterion is true.</p>
 
 <!-- ============ 4.7 ============ -->
 <h2><span class="sec">4.7</span>Related milestone</h2>
@@ -315,7 +321,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>QR-02</td><td>1 s</td><td>A small part of the 30 s acknowledgement budget (NFR-04).</td></tr>
 <tr><td>QR-03</td><td>60 s, 1 retry</td><td>Our own inference should answer in 5 to 30 s. Slower means degraded, and NFR-12 says escalate.</td></tr>
 <tr><td>QR-04</td><td>3 attempts</td><td>Feeding back the parse error usually fixes the format. More attempts waste the budget.</td></tr>
-<tr><td>QR-05</td><td>30 min / 24 h; 10 / 15 min</td><td>The evidence for a revert goes stale fast. A fix can wait, because the service is already recovered. Backup times match Artifact 3 (L3-A3).</td></tr>
+<tr><td>QR-05</td><td>30 min / 24 h; 10 / 15 min</td><td>The evidence for a revert goes stale fast. A fix can wait, because the service is already recovered. The platform asks the backup approver sooner than the human path in Artifact 3 (SEV1: 10 min). Final values in Layer 11 (Rinisha).</td></tr>
 <tr><td>QR-06</td><td>200k / 64k / 32k</td><td>Measure first, then add a buffer (Artifact 2, Q2.16). Output default set by the team to 64k. The call cap stops one large log from filling the context.</td></tr>
 <tr><td>QR-07</td><td>3 active, queue 20</td><td>Matches the existing GPU capacity (L2-A10). Overflow to humans keeps the platform additive and safe.</td></tr>
 </table>

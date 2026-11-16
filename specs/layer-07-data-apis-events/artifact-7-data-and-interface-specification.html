@@ -264,7 +264,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>Columns or JSONB</td><td>Columns for anything filtered, joined, constrained or indexed. JSONB only for variable payloads, always with <code>schema_version</code> and a Pydantic model (Q7.26).</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Immutable tables</td><td>approval, approval_use, execution_attempt, verification, evidence, tool_call, model_call, check_result, artifact, event, config_change (after applied or rejected). The platform's database role has INSERT and SELECT only. A trigger rejects every UPDATE. It rejects DELETE unless the caller is the maintenance role (Q7.21).</td><td><span class="L D">Decision</span> (A5 SC-19)</td></tr>
 <tr><td>Concurrency</td><td>One writer per incident: its Temporal workflow. The API sends signals and does not write incident state (Q7.24). <code>incident.version</code> is a compare-and-set guard (Q7.25).</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Retention</td><td>Incidents and events: 1 year. Raw evidence content: 90 days. Tables are not partitioned. A retention job runs as the maintenance role. It deletes each closed incident past the limit with all its rows, in foreign-key order, in one transaction. At 90 days it deletes the content file of an evidence artifact and keeps the artifact row with its hash; the content endpoint then returns 410. The job writes a <code>retention.purged</code> event on the platform stream with the incident's chain head hash (F9). Partitioning is added only when a delete run is measured as too slow (Layer 12).</td><td><span class="L D">Decision</span> closes A1 D3 for V1</td></tr>
+<tr><td>Retention</td><td>Incidents and events: 1 year. Raw evidence content: 90 days. Tables are not partitioned. A retention job runs as the maintenance role. It deletes each resolved or cancelled incident past the limit with all its rows, in foreign-key order, in one transaction. At 90 days it deletes the content file of an evidence artifact and keeps the artifact row with its hash; the content endpoint then returns 410. The job writes a <code>retention.purged</code> event on the platform stream with the incident's chain head hash (F9). Partitioning is added only when a delete run is measured as too slow (Layer 12).</td><td><span class="L D">Decision</span> closes A1 D3 for V1</td></tr>
 <tr><td>Configuration at start</td><td>The workflow reads the platform settings once at start and carries them as workflow input. <code>incident.config_versions</code> records the version of each setting, so a running incident keeps the configuration it started with (F5).</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Migrations</td><td>Alembic, expand then contract, batched backfills, reviewed PR, backup first, tested on fixtures. Immutable tables are never rewritten (Q7.27, A6 ADR-04).</td><td><span class="L F">Fixed</span> A6 ADR-04</td></tr>
 </table>
@@ -318,7 +318,7 @@ pre code{border:0;padding:0;background:none}
 <h3>Key constraints in SQL</h3>
 <pre><code>-- One open incident per alert key (Q7.20). A second insert conflicts and becomes evidence.
 CREATE UNIQUE INDEX incident_open_key ON incident (service_id, environment, alert_rule)
-  WHERE status NOT IN ('closed','cancelled') AND alert_rule IS NOT NULL;
+  WHERE status NOT IN ('resolved','cancelled') AND alert_rule IS NOT NULL;
 
 -- One incident per engineer submission (Q7.61, A4 NFR-01).
 CREATE UNIQUE INDEX incident_submit_key ON incident (created_by_user_id, idempotency_key)
@@ -489,7 +489,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>GET /metrics (internal port)</td><td>Prometheus metrics; never public</td><td>Prometheus</td><td>Q7.37</td></tr>
 </table></div>
 <div class="fig">
-<svg viewBox="0 0 1100 490" role="img" aria-label="API request checks in order with their error codes, and the endpoint groups each role may call">
+<svg viewBox="0 0 1100 540" role="img" aria-label="API request checks in order with their error codes, and the endpoint groups each role may call">
 <defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <text x="20" y="20" class="lbl">Every write request passes four checks in this order (Q7.38, Q7.39)</text>
 <g text-anchor="middle" class="md">
@@ -498,9 +498,11 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <rect x="950" y="30" width="130" height="110" rx="6" class="okb"/><text x="1015" y="54" font-weight="700">2xx</text><text x="1015" y="74" class="sm">Actor from caller.</text><text x="1015" y="90" class="sm">API sends a signal.</text><text x="1015" y="106" class="sm">The workflow writes</text><text x="1015" y="122" class="sm">incident state.</text>
 </g>
 <g class="ln"><path d="M145,55 H170" marker-end="url(#a7)"/><path d="M255,80 V110" marker-end="url(#a7)"/><path d="M340,55 H365" marker-end="url(#a7)"/><path d="M450,80 V110" marker-end="url(#a7)"/><path d="M535,55 H560" marker-end="url(#a7)"/><path d="M645,80 V110" marker-end="url(#a7)"/><path d="M730,55 H755" marker-end="url(#a7)"/><path d="M840,80 V110" marker-end="url(#a7)"/><path d="M925,55 H950" marker-end="url(#a7)"/></g>
-<path d="M10,165 H1090" class="ln" stroke-dasharray="3 4"/>
+<text x="20" y="158" class="sm">Check 4 is compare-and-set: UPDATE … WHERE version = expected; 0 rows → 409</text>
+<path d="M10,170 H1090" class="ln" stroke-dasharray="3 4"/>
 <text x="20" y="188" class="lbl">Who may call what: the role is checked on every request; an admin account never approves</text>
-<g class="md"><rect x="20" y="200" width="200" height="32" rx="6" class="box"/><text x="120" y="220" text-anchor="middle">Alert source</text><path d="M220,216 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="200" width="820" height="32" rx="6" class="uc"/><text x="272" y="220">POST /v1/alerts: 202 {incident_id, grouped}; a resolved alert never opens one</text><rect x="20" y="240" width="200" height="32" rx="6" class="hum"/><text x="120" y="260" text-anchor="middle">Submitter</text><path d="M220,256 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="240" width="820" height="32" rx="6" class="uc"/><text x="272" y="260">POST /v1/incidents + Idempotency-Key: 202; a submission never groups</text><rect x="20" y="280" width="200" height="32" rx="6" class="hum"/><text x="120" y="300" text-anchor="middle">Submitter or approver</text><path d="M220,296 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="280" width="820" height="32" rx="6" class="uc"/><text x="272" y="300">POST /v1/incidents/{id}/cancel | takeover | resolve | severity | ack | feedback</text><rect x="20" y="320" width="200" height="32" rx="6" class="hum"/><text x="120" y="340" text-anchor="middle">Viewer</text><path d="M220,336 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="320" width="820" height="32" rx="6" class="uc"/><text x="272" y="340">GET incidents, records, events, events/stream (SSE), provenance, report, artifacts</text><rect x="20" y="360" width="200" height="32" rx="6" class="hum"/><text x="120" y="380" text-anchor="middle">Approver</text><path d="M220,376 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="360" width="820" height="32" rx="6" class="uc"/><text x="272" y="380">GET /v1/approvals; POST /v1/actions/{id}/decisions: re-auth, 201 signed approval</text><rect x="20" y="400" width="200" height="32" rx="6" class="fx"/><text x="120" y="420" text-anchor="middle">Admin (own account)</text><path d="M220,416 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="400" width="820" height="32" rx="6" class="uc"/><text x="272" y="420">/v1/admin/*: users, teams, services, integrations, settings, audit</text><rect x="20" y="440" width="200" height="32" rx="6" class="box"/><text x="120" y="460" text-anchor="middle">Docker, Prometheus</text><path d="M220,456 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="440" width="820" height="32" rx="6" class="uc"/><text x="272" y="460">/livez, /readyz, /metrics (internal port only)</text></g>
+<g class="md"><rect x="20" y="200" width="200" height="32" rx="6" class="box"/><text x="120" y="220" text-anchor="middle">Alert source</text><path d="M220,216 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="200" width="820" height="32" rx="6" class="uc"/><text x="272" y="220">POST /v1/alerts: 202 {incident_id, key, status, grouped}; a resolved alert never opens one</text><rect x="20" y="240" width="200" height="32" rx="6" class="hum"/><text x="120" y="260" text-anchor="middle">Submitter</text><path d="M220,256 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="240" width="820" height="32" rx="6" class="uc"/><text x="272" y="260">POST /v1/incidents + Idempotency-Key: 202; a submission never groups</text><rect x="20" y="280" width="200" height="32" rx="6" class="hum"/><text x="120" y="300" text-anchor="middle">Submitter or approver</text><path d="M220,296 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="280" width="820" height="32" rx="6" class="uc"/><text x="272" y="300">POST /v1/incidents/{id}/cancel | takeover | resolve | severity | ack | feedback</text><rect x="20" y="320" width="200" height="32" rx="6" class="hum"/><text x="120" y="340" text-anchor="middle">Viewer</text><path d="M220,336 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="320" width="820" height="32" rx="6" class="uc"/><text x="272" y="340">GET incidents, records, events, events/stream (SSE), provenance, report, artifacts</text><rect x="20" y="360" width="200" height="32" rx="6" class="hum"/><text x="120" y="380" text-anchor="middle">Approver</text><path d="M220,376 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="360" width="820" height="32" rx="6" class="uc"/><text x="272" y="380">GET /v1/approvals; POST /v1/actions/{id}/decisions: re-auth, 201 signed approval</text><rect x="20" y="400" width="200" height="32" rx="6" class="fx"/><text x="120" y="420" text-anchor="middle">Admin (own account)</text><path d="M220,416 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="400" width="820" height="32" rx="6" class="uc"/><text x="272" y="420">/v1/admin/*: users, teams, services, integrations, settings, audit</text><rect x="20" y="440" width="200" height="32" rx="6" class="box"/><text x="120" y="460" text-anchor="middle">Docker, Prometheus</text><path d="M220,456 H260" class="ln" marker-end="url(#a7)"/><rect x="260" y="440" width="820" height="32" rx="6" class="uc"/><text x="272" y="460">/livez, /readyz, /metrics (internal port only)</text></g>
+<rect x="20" y="488" width="1060" height="38" rx="6" class="hum"/><text x="32" y="512" class="sm">Immutable tables: INSERT and SELECT only; a trigger blocks UPDATE; DELETE only by the maintenance role.</text>
 </svg>
 </div>
 <p class="cap">Figure 3. API checks and roles. Top: each failed check returns one RFC 9457 error. Bottom: each caller and the endpoint group it may call. Admin endpoints need the separate admin account. A config change for a cloud model or the login mode needs a second admin.</p>
@@ -530,7 +532,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>causation_id</td><td>approval event ID</td><td>The event that caused it</td></tr>
 <tr><td>actor block</td><td>platform / executor, on behalf of approval X</td><td>F1; never from a request body</td></tr>
 <tr><td>subject_type, subject_id</td><td>action, <code>ACT-2</code></td><td>The record the event is about; provenance starts here</td></tr>
-<tr><td>prev_hash, hash</td><td>SHA-256</td><td>Hash chain per stream (A5 SC-19). When an incident closes, an <code>incident.sealed</code> event on the platform stream records the head hash of its stream, so a deleted or cut stream is detected.</td></tr>
+<tr><td>prev_hash, hash</td><td>SHA-256</td><td>Hash chain per stream (A5 SC-19). When an incident reaches an end state (resolved or cancelled), an <code>incident.sealed</code> event on the platform stream records the head hash of its stream, so a deleted or cut stream is detected.</td></tr>
 </table>
 <h3>Event type catalog</h3>
 <table>
@@ -538,8 +540,8 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>Intake</td><td><code>alert.received</code>, <code>alert.resolved</code>, <code>incident.created</code>, <code>incident.grouped</code>, <code>incident.queued</code>, <code>incident.started</code>, <code>incident.routed</code>, <code>incident.acknowledged</code>, <code>incident.severity_changed</code></td></tr>
 <tr><td>Investigation</td><td><code>tool.called</code>, <code>tool.rejected</code>, <code>evidence.collected</code>, <code>evidence.missing</code>, <code>model.called</code>, <code>injection.flagged</code>, <code>hypothesis.created</code>, <code>hypothesis.ruled_out</code>, <code>diagnosis.made</code>, <code>review.completed</code></td></tr>
 <tr><td>Change</td><td><code>action.proposed</code>, <code>policy.checked</code>, <code>sandbox.completed</code>, <code>approval.requested</code>, <code>action.approved</code>, <code>action.rejected</code>, <code>approval.expired</code>, <code>action.dispatched</code>, <code>action.executed</code>, <code>action.reconciled</code>, <code>verification.completed</code>, <code>fix.merged</code></td></tr>
-<tr><td>Human control</td><td><code>incident.cancelled</code>, <code>incident.taken_over</code>, <code>incident.escalated</code>, <code>incident.resolved</code>, <code>incident.closed</code>, <code>incident.sealed</code>, <code>notification.sent</code>, <code>feedback.recorded</code></td></tr>
-<tr><td>Platform stream</td><td><code>auth.login_succeeded</code>, <code>auth.login_failed</code>, <code>auth.locked</code>, <code>authz.denied</code>, <code>user.*</code>, <code>team.*</code>, <code>service.*</code>, <code>config.changed</code>, <code>audit.queried</code>, <code>retention.purged</code></td></tr>
+<tr><td>Human control</td><td><code>incident.cancelled</code>, <code>incident.taken_over</code>, <code>incident.escalated</code>, <code>incident.resolved</code>, <code>notification.sent</code>, <code>feedback.recorded</code></td></tr>
+<tr><td>Platform stream</td><td><code>auth.login_succeeded</code>, <code>auth.login_failed</code>, <code>auth.locked</code>, <code>authz.denied</code>, <code>user.*</code>, <code>team.*</code>, <code>service.*</code>, <code>config.changed</code>, <code>incident.sealed</code>, <code>audit.queried</code>, <code>retention.purged</code></td></tr>
 </table>
 <div class="no"><b>Temporal history is not the timeline (Q7.53).</b> It holds engine internals: retries, timers and signal names. It changes when workflow code changes, has its own retention, and is not redacted. Using it would tie the public API to the engine. The platform writes its own domain events.</div>
 
@@ -557,7 +559,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1100 420" role="img" aria-label="Event row fields, the writer transaction, and two hash-chained streams with sealing">
+<svg viewBox="0 0 1100 446" role="img" aria-label="Event row fields, the writer transaction, and two hash-chained streams with sealing">
 <defs><marker id="e7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <rect x="20" y="20" width="330" height="330" rx="8" class="fx"/>
 <text x="34" y="42" class="md" font-weight="700">One event row (CloudEvents names)</text>
@@ -566,20 +568,21 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <g text-anchor="middle" class="md"><rect x="380" y="36" width="160" height="46" rx="6" class="box"/><text x="460" y="63">1 Lock the stream</text><rect x="558" y="36" width="160" height="46" rx="6" class="box"/><text x="638" y="55">2 Read last sequence</text><text x="638" y="71">and last hash</text><rect x="736" y="36" width="160" height="46" rx="6" class="box"/><text x="816" y="55">3 Insert sequence + 1</text><text x="816" y="71">with prev_hash, hash</text><rect x="914" y="36" width="160" height="46" rx="6" class="box"/><text x="994" y="55">4 Commit with the state</text><text x="994" y="71">and incident.version</text></g>
 <g class="ln"><path d="M540,59 H558" marker-end="url(#e7)"/><path d="M718,59 H736" marker-end="url(#e7)"/><path d="M896,59 H914" marker-end="url(#e7)"/></g>
 <text x="380" y="122" class="lbl">Incident stream incident:INC-0042 (arrow = prev_hash points back)</text>
-<g text-anchor="middle" class="md"><rect x="380" y="132" width="150" height="50" rx="6" class="uc"/><text x="455" y="153" font-weight="700">seq 35</text><text x="455" y="171" class="sm">action.approved</text><rect x="563" y="132" width="150" height="50" rx="6" class="uc"/><text x="638" y="153" font-weight="700">seq 36</text><text x="638" y="171" class="sm">action.dispatched</text><path d="M563,157 H530" class="ln" marker-end="url(#e7)"/><rect x="746" y="132" width="150" height="50" rx="6" class="uc"/><text x="821" y="153" font-weight="700">seq 37</text><text x="821" y="171" class="sm">action.executed</text><path d="M746,157 H713" class="ln" marker-end="url(#e7)"/><rect x="929" y="132" width="150" height="50" rx="6" class="uc"/><text x="1004" y="153" font-weight="700">seq 38</text><text x="1004" y="171" class="sm">incident.closed</text><path d="M929,157 H896" class="ln" marker-end="url(#e7)"/></g>
-<path d="M821,182 C821,226 455,226 455,186" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
-<text x="655" y="232" text-anchor="middle" class="lbl">causation_id</text>
+<g text-anchor="middle" class="md"><rect x="380" y="132" width="128" height="50" rx="6" class="uc"/><text x="444" y="153" font-weight="700">seq 35</text><text x="444" y="171" class="sm">action.approved</text><rect x="523" y="132" width="128" height="50" rx="6" class="uc"/><text x="587" y="153" font-weight="700">seq 36</text><text x="587" y="171" class="sm">action.dispatched</text><path d="M523,157 H508" class="ln" marker-end="url(#e7)"/><rect x="666" y="132" width="128" height="50" rx="6" class="uc"/><text x="730" y="153" font-weight="700">seq 37</text><text x="730" y="171" class="sm">action.executed</text><path d="M666,157 H651" class="ln" marker-end="url(#e7)"/><rect x="809" y="132" width="128" height="50" rx="6" class="uc"/><text x="873" y="148" font-weight="700">seq 38</text><text x="873" y="162" class="sm">verification.</text><text x="873" y="175" class="sm">completed</text><path d="M809,157 H794" class="ln" marker-end="url(#e7)"/><rect x="952" y="132" width="128" height="50" rx="6" class="uc"/><text x="1016" y="153" font-weight="700">seq 39</text><text x="1016" y="171" class="sm">incident.resolved</text><path d="M952,157 H937" class="ln" marker-end="url(#e7)"/></g>
+<path d="M730,182 C730,226 444,226 444,183" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
+<text x="587" y="232" text-anchor="middle" class="lbl">causation_id</text>
 <text x="380" y="262" class="lbl">Platform stream (no incident_id)</text>
 <g text-anchor="middle" class="md"><rect x="380" y="272" width="150" height="50" rx="6" class="box"/><text x="455" y="293" font-weight="700">seq 1201</text><text x="455" y="311" class="sm">config.changed</text><rect x="563" y="272" width="150" height="50" rx="6" class="box"/><text x="638" y="293" font-weight="700">seq 1202</text><text x="638" y="311" class="sm">authz.denied</text><path d="M563,297 H530" class="ln" marker-end="url(#e7)"/><rect x="746" y="272" width="150" height="50" rx="6" class="box"/><text x="821" y="293" font-weight="700">seq 1203</text><text x="821" y="311" class="sm">incident.sealed</text><path d="M746,297 H713" class="ln" marker-end="url(#e7)"/></g>
-<path d="M1004,182 V250 H805 V272" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
-<text x="1012" y="232" class="lbl">head hash</text>
+<path d="M1016,182 V250 H805 V272" class="ln" stroke-dasharray="5 4" marker-end="url(#e7)"/>
+<text x="1024" y="232" class="lbl">head hash</text>
 <g class="sm">
 <text x="20" y="378">No global order (S1). Order by sequence, never by a timestamp (S3). A gap n &gt; last + 1 makes the SSE client reconnect (S5).</text>
 <text x="20" y="400">Lists across incidents sort by recorded_at, for display only (S6). Temporal history is never the timeline (Q7.53).</text>
+<text x="20" y="422">Retention: incidents and events 1 year; raw evidence content 90 days (then 410); retention.purged records the chain head hash.</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 4. Event row and per-stream order. Each stream is a hash chain with its own sequence. The writer locks the stream and inserts sequence + 1. When an incident closes, incident.sealed on the platform stream records the head hash, so a cut stream is detected.</p>
+<p class="cap">Figure 4. Event row and per-stream order. Each stream is a hash chain with its own sequence. The writer locks the stream and inserts sequence + 1. When an incident resolves or is cancelled, incident.sealed on the platform stream records the head hash, so a cut stream is detected.</p>
 
 <!-- ============ 7.7 ============ -->
 <h2><span class="sec">7.7</span>Outbox design</h2>
@@ -590,7 +593,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>Start a workflow</td><td><code>incident.status = 'queued'</code></td><td>Admission loop (worker)</td><td>Temporal workflow start</td></tr>
 </table>
 <div class="fig">
-<svg viewBox="0 0 1100 490" role="img" aria-label="Sequence diagram of the outbox from intake to workflow start, with a crash and a retry">
+<svg viewBox="0 0 1100 540" role="img" aria-label="Sequence diagram of the outbox from intake to workflow start, with a crash and a retry">
 <defs><marker id="o7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="25" y="20" width="170" height="40" rx="6" class="uc"/><text x="110" y="45">API (intake)</text>
@@ -608,22 +611,24 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <path d="M700,265 H980" marker-end="url(#o7)"/>
 <path d="M700,335 H980" marker-end="url(#o7)"/>
 <path d="M980,370 H700" marker-end="url(#o7)" stroke-dasharray="5 4"/>
-<path d="M700,410 H400" marker-end="url(#o7)"/>
+<path d="M980,410 H400" marker-end="url(#o7)"/>
 </g>
 <path d="M692,290 L708,306 M708,290 L692,306" style="stroke:var(--bad);stroke-width:2.5"/>
 <g class="sm halo">
 <text x="120" y="98">1 INSERT incident (queued), alert, event</text>
 <text x="120" y="133">2 COMMIT: one transaction</text>
 <text x="410" y="183">3 every 1 s: SELECT queued, SKIP LOCKED</text>
-<text x="410" y="218">4 next incidents: severity, then arrival</text>
+<text x="410" y="218">4 LIMIT 3 running: severity, then arrival</text>
 <text x="710" y="258">5 start workflow, ID = incident ID</text>
 <text x="718" y="302" style="fill:var(--bad)">crash: the incident is still queued</text>
 <text x="710" y="328">6 after restart: start again, same ID</text>
 <text x="710" y="363">7 "already started" = success</text>
-<text x="410" y="403">8 UPDATE status investigating + event</text>
+<text x="410" y="403">8 workflow, first activity: UPDATE status investigating + event</text>
 </g>
 <rect x="20" y="440" width="1060" height="38" rx="6" class="hum"/>
 <text x="32" y="464" class="sm">Temporal down at step 5: the incident stays queued, the loop retries with backoff, and a platform alert fires when it stays queued too long (Q7.54).</text>
+<rect x="20" y="486" width="1060" height="38" rx="6" class="hum"/>
+<text x="32" y="510" class="sm">Incident status path (A8): queued → investigating → … → resolved | cancelled. The loop only starts the workflow; the workflow writes status.</text>
 </svg>
 </div>
 <p class="cap">Figure 5. Outbox sequence for incident A. The queued incident row is the outbox marker. The workflow starts only after the row commits, so a workflow without an incident cannot exist (Q7.55). A crash between steps 5 and 8 is safe (Q7.59).</p>
@@ -664,7 +669,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <text x="475" y="262" class="lbl">A parallel duplicate waits on the unique index, then reads the first incident.</text>
 <path d="M10,276 H1090" class="ln" stroke-dasharray="3 4"/>
 <text x="20" y="292" class="lbl">Every other write has its own duplicate guard. There is no key table.</text>
-<g class="sm"><rect x="20" y="306" width="340" height="62" rx="6" class="box"/><text x="32" y="325" class="md" font-weight="700">Alert from monitoring</text><text x="32" y="343">key: source + alert ID or fingerprint + status</text><text x="32" y="359">guard: unique alert ID; one open incident per key</text><rect x="380" y="306" width="340" height="62" rx="6" class="box"/><text x="392" y="325" class="md" font-weight="700">Workflow start</text><text x="392" y="343">key: workflow ID = incident ID</text><text x="392" y="359">guard: Temporal rejects a duplicate ID</text><rect x="740" y="306" width="340" height="62" rx="6" class="box"/><text x="752" y="325" class="md" font-weight="700">Production action</text><text x="752" y="343">key: incident ID + action ID, every attempt</text><text x="752" y="359">guard: precondition; reconcile before retry</text><rect x="20" y="378" width="340" height="62" rx="6" class="box"/><text x="32" y="397" class="md" font-weight="700">Decision, cancel, take-over</text><text x="32" y="415">key: none needed</text><text x="32" y="431">guard: unique request (409); signals repeat safely</text><rect x="380" y="378" width="340" height="62" rx="6" class="box"/><text x="392" y="397" class="md" font-weight="700">Approval use</text><text x="392" y="415">key: approval ID</text><text x="392" y="431">guard: approval_use primary key: used once</text><rect x="740" y="378" width="340" height="62" rx="6" class="box"/><text x="752" y="397" class="md" font-weight="700">Chat, pager, ticket message</text><text x="752" y="415">key: Temporal activity ID</text><text x="752" y="431">guard: Temporal retry; one notification row</text></g>
+<g class="sm"><rect x="20" y="306" width="340" height="62" rx="6" class="box"/><text x="32" y="325" class="md" font-weight="700">Alert from monitoring</text><text x="32" y="343">key: source + ID or fingerprint + status + start time</text><text x="32" y="359">guard: unique alert ID; one open incident per key</text><rect x="380" y="306" width="340" height="62" rx="6" class="box"/><text x="392" y="325" class="md" font-weight="700">Workflow start</text><text x="392" y="343">key: workflow ID = incident ID</text><text x="392" y="359">guard: Temporal rejects a duplicate ID</text><rect x="740" y="306" width="340" height="62" rx="6" class="box"/><text x="752" y="325" class="md" font-weight="700">Production action</text><text x="752" y="343">key: incident ID + action ID, every attempt</text><text x="752" y="359">guard: precondition; reconcile before retry</text><rect x="20" y="378" width="340" height="62" rx="6" class="box"/><text x="32" y="397" class="md" font-weight="700">Decision, cancel, take-over</text><text x="32" y="415">key: none needed</text><text x="32" y="431">guard: unique request (409); signals repeat safely</text><rect x="380" y="378" width="340" height="62" rx="6" class="box"/><text x="392" y="397" class="md" font-weight="700">Approval use</text><text x="392" y="415">key: approval ID</text><text x="392" y="431">guard: approval_use primary key: used once</text><rect x="740" y="378" width="340" height="62" rx="6" class="box"/><text x="752" y="397" class="md" font-weight="700">Chat, pager, ticket message</text><text x="752" y="415">key: Temporal activity ID</text><text x="752" y="431">guard: Temporal retry; one notification row</text></g>
 </svg>
 </div>
 <p class="cap">Figure 6. Idempotency. Top: key handling for an engineer submission; the unique index on incident (created_by_user_id, idempotency_key) stops two parallel requests with the same key. Bottom: the key and the guard of every other write.</p>
@@ -700,7 +705,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <path d="M150,250 H550" marker-end="url(#s7)"/>
 <path d="M550,280 H950" marker-end="url(#s7)"/>
 <path d="M550,310 H150" marker-end="url(#s7)"/>
-<path d="M950,340 H550" marker-end="url(#s7)" stroke-dasharray="5 4"/>
+<path d="M550,340 H950" marker-end="url(#s7)"/>
 </g>
 <path d="M142,207 L158,223 M158,207 L142,223" style="stroke:var(--bad);stroke-width:2.5"/>
 <g class="sm halo">
@@ -712,13 +717,13 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <text x="160" y="243">4 GET again, Last-Event-ID: incident:INC-0042:43</text>
 <text x="560" y="273">5 SELECT sequence &gt; 43</text>
 <text x="160" y="303">6 events 44, 45 … then live</text>
-<text x="560" y="333">7 poll every 1 s: rows after last sequence</text>
+<text x="560" y="333">7 API polls every 1 s: rows after last sequence</text>
 </g>
 <rect x="20" y="372" width="1060" height="38" rx="6" class="hum"/>
 <text x="32" y="396" class="sm">Gap rule (S5): if the client gets sequence n &gt; last + 1, it reconnects from last. The stream sends domain events only, never Temporal history.</text>
 </svg>
 </div>
-<p class="cap">Figure 7. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing. Events are kept for one year.</p>
+<p class="cap">Figure 7. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing.</p>
 <table>
 <tr><th>Topic</th><th>Design</th><th>Q</th></tr>
 <tr><td>Mechanism</td><td>Server-Sent Events: one-way, plain HTTP, simple for the CLI (<code>ai-sre incident watch INC-0042</code>). No WebSocket, because the client sends nothing on the stream.</td><td>Q7.52</td></tr>
@@ -764,6 +769,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><td>A4 FR-02, FR-14, FR-15; NFR-01, NFR-03.</td><td>Grouping index, cancel signal, event timeline, idempotent intake, audit before execution.</td><td>Consistent.</td></tr>
 <tr><td>A5 SC-14 to SC-16, SC-19.</td><td>Action hash, single-use approval, idempotency key + precondition, hash-chained event table.</td><td>Consistent. Adds the database rules.</td></tr>
 <tr><td>L7 gap review F9 and log Q7.43, Q7.49, Q7.58, Q7.61 (first version of this artifact): monthly partitions, <code>consumer_checkpoint</code>, an <code>idempotency_key</code> table, <code>LISTEN/NOTIFY</code>, 45 tables.</td><td>Schema review S1&ndash;S11: plain tables with row delete, Temporal activities for outside messages, a key column on <code>incident</code>, polling, 35 tables. Every security control and F1&ndash;F9 feature is kept.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-14.</td></tr>
+<tr><td>A7 used an incident status 'closed'</td><td>Replaced by the A8 end states resolved and cancelled</td><td><b>Explicit decision</b> (diagram review, 2026-11-16)</td></tr>
 <tr><td>A6 ADR-03: Temporal plus a PostgreSQL waiting queue.</td><td>The queued incident row is the workflow outbox. Outside messages are Temporal activities (S2).</td><td>Consistent.</td></tr>
 </table>
 <h3>Open items</h3>

@@ -33,6 +33,7 @@ _Last updated: 2026-11-15_
 | 2026-11-14 | L7 tables and API vs A1–A6 features | Claude subagent (fresh context) | 62 features, 28 gaps (11 High) — [F1–F9 approved and applied](specs/reviews/2026-11-14-l7-gap-fixes.md) |
 | 2026-11-14 | L7 schema, over-engineering + full ERD | Claude subagents (Fable, fresh context) | 11 findings, 7 spec gaps; 45 → 35 tables — [S1–S11 approved and applied](specs/reviews/2026-11-14-l7-schema-overengineering.md); [ERD](specs/reviews/2026-11-14-l7-erd.html) |
 | 2026-11-15 | Diagrams of A1–A8: do they explain the artifact; layout | Claude subagents (one per artifact) | No artifact was explained by its diagrams alone. Added an "at a glance" Figure 1 to each of A1–A6 and A8 and 3 new figures to A7 (contracts, API checks and roles, event order); improved and renumbered the rest; fixed overlaps and overflow. A1 swimlane step numbers now match the journey list (list step 17 split into apply and watch, so 19 steps) |
+| 2026-11-16 | Diagrams of A1–A9: layout, correctness, completeness, consistency ([note](specs/reviews/2026-11-16-diagram-review.md)) | 9 layout + 27 review + 9 fixer subagents (Sonnet); Claude check | All 59 figures checked. Fixed wrong facts (A1 failed-fix path, A3 config arrow, A5 AB-02 label and IDs, A6 reply target 200 ms vs 30 s) and gaps in every artifact. A7 incident status `closed` replaced by the A8 end states (index, retention, events). Open: Git write credential holder; fix-approval no-answer rule; F7 (all Layer 11) |
 
 ## Open findings from the 2026-11-13 review
 
@@ -73,6 +74,7 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Team walk-through of A5 decisions (work-split rule 4; review R8) | Chirag | Before Layer 11 |
 | Confirm A5 changes from Layers 6 and 7: AB-19, AB-20, SC-01, SC-04, SC-24, SC-25, AST-11, TA-8, RR-6, ST-17, ST-18, ST-19 | Chirag | A5 walk-through |
 | Fix approval record: signed approval vs "merge is the approval" (A2 2.3, L7 F7) | Rinisha | Layer 11 |
+| Git write credential for the fix branch and PR (holder, branch/PR rights only, no merge); fix-approval "no answer" rule in A1 text | Rinisha | Layer 11 |
 | PydanticAI version pin and Temporal spike on incident A (L9-A3) | Dhanush | Layer 13 |
 | Evaluation harness, fixture labels, seeded-fault fixtures, final agent targets (L9-A2, A4–A7) | Irfan, Dhanush | Layer 12 |
 | Rebalance load: Dhanush owns L3, L4, L6–L9 (311 Qs); Manish has no layer; Chirag owns L5 | Team | Before Layer 7 |

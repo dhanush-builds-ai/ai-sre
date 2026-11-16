@@ -126,11 +126,11 @@ pre code{border:0;padding:0;background:none}
 <rect x="18" y="30" width="120" height="78" rx="6" class="box"/><text x="78" y="52" class="md" font-weight="600">Baseline</text><text x="78" y="69" class="lbl">context, no model</text><text x="78" y="84" class="lbl">A3 required sources</text><text x="78" y="99" class="lbl">via the tool layer</text>
 <rect x="150" y="30" width="120" height="78" rx="6" class="box"/><text x="210" y="52" class="md" font-weight="600">Fixed rules</text><text x="210" y="69" class="lbl">System 1, code</text><text x="210" y="84" class="lbl">first hypotheses</text><text x="210" y="99" class="lbl">no token cost</text>
 <rect x="282" y="30" width="120" height="78" rx="6" class="uc"/><text x="342" y="52" class="md" font-weight="600">Investigator</text><text x="342" y="69" class="lbl">2 to 5 hypotheses</text><text x="342" y="84" class="lbl">read-only tools</text><text x="342" y="99" class="lbl">at most 3 rounds</text>
-<rect x="414" y="30" width="120" height="78" rx="6" class="uc"/><text x="474" y="52" class="md" font-weight="600">Diagnoser</text><text x="474" y="69" class="lbl">one cause or</text><text x="474" y="84" class="lbl">inconclusive; no tools</text><text x="474" y="99" class="lbl">at most 2 revisions</text>
+<rect x="414" y="30" width="120" height="78" rx="6" class="uc"/><text x="474" y="52" class="md" font-weight="600">Diagnoser</text><text x="474" y="69" class="lbl">cause or inconclusive</text><text x="474" y="84" class="lbl">no tools</text><text x="474" y="99" class="lbl">at most 2 revisions</text>
 <rect x="546" y="30" width="120" height="78" rx="6" class="uc"/><text x="606" y="52" class="md" font-weight="600">Critic</text><text x="606" y="69" class="lbl">different model</text><text x="606" y="84" class="lbl">accept, revise,</text><text x="606" y="99" class="lbl">or escalate</text>
 <rect x="678" y="30" width="120" height="78" rx="6" class="box"/><text x="738" y="52" class="md" font-weight="600">Recovery map</text><text x="738" y="69" class="lbl">code, no model</text><text x="738" y="84" class="lbl">change X &#8594; redeploy</text><text x="738" y="99" class="lbl">or restore config</text>
 <rect x="810" y="30" width="120" height="78" rx="6" class="hum"/><text x="870" y="52" class="md" font-weight="600">Gates</text><text x="870" y="69" class="lbl">policy gate, then</text><text x="870" y="84" class="lbl">human approval</text><text x="870" y="99" class="lbl">outside the agents</text>
-<rect x="942" y="30" width="140" height="78" rx="6" class="bad"/><text x="1012" y="52" class="md" font-weight="600">Executor</text><text x="1012" y="69" class="lbl">only production writer</text><text x="1012" y="84" class="lbl">then the verifier</text><text x="1012" y="99" class="lbl">(A6, A8)</text>
+<rect x="942" y="30" width="140" height="78" rx="6" class="bad"/><text x="1012" y="52" class="md" font-weight="600">Executor</text><text x="1012" y="69" class="lbl">only production writer</text><text x="1012" y="84" class="lbl">then the verifier (A6)</text><text x="1012" y="99" class="lbl">verify fails: escalate (A8)</text>
 </g>
 <g class="ln"><path d="M138,69 H148" marker-end="url(#g0)"/><path d="M270,69 H280" marker-end="url(#g0)"/><path d="M402,69 H412" marker-end="url(#g0)"/><path d="M534,69 H544" marker-end="url(#g0)"/><path d="M666,69 H676" marker-end="url(#g0)"/><path d="M798,69 H808" marker-end="url(#g0)"/><path d="M930,69 H940" marker-end="url(#g0)"/>
 <path d="M474,108 V168 H478" marker-end="url(#g0)"/><path d="M606,108 V138" marker-end="url(#g0)"/>
@@ -151,11 +151,11 @@ pre code{border:0;padding:0;background:none}
 <g class="ln"><path d="M273,268 H285" marker-end="url(#g0)"/><path d="M542,268 H554" marker-end="url(#g0)"/><path d="M414,300 V314 H953 V302" marker-end="url(#g0)"/></g>
 <text x="18" y="342" class="lbl">3. Limits for each incident (section 9.10). At any limit the coordinator stops and escalates.</text>
 <g text-anchor="middle" class="sm">
-<rect x="18" y="352" width="146" height="40" rx="6" class="bad"/><text x="91" y="376">30 model requests</text>
-<rect x="171" y="352" width="146" height="40" rx="6" class="bad"/><text x="244" y="376">30 tool calls (A4)</text>
+<rect x="18" y="352" width="146" height="40" rx="6" class="bad"/><text x="91" y="370">30 model requests</text><text x="91" y="384">(L9-A5)</text>
+<rect x="171" y="352" width="146" height="40" rx="6" class="bad"/><text x="244" y="370">30 tool calls</text><text x="244" y="384">(A4 NFR-06)</text>
 <rect x="324" y="352" width="146" height="40" rx="6" class="bad"/><text x="397" y="376">10 GPU-minutes (A4)</text>
 <rect x="477" y="352" width="146" height="40" rx="6" class="bad"/><text x="550" y="370">tokens: 200k in,</text><text x="550" y="384">64k out (A4 QR-06)</text>
-<rect x="630" y="352" width="146" height="40" rx="6" class="bad"/><text x="703" y="376">20 min to diagnose</text>
+<rect x="630" y="352" width="146" height="40" rx="6" class="bad"/><text x="703" y="370">20 min to diagnose</text><text x="703" y="384">(A4 NFR-05)</text>
 <rect x="783" y="352" width="146" height="40" rx="6" class="bad"/><text x="856" y="370">3 attempts for</text><text x="856" y="384">each output</text>
 <rect x="936" y="352" width="146" height="40" rx="6" class="bad"/><text x="1009" y="370">3 duplicate calls</text><text x="1009" y="384">stop that agent</text>
 </g>
@@ -190,22 +190,22 @@ pre code{border:0;padding:0;background:none}
 <polygon points="700,68 790,30 880,68 790,106" class="box"/><text x="790" y="64" class="sm">untested hypothesis</text><text x="790" y="78" class="sm">and k &lt; 3?</text>
 <rect x="18" y="170" width="150" height="56" rx="6" class="uc"/><text x="93" y="193" class="md" font-weight="600">Diagnoser</text><text x="93" y="210" class="lbl">revision r = 0, 1, 2</text>
 <polygon points="200,198 290,160 380,198 290,236" class="box"/><text x="290" y="194" class="sm">passes the</text><text x="290" y="208" class="sm">L9-A4 rule?</text>
-<rect x="420" y="170" width="190" height="56" rx="6" class="uc"/><text x="515" y="190" class="md" font-weight="600">Critic</text><text x="515" y="206" class="lbl">may list missing evidence:</text><text x="515" y="219" class="lbl">one more round, counts in k</text>
+<rect x="420" y="166" width="190" height="64" rx="6" class="uc"/><text x="515" y="184" class="md" font-weight="600">Critic</text><text x="515" y="199" class="lbl">may list missing evidence:</text><text x="515" y="212" class="lbl">the coordinator runs the reads</text><text x="515" y="225" class="lbl">if k &lt; 3; counts in k</text>
 <polygon points="650,198 740,160 830,198 740,236" class="box"/><text x="740" y="202" class="sm">verdict?</text>
-<rect x="870" y="170" width="212" height="56" rx="6" class="okb"/><text x="976" y="190" class="md" font-weight="600">Diagnosed: propose actions</text><text x="976" y="206" class="lbl">recovery by code (9.2);</text><text x="976" y="219" class="lbl">fix by the fixer agent</text>
+<rect x="888" y="170" width="194" height="56" rx="6" class="okb"/><text x="985" y="190" class="md" font-weight="600">Diagnosed: propose actions</text><text x="985" y="206" class="lbl">recovery by code (9.2);</text><text x="985" y="219" class="lbl">fix by the fixer agent</text>
 <rect x="200" y="278" width="630" height="50" rx="22" class="hum"/><text x="515" y="300" class="md" font-weight="600">Escalated</text><text x="515" y="317" class="lbl">the human sees the diagnosis, the critic findings, what was checked, and what is missing</text>
-<rect x="18" y="356" width="1064" height="48" rx="6" class="bad"/><text x="550" y="376" class="md" font-weight="600">Stop at any step and escalate</text><text x="550" y="393" class="lbl">budget used up &#183; 30 model requests &#183; 30 tool calls &#183; 20 min &#183; inference down &#183; signal cancel or take_over (A8 8.7)</text>
+<rect x="18" y="356" width="1064" height="48" rx="6" class="bad"/><text x="550" y="376" class="md" font-weight="600">Stop at any step and escalate</text><text x="550" y="393" class="lbl">budget used up &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 20 min (A4 NFR-05) &#183; inference down &#183; signal cancel or take_over (A8 8.7)</text>
 </g>
 <g class="ln">
 <path d="M168,68 H186" marker-end="url(#g1)"/><path d="M338,68 H356" marker-end="url(#g1)"/><path d="M508,68 H526" marker-end="url(#g1)"/><path d="M678,68 H698" marker-end="url(#g1)"/>
 <path d="M790,30 V18 H603 V38" marker-end="url(#g1)"/>
 <path d="M790,106 V124 H60 V168" marker-end="url(#g1)"/>
-<path d="M168,198 H198" marker-end="url(#g1)"/><path d="M380,198 H418" marker-end="url(#g1)"/><path d="M610,198 H648" marker-end="url(#g1)"/><path d="M830,198 H868" marker-end="url(#g1)"/>
+<path d="M168,198 H198" marker-end="url(#g1)"/><path d="M380,198 H418" marker-end="url(#g1)"/><path d="M610,198 H648" marker-end="url(#g1)"/><path d="M830,198 H886" marker-end="url(#g1)"/>
 <path d="M740,160 V146 H126 V168" marker-end="url(#g1)"/>
 <path d="M290,236 V276" marker-end="url(#g1)"/><path d="M740,236 V276" marker-end="url(#g1)"/>
 <path d="M550,356 V330" marker-end="url(#g1)"/>
 </g>
-<g class="lbl halo"><text x="680" y="14">yes: next round</text><text x="804" y="120">no</text><text x="300" y="141">revise, and r &lt; 2</text><text x="384" y="190">yes</text><text x="834" y="190">accept</text><text x="298" y="260">no</text><text x="748" y="260">escalate, no verdict, or r = 2</text></g>
+<g class="lbl halo"><text x="680" y="14">yes: next round</text><text x="804" y="120">no</text><text x="300" y="141">revise, and r &lt; 2</text><text x="384" y="190">yes</text><text x="842" y="190">accept</text><text x="298" y="260">no</text><text x="748" y="260">escalate, no verdict, r = 2, or a revision changes nothing</text></g>
 </svg>
 </div>
 <p class="cap">Figure 2. The coordinator loop. The investigator runs at most 3 rounds. A diagnosis must pass the L9-A4 evidence rule before the critic sees it. A revise verdict returns to the diagnoser at most twice. Every other exit ends in escalation, and hard limits can stop the loop at any step.</p>
@@ -230,8 +230,8 @@ pre code{border:0;padding:0;background:none}
 <rect x="766" y="126" width="300" height="54" rx="6" class="fx"/><text x="916" y="148" class="md" font-weight="600">Tool layer</text><text x="916" y="166" class="lbl">checks, then HTTP or MCP adapter</text>
 <rect x="766" y="196" width="300" height="66" rx="6" class="box"/><text x="916" y="216" class="md" font-weight="600">PostgreSQL and artifact store</text><text x="916" y="233" class="lbl">evidence, hypotheses, diagnoses,</text><text x="916" y="248" class="lbl">check results, raw outputs (A7)</text>
 </g>
-<text x="194" y="256" text-anchor="middle" class="lbl">Each agent loop: model request &#8594; tool calls &#8594; output.</text><text x="194" y="272" text-anchor="middle" class="lbl">Agents never call other agents.</text>
-<g class="ln"><path d="M354,83 H404" marker-end="url(#g2)"/><path d="M354,153 H404" marker-end="url(#g2)"/><path d="M370,229 H404" marker-end="url(#g2)"/>
+<text x="194" y="246" text-anchor="middle" class="lbl">Each agent loop: model request &#8594; tool calls &#8594; output.</text><text x="194" y="260" text-anchor="middle" class="lbl">Agents never call other agents.</text><text x="194" y="274" text-anchor="middle" class="lbl">Only the investigator and fixer use tools.</text>
+<g class="ln"><path d="M370,83 H404" marker-end="url(#g2)"/><path d="M370,153 H404" marker-end="url(#g2)"/><path d="M370,229 H404" marker-end="url(#g2)"/>
 <path d="M714,83 H764" marker-end="url(#g2)"/><path d="M714,153 H764" marker-end="url(#g2)"/><path d="M714,229 H764" marker-end="url(#g2)"/></g>
 <text x="18" y="312" class="lbl">Rules that keep the earlier decisions</text>
 <g class="sm">
@@ -276,13 +276,13 @@ pre code{border:0;padding:0;background:none}
 <rect x="474" y="30" width="140" height="92" rx="6" class="uc"/><text x="544" y="51" class="md" font-weight="600">Diagnoser</text><text x="544" y="68" class="lbl">agent, main model</text><text x="544" y="84" class="lbl">no tools</text><text x="544" y="100" class="lbl">at most 2 revisions</text>
 <rect x="626" y="30" width="140" height="92" rx="6" class="uc"/><text x="696" y="51" class="md" font-weight="600">Critic</text><text x="696" y="68" class="lbl">agent, reviewer model</text><text x="696" y="84" class="lbl">no tools; asks the</text><text x="696" y="100" class="lbl">coordinator for reads</text>
 <rect x="778" y="30" width="140" height="92" rx="6" class="box"/><text x="848" y="51" class="md" font-weight="600">Recovery map</text><text x="848" y="68" class="lbl">code, no model</text><text x="848" y="84" class="lbl">cause &#8594; one of the</text><text x="848" y="100" class="lbl">two V1 actions</text>
-<rect x="930" y="30" width="152" height="92" rx="6" class="uc"/><text x="1006" y="51" class="md" font-weight="600">Fixer</text><text x="1006" y="68" class="lbl">agent, main model</text><text x="1006" y="84" class="lbl">2 repository read tools</text><text x="1006" y="100" class="lbl">no retry in V1</text>
+<rect x="930" y="30" width="152" height="92" rx="6" class="uc"/><text x="1006" y="51" class="md" font-weight="600">Fixer</text><text x="1006" y="66" class="lbl">agent, main model</text><text x="1006" y="81" class="lbl">2 repository read tools</text><text x="1006" y="96" class="lbl">one repository, size limit</text><text x="1006" y="111" class="lbl">the sandbox proves it</text>
 </g>
 <g class="ln"><path d="M158,76 H168" marker-end="url(#g3)"/><path d="M310,76 H320" marker-end="url(#g3)"/><path d="M462,76 H472" marker-end="url(#g3)"/><path d="M614,76 H624" marker-end="url(#g3)"/><path d="M766,76 H776" marker-end="url(#g3)"/><path d="M918,76 H928" marker-end="url(#g3)"/>
 <path d="M88,122 V152" marker-end="url(#g3)"/><path d="M240,122 V152" marker-end="url(#g3)"/><path d="M392,122 V152" marker-end="url(#g3)"/><path d="M544,122 V152" marker-end="url(#g3)"/><path d="M696,122 V152" marker-end="url(#g3)"/><path d="M848,122 V152" marker-end="url(#g3)"/><path d="M1006,122 V152" marker-end="url(#g3)"/>
 <path d="M848,194 V236" marker-end="url(#g3)"/><path d="M1006,194 V236" marker-end="url(#g3)"/></g>
 <g text-anchor="middle" class="sm">
-<rect x="18" y="154" width="140" height="40" rx="6" class="fx"/><text x="88" y="172">evidence</text><text x="88" y="186" class="lbl">status ok / missing</text>
+<rect x="18" y="154" width="140" height="40" rx="6" class="fx"/><text x="88" y="172">evidence</text><text x="88" y="186" class="lbl">ok / partial / missing</text>
 <rect x="170" y="154" width="140" height="40" rx="6" class="fx"/><text x="240" y="172">hypothesis</text><text x="240" y="186" class="lbl">created_by_rule</text>
 <rect x="322" y="154" width="140" height="40" rx="6" class="fx"/><text x="392" y="172">hypotheses, links,</text><text x="392" y="186">more evidence</text>
 <rect x="474" y="154" width="140" height="40" rx="6" class="fx"/><text x="544" y="172">diagnosis</text><text x="544" y="186" class="lbl">with claims</text>
@@ -352,11 +352,11 @@ pre code{border:0;padding:0;background:none}
 <path d="M238,104 V158" marker-end="url(#g4)"/><path d="M350,190 H370 V98" marker-end="url(#g4)"/>
 <path d="M728,108 V158" marker-end="url(#g4)"/><path d="M560,190 H450 V98" marker-end="url(#g4)"/>
 <path d="M665,220 V256" marker-end="url(#g4)"/></g>
-<g class="lbl halo"><text x="246" y="132">no</text><text x="736" y="132">no</text><text x="812" y="60">yes</text><text x="312" y="60">yes</text><text x="378" y="150">fix</text><text x="458" y="128">retry</text></g>
+<g class="lbl halo"><text x="246" y="132">no</text><text x="736" y="132">no</text><text x="812" y="60">yes</text><text x="296" y="58">yes</text><text x="378" y="150">fix</text><text x="458" y="128">retry</text></g>
 <g class="sm">
 <rect x="18" y="320" width="350" height="40" rx="6" class="box"/><text x="28" y="337">A rejected call counts toward the 30 tool calls.</text><text x="28" y="351">Every attempt counts toward the budget.</text>
 <rect x="380" y="320" width="350" height="40" rx="6" class="box"/><text x="390" y="337">Evidence IDs are checked in the database. The</text><text x="390" y="351">composite foreign key is the second guard.</text>
-<rect x="742" y="320" width="340" height="40" rx="6" class="box"/><text x="752" y="337">Skill, prompt and schema versions are</text><text x="752" y="351">recorded in each model_call row.</text>
+<rect x="742" y="320" width="340" height="40" rx="6" class="box"/><text x="752" y="337">Model and prompt versions are</text><text x="752" y="351">recorded in each model_call row.</text>
 </g>
 </svg>
 </div>
@@ -385,10 +385,10 @@ pre code{border:0;padding:0;background:none}
 <rect x="448" y="34" width="120" height="66" rx="6" class="box"/><text x="508" y="56" class="md" font-weight="600">Service scope</text><text x="508" y="73" class="lbl">from the incident</text><text x="508" y="88" class="lbl">record, not the model</text>
 <rect x="588" y="34" width="120" height="66" rx="6" class="box"/><text x="648" y="56" class="md" font-weight="600">Duplicate?</text><text x="648" y="73" class="lbl">yes: return the</text><text x="648" y="88" class="lbl">recorded result</text>
 <rect x="728" y="34" width="140" height="66" rx="6" class="fx"/><text x="798" y="56" class="md" font-weight="600">Adapter</text><text x="798" y="73" class="lbl">HTTP or MCP, with the</text><text x="798" y="88" class="lbl">read-only credential</text>
-<rect x="888" y="34" width="194" height="66" rx="6" class="box"/><text x="985" y="56" class="md" font-weight="600">Source</text><text x="985" y="73" class="lbl">logs, metrics, traces,</text><text x="985" y="88" class="lbl">changes, config, repository</text>
+<rect x="888" y="34" width="194" height="80" rx="6" class="box"/><text x="985" y="54" class="md" font-weight="600">Source</text><text x="985" y="70" class="lbl">logs, metrics, traces,</text><text x="985" y="84" class="lbl">changes, config, repository,</text><text x="985" y="98" class="lbl">past incidents, runbooks</text>
 </g>
 <g class="ln"><path d="M148,67 H166" marker-end="url(#g5)"/><path d="M288,67 H306" marker-end="url(#g5)"/><path d="M428,67 H446" marker-end="url(#g5)"/><path d="M568,67 H586" marker-end="url(#g5)"/><path d="M708,67 H726" marker-end="url(#g5)"/><path d="M868,67 H886" marker-end="url(#g5)"/>
-<path d="M985,100 V148" marker-end="url(#g5)"/>
+<path d="M985,114 V148" marker-end="url(#g5)"/>
 <path d="M888,182 H870" marker-end="url(#g5)"/><path d="M588,182 H570" marker-end="url(#g5)"/><path d="M308,182 H290" marker-end="url(#g5)"/>
 <path d="M83,148 V102" marker-end="url(#g5)"/></g>
 <text x="18" y="134" class="lbl">Result path</text>
@@ -429,7 +429,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>Rule</th><th>Design</th><th>Q</th><th>Label</th></tr>
 <tr><td>Approved tools only</td><td>Each agent is built with an explicit toolset. No other Python function is callable. The allow list lives in the repository (A5 AST-10). An MCP server exposes only <code>integration.allowed_tools</code>, a subset of that list (A7 F5). The tool layer wraps every MCP toolset, so the checks run before the call. An unknown tool name is rejected and logged.</td><td>Q9.39</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Classes</td><td><b>read</b> and <b>write</b>. A write tool also has a risk class, type 1 or type 2 (A1). Agents get read tools only. The executor owns every write.</td><td>Q9.40</td><td><span class="L F">Fixed requirement</span> A5 SC-15</td></tr>
-<tr><td>Parameter checks</td><td><code>end &gt; start</code>, <code>end &le; now</code>, window inside the incident window and at most 2 h. Limit and query length under their maximums. The reason of a rejection goes back as a tool error.</td><td>Q9.41</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Parameter checks</td><td><code>end &gt; start</code>, <code>end &le; now</code>, window inside the incident window and at most 2 h. Limit and query length under their maximums. The reason of a rejection goes back as a tool error. A rejected call counts toward the 30 tool calls.</td><td>Q9.41</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Service scope</td><td>The allowed services come from the incident record, not from the model: the incident's service and its declared dependencies (A7 <code>service_dependency</code>). Adapters query only the labels that map to them (A7 <code>service_alias</code>).</td><td>Q9.42</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Range and size</td><td>One query covers at most 2 h, inside [incident start &minus; 1 h, now]. The model gets at most 200 lines or 32 KB after repeated lines are grouped. The summary says when it was cut.</td><td>Q9.43</td><td><span class="L A">Assumption</span> L9-A6</td></tr>
 <tr><td>Credentials</td><td>One read-only service credential for each integration, in the secret store (A7 <code>auth_secret_ref</code>). Only the tool layer uses it. V1 has one tenant, so the tool layer enforces the service scope.</td><td>Q9.44</td><td><span class="L F">Fixed requirement</span> A5 SC-06</td></tr>
@@ -449,15 +449,15 @@ pre code{border:0;padding:0;background:none}
 <rect x="18" y="20" width="240" height="160" rx="6" class="box"/><rect x="18" y="20" width="240" height="26" rx="6" class="uc"/><text x="28" y="38" class="md" font-weight="600">tool_call</text>
 <text x="28" y="64">id, incident_id</text><text x="28" y="80">model_call_id (null for baseline)</text><text x="28" y="96">tool, arguments</text><text x="28" y="112">duplicate key (hash)</text><text x="28" y="128">status: ok / rejected / failed</text><text x="28" y="144">reject_reason</text><text x="28" y="160">started_at, ended_at</text>
 <rect x="290" y="20" width="250" height="210" rx="6" class="box"/><rect x="290" y="20" width="250" height="26" rx="6" class="uc"/><text x="300" y="38" class="md" font-weight="600">evidence (section 9.5)</text>
-<text x="300" y="64">id, incident_id, tool_call_id</text><text x="300" y="80">kind, integration_id, query</text><text x="300" y="96">window_start, window_end</text><text x="300" y="112">source_time, collected_at</text><text x="300" y="128">content_hash, redaction_version</text><text x="300" y="144">status: ok / partial / missing</text><text x="300" y="160">required, critical (new)</text><text x="300" y="176">trust = untrusted, injection flag</text><text x="300" y="192">summary, artifact_id</text><text x="300" y="214" class="lbl">immutable (A7)</text>
+<text x="300" y="64">id, incident_id, tool_call_id</text><text x="300" y="80">kind, integration_id, query</text><text x="300" y="96">window_start, window_end</text><text x="300" y="112">source_time, collected_at</text><text x="300" y="128">content_hash, redaction_version</text><text x="300" y="144">status: ok / partial / missing</text><text x="300" y="160">required, critical (new)</text><text x="300" y="176">trust = untrusted (injection: event)</text><text x="300" y="192">summary, artifact_id</text><text x="300" y="214" class="lbl">immutable (A7)</text>
 <rect x="572" y="20" width="240" height="160" rx="6" class="box"/><rect x="572" y="20" width="240" height="26" rx="6" class="uc"/><text x="582" y="38" class="md" font-weight="600">hypothesis_evidence</text>
 <text x="582" y="64">hypothesis_id, evidence_id</text><text x="582" y="80">incident_id (composite FK)</text><text x="582" y="96">role: supports / contradicts</text><text x="582" y="112">explained (new)</text><text x="582" y="128">explanation (new)</text><text x="582" y="160" class="lbl">one bad ID: the output fails</text>
 <rect x="844" y="20" width="238" height="190" rx="6" class="box"/><rect x="844" y="20" width="238" height="26" rx="6" class="uc"/><text x="854" y="38" class="md" font-weight="600">hypothesis (section 9.6)</text>
 <text x="854" y="64">id, incident_id, rank</text><text x="854" y="80">statement, mechanism (new)</text><text x="854" y="96">disproving_test (new)</text><text x="854" y="112">confidence</text><text x="854" y="128">status: open / ruled_out /</text><text x="854" y="144">confirmed; ruled_out_reason</text><text x="854" y="160">created_by_rule or</text><text x="854" y="176">created_by_model_call_id</text>
 <rect x="18" y="250" width="240" height="160" rx="6" class="box"/><rect x="18" y="250" width="240" height="26" rx="6" class="uc"/><text x="28" y="268" class="md" font-weight="600">model_call</text>
-<text x="28" y="294">id, incident_id, step</text><text x="28" y="310">role: investigator (new) /</text><text x="28" y="326">diagnoser / critic / fixer</text><text x="28" y="342">model, prompt and skill version</text><text x="28" y="358">tokens, latency_ms, attempt</text><text x="28" y="374">result: valid / malformed / timeout</text><text x="28" y="390">output_artifact_id, output_hash</text>
+<text x="28" y="294">id, incident_id, step</text><text x="28" y="310">role: investigator (new) /</text><text x="28" y="326">diagnoser / critic / fixer</text><text x="28" y="342">model name and version, prompt version</text><text x="28" y="358">tokens, latency_ms, attempt</text><text x="28" y="374">result: valid / malformed / timeout</text><text x="28" y="390">output_artifact_id, output_hash</text>
 <rect x="290" y="270" width="250" height="110" rx="6" class="box"/><rect x="290" y="270" width="250" height="26" rx="6" class="uc"/><text x="300" y="288" class="md" font-weight="600">artifact</text>
-<text x="300" y="314">raw redacted model output,</text><text x="300" y="330">with its reasoning (audit only)</text><text x="300" y="346">full redacted tool result</text><text x="300" y="362">content hash</text>
+<text x="300" y="314">raw redacted model output,</text><text x="300" y="330">with its reasoning (audit only)</text><text x="300" y="346">full redacted tool result</text><text x="300" y="362">sha256</text>
 <rect x="572" y="250" width="240" height="160" rx="6" class="box"/><rect x="572" y="250" width="240" height="26" rx="6" class="uc"/><text x="582" y="268" class="md" font-weight="600">check_result (section 9.8)</text>
 <text x="582" y="294">kind = critic; model_call_id</text><text x="582" y="310">diagnosis_id or action_id</text><text x="582" y="326">verdict: accept / revise /</text><text x="582" y="342">escalate / no_verdict</text><text x="582" y="358">detail: findings per claim,</text><text x="582" y="374">missing evidence, reason</text><text x="582" y="396" class="lbl">immutable (A7)</text>
 <rect x="844" y="230" width="238" height="190" rx="6" class="box"/><rect x="844" y="230" width="238" height="26" rx="6" class="uc"/><text x="854" y="248" class="md" font-weight="600">diagnosis (section 9.7)</text>
@@ -466,7 +466,7 @@ pre code{border:0;padding:0;background:none}
 <g class="ln"><path d="M258,100 H288" marker-end="url(#g6)"/><path d="M540,100 H570" marker-end="url(#g6)"/><path d="M842,100 H814" marker-end="url(#g6)"/>
 <path d="M963,210 V228" marker-end="url(#g6)"/><path d="M842,330 H814" marker-end="url(#g6)"/>
 <path d="M138,250 V182" marker-end="url(#g6)"/><path d="M258,325 H288" marker-end="url(#g6)"/><path d="M415,230 V268" marker-end="url(#g6)"/><path d="M572,400 H562 V420 H138 V412" stroke-dasharray="5 4"/></g>
-<g class="lbl halo"><text x="262" y="92">1 to n</text><text x="544" y="92">1 to n</text><text x="816" y="92">n to 1</text><text x="970" y="224">cause</text><text x="148" y="222">requested by</text><text x="262" y="318">output</text><text x="422" y="252">full result</text><text x="300" y="434">critic call: model_call_id</text></g>
+<g class="lbl halo"><text x="265" y="92">1:n</text><text x="547" y="92">1:n</text><text x="819" y="92">n:1</text><text x="970" y="224">cause</text><text x="148" y="222">requested by</text><text x="265" y="318">out</text><text x="422" y="252">full result</text><text x="300" y="434">critic call: model_call_id</text></g>
 </svg>
 </div>
 <p class="cap">Figure 7. The reasoning records and their links (sections 9.5 to 9.8). A claim reaches its evidence through the diagnosis claims and the hypothesis links. Every row carries the incident ID, and the links must match it. Fields marked "new" are Layer 9 additions to Artifact 7.</p>
@@ -476,7 +476,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>Times</td><td><code>source_time</code> (event time at the source), <code>window_start</code> and <code>window_end</code> (the range asked for), <code>collected_at</code> (when the platform read it)</td><td>Two reads at different times are two rows, and both are kept.</td><td>Q9.21</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Change detection</td><td><code>content_hash</code></td><td>The same query with a different hash shows that the source changed. The new read is a new row. The diagnosis keeps the ID it cited. The action precondition checks the key fact (current config version) again just before the action (A7: current = v42).</td><td>Q9.22</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Completeness</td><td><code>status</code> (ok / partial / missing), <code>required</code>, <code>critical</code> (new)</td><td>A failed source is <code>missing</code>, not a negative result. A missing critical source caps the confidence (section 9.7) and leads to <code>inconclusive</code> or escalation (A3 incident C).</td><td>Q9.27</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Trust</td><td><code>trust = untrusted</code>, injection flag</td><td>Evidence is data, never an instruction (section 9.4).</td><td>Q9.46</td><td><span class="L F">Fixed requirement</span> A7 Q7.3</td></tr>
+<tr><td>Trust</td><td><code>trust = untrusted</code> (injection: event <code>injection.flagged</code>)</td><td>Evidence is data, never an instruction (section 9.4).</td><td>Q9.46</td><td><span class="L F">Fixed requirement</span> A7 Q7.3</td></tr>
 <tr><td>Scope</td><td><code>incident_id</code></td><td>Every link and every cited ID must match the incident (section 9.3).</td><td>Q9.29</td><td><span class="L F">Fixed requirement</span> A7 Q7.22</td></tr>
 </table>
 
@@ -568,14 +568,14 @@ pre code{border:0;padding:0;background:none}
 </g>
 <g class="sm halo">
 <text x="170" y="78">1 evidence, hypotheses</text><text x="170" y="106">2 diagnosis, revision 0</text>
-<text x="170" y="162">4 claims and cited evidence only (no reasoning)</text><text x="170" y="188">5 revise: findings for each claim, missing evidence</text>
+<text x="170" y="162">4 claims, cited evidence and ruled-out hypotheses (no reasoning)</text><text x="170" y="188">5 revise: findings for each claim, missing evidence</text>
 <text x="170" y="214">6 missing-evidence reads, only if round k &lt; 3</text><text x="170" y="240">7 new evidence (counts in k)</text>
 <text x="170" y="266">8 findings and new evidence: revise</text><text x="170" y="292">9 diagnosis, revision 1</text>
 <text x="170" y="350">11 review revision 1</text><text x="170" y="376">12 verdict</text>
 </g>
 <rect x="20" y="122" width="270" height="22" rx="4" class="box"/><text x="30" y="137" class="sm">3 code checks the L9-A4 evidence rule</text>
 <rect x="20" y="308" width="400" height="22" rx="4" class="box"/><text x="30" y="323" class="sm">10 no change (same cause, claims, evidence)? stop and escalate</text>
-<rect x="20" y="398" width="1060" height="58" rx="6" class="hum"/><text x="30" y="418" class="md" font-weight="600">After step 12</text><text x="30" y="436" class="sm">accept: propose actions. revise: one more revision only while r &lt; 2, from step 6. escalate, no verdict, or r = 2: escalate.</text><text x="30" y="450" class="sm">The human sees the last diagnosis and every critic finding.</text>
+<rect x="20" y="398" width="1060" height="58" rx="6" class="hum"/><text x="30" y="418" class="md" font-weight="600">After step 12</text><text x="30" y="436" class="sm">accept: propose actions. revise: one more revision only while r &lt; 2, from step 8 (step 6 only if reads are needed and k &lt; 3). escalate, no verdict, or r = 2: escalate.</text><text x="30" y="450" class="sm">The human sees the last diagnosis and every critic finding.</text>
 </svg>
 </div>
 <p class="cap">Figure 8. One revision cycle. The critic sees claims and evidence, never the diagnoser's reasoning. Its missing-evidence reads count toward the same 3 rounds. A revision that changes nothing stops the loop, and after 2 revisions the incident escalates.</p>
@@ -593,11 +593,11 @@ pre code{border:0;padding:0;background:none}
 <h2><span class="sec">9.10</span>Loop termination policy</h2>
 <p class="qs">Answers: Q9.4, Q9.34, Q9.37, Q9.38, Q9.47</p>
 <div class="fig">
-<svg viewBox="0 0 1100 330" role="img" aria-label="Nested scopes of the limits: one output, one agent run, one diagnosis and one incident, each with its counters and the result at the limit">
-<rect x="18" y="20" width="1064" height="294" rx="10" class="zb"/>
+<svg viewBox="0 0 1100 350" role="img" aria-label="Nested scopes of the limits: one output, one agent run, one diagnosis and one incident, each with its counters and the result at the limit">
+<rect x="18" y="20" width="1064" height="294" rx="10" class="zb"/><text x="1066" y="338" text-anchor="end" class="lbl">Values are provisional; Layer 12 sets the final values.</text>
 <text x="34" y="44" class="md" font-weight="600">One incident: the coordinator adds up every agent run</text>
 <g class="sm">
-<text x="34" y="66">3 follow-up rounds (k) &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens (A4 QR-06) &#183; 20 min to diagnose (A2)</text>
+<text x="34" y="66">3 follow-up rounds (k) &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens (A4 QR-06) &#183; 20 min to diagnose (A4 NFR-05)</text>
 <text x="34" y="82" class="lbl">At the limit: stop, keep every record, escalate.</text>
 </g>
 <rect x="34" y="96" width="1032" height="204" rx="10" class="zt"/>
@@ -653,6 +653,7 @@ pre code{border:0;padding:0;background:none}
 <text x="470" y="162">Claims not supported by their evidence (Q9.50)</text><rect x="760" y="152" width="300" height="12" rx="3" class="box"/><rect x="760" y="152" width="15" height="12" rx="3" class="bad"/><text x="1066" y="162">&#8804; 5%</text>
 <text x="470" y="190">Critic rejects a good diagnosis (Q9.52)</text><rect x="760" y="180" width="300" height="12" rx="3" class="box"/><rect x="760" y="180" width="30" height="12" rx="3" class="bad"/><text x="1066" y="190">&#8804; 10%</text>
 <text x="470" y="218">Claims with no valid evidence ID (Q9.50)</text><rect x="760" y="208" width="300" height="12" rx="3" class="box"/><text x="1066" y="218">0</text>
+<text x="470" y="246">Confidence calibrated per band (L9-A7)</text><text x="760" y="246" class="lbl">stated confidence matches actual accuracy</text>
 </g>
 <text x="18" y="262" class="md" font-weight="600">Efficiency for the reference scenario, incident A (Q9.53)</text>
 <g text-anchor="middle" class="sm">

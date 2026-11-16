@@ -90,20 +90,21 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <div class="fig">
 <svg viewBox="0 0 1150 520" role="img" aria-label="Architecture at a glance: incident path, four process types, shared services, items not in V1 and owners">
 <defs><marker id="c0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<g class="md" font-weight="600"><text x="20" y="24">Path of one incident (V1 limits)</text><text x="20" y="232">Containers from one image (ADR-01), Docker Compose on one host</text><text x="20" y="422">Not in V1 (section 6.8)</text><text x="580" y="422">Owners (section 6.6)</text></g>
+<g class="md" font-weight="600"><text x="20" y="24">Path of one incident (V1 limits)</text><text x="20" y="232">Containers from one image (ADR-01), Docker Compose on one host</text><text x="20" y="422">Not in V1 (section 6.4, Avoid in V1)</text><text x="580" y="422">Owners (section 6.6)</text></g>
 <g text-anchor="middle" class="sm">
 <rect x="20" y="36" width="140" height="82" rx="6" class="box"/><text x="90" y="58" font-weight="600">Monitoring</text><text x="90" y="76" class="lbl">signed alert webhook</text><text x="90" y="92" class="lbl">shop-api: HTTP 500s</text>
-<rect x="180" y="36" width="140" height="82" rx="6" class="uc"/><text x="250" y="58" font-weight="600">API: intake</text><text x="250" y="76" class="lbl">save and queue in</text><text x="250" y="92" class="lbl">one transaction</text><text x="250" y="108" class="lbl">reply p95 &le; 30 s</text>
+<rect x="180" y="36" width="140" height="82" rx="6" class="uc"/><text x="250" y="58" font-weight="600">API: intake</text><text x="250" y="76" class="lbl">save and queue, 1 txn</text><text x="250" y="92" class="lbl">acknowledge p95 &le; 30 s</text><text x="250" y="108" class="lbl">reply p95 &le; 200 ms</text>
 <rect x="340" y="36" width="140" height="82" rx="6" class="fx"/><text x="410" y="58" font-weight="600">Waiting queue</text><text x="410" y="76" class="lbl">in PostgreSQL</text><text x="410" y="92" class="lbl">20 waiting: new ones</text><text x="410" y="108" class="lbl">go to humans</text>
 <rect x="500" y="36" width="140" height="82" rx="6" class="uc"/><text x="570" y="58" font-weight="600">Admission loop</text><text x="570" y="76" class="lbl">max 3 running</text><text x="570" y="92" class="lbl">(configurable); order:</text><text x="570" y="108" class="lbl">severity, then age</text>
 <rect x="660" y="36" width="140" height="82" rx="6" class="uc"/><text x="730" y="58" font-weight="600">Worker: workflow</text><text x="730" y="76" class="lbl">workflow ID = incident ID</text><text x="730" y="92" class="lbl">evidence, diagnosis,</text><text x="730" y="108" class="lbl">critic (other model)</text>
 <rect x="820" y="36" width="140" height="82" rx="6" class="hum"/><text x="890" y="58" font-weight="600">Human approver</text><text x="890" y="76" class="lbl">approval gate signs,</text><text x="890" y="92" class="lbl">bound to a hash;</text><text x="890" y="108" class="lbl">agent cannot approve</text>
-<rect x="980" y="36" width="150" height="82" rx="6" class="uc"/><text x="1055" y="58" font-weight="600">Executor</text><text x="1055" y="76" class="lbl">only production writer</text><text x="1055" y="92" class="lbl">checks signature,</text><text x="1055" y="108" class="lbl">hash, expiry</text>
+<rect x="980" y="36" width="150" height="82" rx="6" class="uc"/><text x="1055" y="58" font-weight="600">Executor</text><text x="1055" y="76" class="lbl">only production writer</text><text x="1055" y="92" class="lbl">checks signature, hash,</text><text x="1055" y="108" class="lbl">expiry, single use</text>
 <rect x="640" y="150" width="180" height="54" rx="6" class="uc"/><text x="730" y="170" font-weight="600">Inference gateway</text><text x="730" y="186" class="lbl">down: halt and escalate</text>
 <rect x="420" y="150" width="190" height="54" rx="6" class="box"/><text x="515" y="170">Self-hosted models</text><text x="515" y="186" class="lbl">on (OpenAI-compatible)</text>
 <rect x="850" y="150" width="130" height="54" rx="6" class="bad" stroke-dasharray="6 4"/><text x="915" y="170">Cloud models</text><text x="915" y="186" class="lbl">off by default</text>
+<rect x="20" y="150" width="380" height="54" rx="6" class="okb"/><text x="210" y="167" font-weight="600">Fix path</text><text x="210" y="183" class="lbl">branch and PR; the human approver merges;</text><text x="210" y="196" class="lbl">the pipeline deploys</text>
 <rect x="990" y="144" width="140" height="72" rx="6" class="okb"/><text x="1060" y="161">Pipeline: redeploy</text><text x="1060" y="176" class="lbl">last good artifact,</text><text x="1060" y="192">or config store:</text><text x="1060" y="207" class="lbl">restore a version</text>
-<rect x="20" y="244" width="170" height="86" rx="6" class="uc"/><text x="105" y="266" font-weight="600">API</text><text x="105" y="284" class="lbl">FastAPI, Pydantic, Typer</text><text x="105" y="300" class="lbl">ADR-02, ADR-05</text><text x="105" y="316" class="lbl">1 to n copies</text>
+<rect x="20" y="244" width="170" height="86" rx="6" class="uc"/><text x="105" y="266" font-weight="600">API</text><text x="105" y="284" class="lbl">FastAPI, Pydantic</text><text x="105" y="300" class="lbl">ADR-02, ADR-05</text><text x="105" y="316" class="lbl">1 to n copies</text>
 <rect x="205" y="244" width="170" height="86" rx="6" class="uc"/><text x="290" y="266" font-weight="600">Worker</text><text x="290" y="284" class="lbl">workflows, agent steps</text><text x="290" y="300" class="lbl">ADR-03, 06, 09 (BM25)</text><text x="290" y="316" class="lbl">1 to n copies</text>
 <rect x="390" y="244" width="170" height="86" rx="6" class="uc"/><text x="475" y="266" font-weight="600">Executor</text><text x="475" y="284" class="lbl">only write tokens</text><text x="475" y="300" class="lbl">ADR-08</text><text x="475" y="316" class="lbl">1 copy</text>
 <rect x="575" y="244" width="170" height="86" rx="6" class="uc"/><text x="660" y="266" font-weight="600">Sandbox runner</text><text x="660" y="284" class="lbl">only Docker access</text><text x="660" y="300" class="lbl">ADR-07</text><text x="660" y="316" class="lbl">1 copy</text>
@@ -131,7 +132,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <p class="cap">Figure 1. Architecture at a glance. Top: the path of one incident, with the V1 limits. The green box holds the only two ways to change production. Middle: the containers and their ADRs. Bottom: what V1 does not use, and who designs each part.</p>
 <p>The context diagram shows the platform as one box. It shows who and what the platform talks to. The platform reads from many systems. It changes production only through the CI/CD pipeline or the config store, and only with a signed human approval (A2 2.3, A5 SC-15).</p>
 <div class="fig">
-<svg viewBox="0 0 1150 440" role="img" aria-label="Context diagram of the AI SRE platform and its neighbours">
+<svg viewBox="0 0 1150 460" role="img" aria-label="Context diagram of the AI SRE platform and its neighbours">
 <defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
 <rect x="20" y="40" width="200" height="56" rx="6" class="hum"/><text x="120" y="63">On-call engineer, approver</text><text x="120" y="80" class="lbl">CLI, HTTP API</text>
@@ -171,6 +172,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="842" y="292">read only</text>
 <text x="500" y="320">inference</text>
 <text x="680" y="320">off by default</text>
+<text x="590" y="426" text-anchor="start">Cloud edge: enabled only by a platform admin through a reviewed config change;</text><text x="590" y="442" text-anchor="start">key in secret store, host on allow list, redaction before each call</text>
 </g>
 </svg>
 </div>
@@ -235,7 +237,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="553" y="200">own DB</text>
 <text x="420" y="282" text-anchor="middle">start,</text><text x="420" y="308" text-anchor="middle">poll</text>
 <text x="670" y="282" text-anchor="middle">poll</text>
-<text x="690" y="200">poll</text>
+<text x="706" y="200">poll</text>
 <text x="163" y="282">read;</text><text x="163" y="306">PR</text>
 <text x="303" y="390">inference</text>
 <text x="190" y="400">off</text>
@@ -279,16 +281,16 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="670" y="263">6 start workflow, ID = incident A</text>
 <text x="860" y="298">7 task on queue "incident"</text>
 <text x="480" y="338">8 step 1 done: checkpoint, audit entry</text>
-<text x="100" y="218">steps 1 to 4: p95 &le; 30 s</text>
+<text x="100" y="218">steps 1 to 4: reply p95 &le; 200 ms</text><text x="100" y="232">acknowledgement (owner notified): p95 &le; 30 s</text>
 <text x="480" y="250">(severity, then age)</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 4. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request (A4 Q4.19: p95 &le; 30 s). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
+<p class="cap">Figure 4. Sequence for incident A (Q6.35). Steps 1 to 4 run inside the request. The reply targets p95 &le; 200 ms (A4 QR-01). The acknowledgement, with the owner notified, targets p95 &le; 30 s (A4 NFR-04). Step 3 saves and queues in one transaction. A second start in step 6 does nothing, because the workflow ID is the incident ID.</p>
 <h3>Processes and their responsibilities</h3>
 <table>
 <tr><th>Process</th><th>Synchronous work</th><th>Asynchronous work</th><th>Scale</th><th>Label</th></tr>
-<tr><td>API</td><td>Authenticate, validate, group duplicates, save the incident with status "queued" in one transaction, reply "accepted" with the incident ID (A4 Q4.19: p95 &le; 30 s). Approvals, stop, queries.</td><td>None</td><td>1 to n copies (stateless)</td><td><span class="L D">Decision</span> Q6.1, Q6.2</td></tr>
+<tr><td>API</td><td>Authenticate, validate, group duplicates, save the incident with status "queued" in one transaction, reply "accepted" with the incident ID (reply p95 &le; 200 ms, A4 QR-01; acknowledgement p95 &le; 30 s, A4 NFR-04). Approvals, stop, queries.</td><td>None</td><td>1 to n copies (stateless)</td><td><span class="L D">Decision</span> Q6.1, Q6.2</td></tr>
 <tr><td>Worker</td><td>None</td><td>Admission loop; incident workflows; evidence, diagnosis, review, verification; inference gateway; notifier</td><td>1 to n copies; the running limit is global (3, configurable)</td><td><span class="L D">Decision</span> Q6.3, Q6.4</td></tr>
 <tr><td>Executor</td><td>None</td><td>Approved actions only: redeploy, config restore (A5 SC-14 to SC-16)</td><td>1 copy</td><td><span class="L D">Decision</span> Q6.3, Q6.19</td></tr>
 <tr><td>Sandbox runner</td><td>None</td><td>Create, run and destroy one sandbox for each incident; return a test report</td><td>1 copy</td><td><span class="L D">Decision</span> Q6.38</td></tr>
@@ -504,7 +506,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 </div>
 <p class="cap">Figure 6. Deployment view with trust zones. Solid boxes are containers. "key" marks a container that holds a credential. Red circles are the A5 trust boundaries TB-1 to TB-6. The sandbox runner and the executor are separate containers because each is a security boundary.</p>
 <div class="fig">
-<svg viewBox="0 0 1150 510" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
+<svg viewBox="0 0 1150 610" role="img" aria-label="Sequence diagram from sandbox test report to an approved production action">
 <defs><marker id="c5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
 <rect x="13" y="20" width="124" height="40" rx="6" class="uc"/><text x="75" y="45">Sandbox runner</text>
@@ -516,7 +518,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="853" y="20" width="124" height="40" rx="6" class="uc"/><text x="915" y="45">Executor</text>
 <rect x="995" y="20" width="140" height="40" rx="6" class="okb"/><text x="1065" y="45">Pipeline, config store</text>
 </g>
-<g class="ln" stroke-dasharray="3 4"><path d="M75,60 V465"/><path d="M215,60 V465"/><path d="M355,60 V465"/><path d="M495,60 V465"/><path d="M635,60 V465"/><path d="M775,60 V465"/><path d="M915,60 V465"/><path d="M1065,60 V465"/></g>
+<g class="ln" stroke-dasharray="3 4"><path d="M75,60 V560"/><path d="M215,60 V560"/><path d="M355,60 V560"/><path d="M495,60 V560"/><path d="M635,60 V560"/><path d="M775,60 V560"/><path d="M915,60 V560"/><path d="M1065,60 V560"/></g>
 <g class="ln">
 <path d="M75,95 H215" marker-end="url(#c5)"/>
 <path d="M215,130 H355" marker-end="url(#c5)"/>
@@ -525,11 +527,12 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M495,220 H215" marker-end="url(#c5)"/>
 <path d="M215,255 H635" marker-end="url(#c5)"/>
 <path d="M635,285 H775" marker-end="url(#c5)"/>
-<path d="M775,315 H635" marker-end="url(#c5)"/>
-<path d="M635,345 H215" marker-end="url(#c5)"/>
-<path d="M215,375 H915" marker-end="url(#c5)"/>
-<path d="M915,440 H1065" marker-end="url(#c5)"/>
-<path d="M915,400 h30 v18 h-30" marker-end="url(#c5)"/>
+<path d="M775,330 H635" marker-end="url(#c5)"/>
+<path d="M635,360 H215" marker-end="url(#c5)"/>
+<path d="M215,390 H915" marker-end="url(#c5)"/>
+<path d="M915,455 H1065" marker-end="url(#c5)"/>
+<path d="M915,412 h30 v18 h-30" marker-end="url(#c5)"/>
+<path d="M215,485 h30 v18 h-30" marker-end="url(#c5)"/>
 </g>
 <g class="lbl halo">
 <text x="85" y="88">1 test report only</text>
@@ -539,16 +542,17 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="225" y="213">5 verdict (signal only)</text>
 <text x="225" y="248">6 request approval: evidence, contradicting evidence, action, hash</text>
 <text x="645" y="278">7 show request</text>
-<text x="645" y="308">8 approve (login)</text>
-<text x="225" y="338">9 signed approval, bound to the hash</text>
-<text x="225" y="368">10 task on queue "executor": action + signed approval</text>
-<text x="925" y="433">12 redeploy or restore</text>
-<text x="905" y="413" text-anchor="end">11 check signature, hash, expiry, single use</text>
+<text x="645" y="323">8 approve (login)</text><text x="645" y="303">no answer: backup approver; expires after 24 h; then escalate</text>
+<text x="225" y="353">9 signed approval, bound to the hash</text>
+<text x="225" y="383">10 task on queue "executor": action + signed approval</text>
+<text x="1135" y="448" text-anchor="end">12 redeploy, restore, or deploy the merged fix</text>
+<text x="905" y="425" text-anchor="end">11 check signature, hash, expiry, single use</text>
 </g>
-<text x="20" y="492" class="lbl">If a check fails in step 3 or step 11, no production action runs. The critic verdict in step 5 cannot approve an action.</text>
+<text x="255" y="498">13 Verifier: read the alert's signals, compare with the baseline</text><text x="255" y="524">recovered: close</text><text x="255" y="540">not recovered: escalate</text>
+<text x="20" y="588" class="lbl">If a check fails in step 3 or step 11: no action runs, the platform writes an audit entry, and it escalates. The critic verdict in step 5 cannot approve an action.</text>
 </svg>
 </div>
-<p class="cap">Figure 7. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver also merges the pull request (A4 FR-11).</p>
+<p class="cap">Figure 7. Sequence from sandbox result to production action (Q6.37). The sandbox runner sends only a test report. It has no message to the approval gate or the executor. The critic's verdict is a signal, never an authorization. For a fix, the human approver merges the pull request outside this sequence, and the pipeline deploys the merged fix (step 12; A4 FR-11). In step 13 the verifier compares the alert's signals with the baseline, then the workflow closes or escalates.</p>
 <table>
 <tr><th>Container</th><th>Zone</th><th>Holds</th><th>Network reach</th><th>A5 boundary</th></tr>
 <tr><td>API</td><td>Trusted</td><td>Approval signing key</td><td>Clients in; PostgreSQL; chat and pager</td><td>TB-1, TB-5</td></tr>

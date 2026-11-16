@@ -107,7 +107,7 @@ svg .ac{fill:var(--muted)}
 <rect x="496" y="66" width="146" height="70" rx="5" class="box"/><text x="569" y="94">fails in middleware</text><text x="569" y="110">no database span</text>
 <rect x="648" y="66" width="146" height="70" rx="5" class="box"/><text x="721" y="86">01:58 config v41&#8594;v42</text><text x="721" y="102">(deployment d-101)</text><text x="721" y="118">code unchanged</text>
 <rect x="800" y="66" width="146" height="70" rx="5" class="okb"/><text x="873" y="86">timeout value "30s"</text><text x="873" y="102">read as an integer;</text><text x="873" y="118">every request fails</text>
-<rect x="952" y="66" width="146" height="70" rx="5" class="hum"/><text x="1025" y="86">Revert config to v41</text><text x="1025" y="102">human approves</text><text x="1025" y="118">no escalation</text>
+<rect x="952" y="66" width="146" height="70" rx="5" class="hum"/><text x="1025" y="82">Revert config to v41</text><text x="1025" y="95">then fix the value and</text><text x="1025" y="108">add config validation</text><text x="1025" y="121">human approves both</text>
 
 <rect x="40" y="144" width="146" height="70" rx="5" class="box"/><text x="113" y="164">14:18 shop-api</text><text x="113" y="180">5xx 15%, /checkout</text><text x="113" y="196" font-weight="600">SEV2</text>
 <rect x="192" y="144" width="146" height="70" rx="5" class="box"/><text x="265" y="164">KeyError 'balance'</text><text x="265" y="180">in apply_gift_card()</text><text x="265" y="196">gift-card carts only</text>
@@ -115,7 +115,7 @@ svg .ac{fill:var(--muted)}
 <rect x="496" y="144" width="146" height="70" rx="5" class="box"/><text x="569" y="164">fails in /checkout</text><text x="569" y="180">payments span</text><text x="569" y="196">never starts</text>
 <rect x="648" y="144" width="146" height="70" rx="5" class="box"/><text x="721" y="164">14:08 deploy d-202</text><text x="721" y="180">commit e4f5a6</text><text x="721" y="196">config unchanged</text>
 <rect x="800" y="144" width="146" height="70" rx="5" class="okb"/><text x="873" y="164">new code reads</text><text x="873" y="180">"balance"; old saved</text><text x="873" y="196">cards lack the key</text>
-<rect x="952" y="144" width="146" height="70" rx="5" class="hum"/><text x="1025" y="164">Roll back to b7c8d9</text><text x="1025" y="180">human approves</text><text x="1025" y="196">no escalation</text>
+<rect x="952" y="144" width="146" height="70" rx="5" class="hum"/><text x="1025" y="160">Roll back to b7c8d9</text><text x="1025" y="173">then handle old card</text><text x="1025" y="186">format and add a test</text><text x="1025" y="199">human approves both</text>
 
 <rect x="40" y="222" width="146" height="70" rx="5" class="box"/><text x="113" y="242">09:46 orders</text><text x="113" y="258">5xx 30%</text><text x="113" y="274" font-weight="600">SEV2</text>
 <rect x="192" y="222" width="146" height="70" rx="5" class="bad"/><text x="265" y="242">2 of 3 instances</text><text x="265" y="258">missing; no stack</text><text x="265" y="274">trace</text>
@@ -193,7 +193,7 @@ svg .ac{fill:var(--muted)}
 <p class="qs">Answers: Q3.1, Q3.2, Q3.4, Q3.5, Q3.29, Q3.32</p>
 
 <div class="fig">
-<svg viewBox="0 0 1100 290" role="img" aria-label="Request path of the reference application, with the failure point of each incident">
+<svg viewBox="0 0 1100 300" role="img" aria-label="Request path of the reference application, with the failure point of each incident">
 <defs><marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="10" y="70" width="110" height="56" rx="6" class="box"/><text x="65" y="94">Browser</text><text x="65" y="110" class="lbl">front-end</text>
@@ -203,13 +203,14 @@ svg .ac{fill:var(--muted)}
 <rect x="580" y="40" width="220" height="116" rx="8" class="uc"/><text x="690" y="62" font-weight="600">shop-api (Python)</text><text x="690" y="80" class="lbl">app server (WSGI / ASGI)</text><text x="690" y="96" class="lbl">auth &#8594; routing &#8594; handler</text><text x="690" y="112" class="lbl">/products /cart /checkout</text><text x="690" y="128" class="lbl">reads config on every request</text><text x="690" y="144" class="lbl">traces on (W3C Trace Context)</text>
 <rect x="860" y="20" width="230" height="76" rx="6" class="fx"/><text x="975" y="42">orders service (Python)</text><text x="975" y="58" class="lbl">downstream, 3 instances</text><text x="975" y="74" class="lbl">no traces; logs from 2 of 3 missing</text><text x="975" y="89" class="lbl"><tspan fill="var(--human)" font-weight="700">C</tspan> fails here: 30% errors</text>
 <rect x="860" y="170" width="230" height="50" rx="6" class="box"/><text x="975" y="192">Database</text><text x="975" y="208" class="lbl">durable data</text>
-<rect x="580" y="230" width="220" height="50" rx="6" class="box"/><text x="690" y="252">Config store / Git</text><text x="690" y="268" class="lbl">config values, versions</text>
+<rect x="860" y="236" width="230" height="50" rx="6" class="box"/><text x="975" y="258">payments</text><text x="975" y="274" class="lbl"><tspan fill="var(--fix)" font-weight="700">B</tspan>: never called (span never starts)</text>
+<rect x="580" y="230" width="220" height="50" rx="6" class="box"/><text x="690" y="252">Config store / Git</text><text x="690" y="268" class="lbl">read by shop-api</text>
 </g>
 <g class="ln">
 <path d="M120,98 H148" marker-end="url(#r1)"/><path d="M250,98 H278" marker-end="url(#r1)"/><path d="M400,98 H428" marker-end="url(#r1)"/><path d="M550,98 H578" marker-end="url(#r1)"/>
 <path d="M800,70 L858,58" marker-end="url(#r1)"/><path d="M800,130 L858,184" marker-end="url(#r1)"/>
 <path d="M975,96 V168" marker-end="url(#r1)"/>
-<path d="M690,228 V158" marker-end="url(#r1)"/>
+<path d="M690,158 V228" marker-end="url(#r1)"/><path d="M800,150 L858,250" marker-end="url(#r1)"/>
 </g>
 <g class="lbl" text-anchor="middle">
 <text x="65" y="150">fails: assets,</text><text x="65" y="162">script errors</text>
@@ -358,7 +359,7 @@ svg .ac{fill:var(--muted)}
 <p><b>Evidence that strengthens "the deployment caused it":</b> the errors start within minutes of the deployment; the errors are only in the deployed service, and only in changed code or config paths; services that were not deployed stay healthy; a revert stops the errors.</p>
 
 <div class="fig">
-<svg viewBox="0 0 1100 222" role="img" aria-label="Hypothesis test flowchart with the result for each incident">
+<svg viewBox="0 0 1100 244" role="img" aria-label="Hypothesis test flowchart with the result for each incident">
 <defs><marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="10" y="70" width="150" height="50" rx="6" class="box"/><text x="85" y="92">Hypothesis:</text><text x="85" y="108">"the change caused it"</text>
@@ -366,7 +367,7 @@ svg .ac{fill:var(--muted)}
 <polygon points="530,45 630,95 530,145 430,95" class="uc"/><text x="530" y="90">Only in changed</text><text x="530" y="106">service and paths?</text>
 <polygon points="770,45 870,95 770,145 670,95" class="uc"/><text x="770" y="90">Other services</text><text x="770" y="106">healthy?</text>
 <rect x="910" y="70" width="180" height="50" rx="6" class="okb"/><text x="1000" y="92">Strong. Confirm by</text><text x="1000" y="108">revert: errors stop?</text>
-<rect x="430" y="170" width="440" height="30" rx="6" class="bad"/><text x="650" y="190">Contradicted: look for another cause (section 3.9)</text>
+<rect x="430" y="170" width="440" height="62" rx="6" class="bad"/><text x="650" y="190">Contradicted: look for another cause (section 3.9)</text><text x="650" y="208" class="lbl">errors before the change, other services fail,</text><text x="650" y="222" class="lbl">database errors, traffic spike</text>
 <rect x="10" y="150" width="150" height="62" rx="6" class="hum"/><text x="85" y="170"><tspan fill="var(--human)" font-weight="700">C</tspan>: no change</text><text x="85" y="186">to test. Escalate</text><text x="85" y="202">(section 3.10)</text>
 </g>
 <g class="ln">
@@ -408,12 +409,12 @@ svg .ac{fill:var(--muted)}
 </ul>
 
 <div class="fig">
-<svg viewBox="0 0 1100 340" role="img" aria-label="Incident life cycle, time-based escalation path, diagnosis escalation triggers and the result for each incident">
+<svg viewBox="0 0 1100 400" role="img" aria-label="Incident life cycle, time-based escalation path, diagnosis escalation triggers and the result for each incident">
 <defs><marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g class="lbl"><text x="10" y="16">1. Incident life cycle (each stage has a timestamp, so time to acknowledge, mitigate and resolve can be measured)</text>
 <text x="10" y="94">2. Time-based escalation path (provisional, L3-A3)</text>
 <text x="10" y="194">3. Stop the diagnosis and escalate when</text>
-<text x="10" y="256">4. Result for each incident</text></g>
+<text x="10" y="312">4. Result for each incident</text></g>
 <g text-anchor="middle" class="md">
 <rect x="10" y="26" width="136" height="34" rx="5" class="box"/><text x="78" y="48">detected</text>
 <rect x="166" y="26" width="136" height="34" rx="5" class="box"/><text x="234" y="48">acknowledged</text>
@@ -426,19 +427,22 @@ svg .ac{fill:var(--muted)}
 <rect x="260" y="102" width="200" height="50" rx="6" class="hum"/><text x="360" y="124">Secondary on-call</text><text x="360" y="140" class="lbl">no ack in 15 min</text>
 <rect x="510" y="102" width="270" height="50" rx="6" class="hum"/><text x="645" y="124">Service owner / lead</text><text x="645" y="140" class="lbl">not mitigated in 30 min (SEV1: 15 min)</text>
 <rect x="830" y="102" width="260" height="50" rx="6" class="bad"/><text x="960" y="124">Incident commander</text><text x="960" y="140" class="lbl">SEV1: coordinates, does not fix</text>
-<rect x="10" y="202" width="340" height="34" rx="5" class="bad"/><text x="180" y="224">every source checked, no hypothesis passes</text>
-<rect x="380" y="202" width="340" height="34" rx="5" class="bad"/><text x="550" y="224">the evidence conflicts</text>
-<rect x="750" y="202" width="340" height="34" rx="5" class="bad"/><text x="920" y="224">20-minute limit reached (Artifact 2)</text>
-<rect x="10" y="264" width="340" height="50" rx="6" class="okb"/><text x="180" y="285"><tspan fill="var(--bad)" font-weight="700">A</tspan>: confidence high, no escalation</text><text x="180" y="302" class="lbl">human approves the config revert (SEV1)</text>
-<rect x="380" y="264" width="340" height="50" rx="6" class="okb"/><text x="550" y="285"><tspan fill="var(--fix)" font-weight="700">B</tspan>: confidence high, no escalation</text><text x="550" y="302" class="lbl">human approves the rollback</text>
-<rect x="750" y="264" width="340" height="50" rx="6" class="hum"/><text x="920" y="285"><tspan fill="var(--human)" font-weight="700">C</tspan>: escalate at once</text><text x="920" y="302" class="lbl">note: missing logs, traces, config history</text>
+<rect x="10" y="202" width="340" height="40" rx="5" class="bad"/><text x="180" y="226">every source checked, no hypothesis passes</text>
+<rect x="380" y="202" width="340" height="40" rx="5" class="bad"/><text x="550" y="226">the evidence conflicts</text>
+<rect x="750" y="202" width="340" height="40" rx="5" class="bad"/><text x="920" y="219">loop limit reached (Artifact 2)</text><text x="920" y="235" class="lbl">20 min, tool calls or cost</text>
+<rect x="10" y="250" width="340" height="40" rx="5" class="bad"/><text x="180" y="267">deploy had a database migration</text><text x="180" y="283" class="lbl">rollback not safe: escalate</text>
+<rect x="380" y="250" width="340" height="40" rx="5" class="bad"/><text x="550" y="267">errors continue after revert or rollback</text><text x="550" y="283" class="lbl">escalate</text>
+<rect x="750" y="250" width="340" height="40" rx="5" class="bad"/><text x="920" y="267">a source is down: evidence incomplete</text><text x="920" y="283" class="lbl">lower confidence; escalate if critical source missing</text>
+<rect x="10" y="320" width="340" height="50" rx="6" class="okb"/><text x="180" y="341"><tspan fill="var(--bad)" font-weight="700">A</tspan>: confidence high, no escalation</text><text x="180" y="358" class="lbl">human approves revert; if errors continue, escalate</text>
+<rect x="380" y="320" width="340" height="50" rx="6" class="okb"/><text x="550" y="341"><tspan fill="var(--fix)" font-weight="700">B</tspan>: confidence high, no escalation</text><text x="550" y="358" class="lbl">human approves rollback; if errors continue, escalate</text>
+<rect x="750" y="320" width="340" height="50" rx="6" class="hum"/><text x="920" y="341"><tspan fill="var(--human)" font-weight="700">C</tspan>: escalate at once</text><text x="920" y="358" class="lbl">note: missing logs, traces, config history</text>
 </g>
 <g class="ln"><path d="M146,43 H164" marker-end="url(#e1)"/><path d="M302,43 H320" marker-end="url(#e1)"/><path d="M458,43 H476" marker-end="url(#e1)"/><path d="M614,43 H632" marker-end="url(#e1)"/><path d="M770,43 H788" marker-end="url(#e1)"/><path d="M926,43 H944" marker-end="url(#e1)"/>
 <path d="M210,127 H258" marker-end="url(#e1)"/><path d="M460,127 H508" marker-end="url(#e1)"/><path d="M780,127 H828" marker-end="url(#e1)"/></g>
-<text x="10" y="334" class="lbl">Each handover carries a note: what is known, what was tried, what was ruled out. The incident goes to whoever knows the component.</text>
+<text x="10" y="392" class="lbl">Each handover carries a note: what is known, what was tried, what was ruled out. The incident goes to whoever knows the component.</text>
 </svg>
 </div>
-<p class="cap">Figure 6. Escalation today. Every incident moves through the same life cycle. Time limits move it up the on-call path. The diagnosis stops and escalates on any of three triggers. Only C escalates.</p>
+<p class="cap">Figure 6. Escalation today. Every incident moves through the same life cycle. Time limits move it up the on-call path. The diagnosis stops and escalates on any of six triggers. Only C escalates.</p>
 
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
