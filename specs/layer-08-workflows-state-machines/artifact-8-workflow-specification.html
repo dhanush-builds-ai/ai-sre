@@ -169,7 +169,7 @@ pre code{border:0;padding:0;background:none}
 <g text-anchor="middle" class="sm">
 <rect x="35" y="58" width="118" height="58" rx="6" class="uc"/><text x="94" y="82">Start</text><text x="94" y="98" class="lbl">investigating</text>
 <rect x="165" y="58" width="118" height="58" rx="6" class="box"/><text x="224" y="82">Collect evidence</text><text x="224" y="98" class="lbl">per source, parallel</text>
-<rect x="295" y="58" width="118" height="58" rx="6" class="box"/><text x="354" y="82">Diagnose</text><text x="354" y="98" class="lbl">diagnoser model</text>
+<rect x="295" y="58" width="118" height="58" rx="6" class="box"/><text x="354" y="82">Diagnose</text><text x="354" y="98" class="lbl">2 agents (A9 9.1)</text>
 <rect x="425" y="58" width="118" height="58" rx="6" class="box"/><text x="484" y="82">Critic review</text><text x="484" y="98" class="lbl">other model</text>
 <rect x="555" y="58" width="118" height="58" rx="6" class="box"/><text x="614" y="82">Propose actions</text><text x="614" y="98" class="lbl">recovery, fix</text>
 <rect x="685" y="58" width="118" height="58" rx="6" class="fx"/><text x="744" y="82">Recovery child</text><text x="744" y="98" class="lbl">runs first</text>
@@ -223,7 +223,8 @@ pre code{border:0;padding:0;background:none}
 <tr class="grp"><td colspan="5">Incident workflow</td></tr>
 <tr><td>set_status</td><td>incident (worker)</td><td>incident.status, version; event</td><td>none</td><td>Compare-and-set on <code>incident.version</code>; the same target state is a no-op.</td></tr>
 <tr><td>collect_evidence</td><td>incident (worker)</td><td>tool_call, evidence, artifact; event</td><td>read from a source</td><td>Reads only. A rerun adds a new tool_call; the workflow uses the recorded result.</td></tr>
-<tr><td>diagnose</td><td>incident (worker)</td><td>model_call, budget_entry, hypothesis, diagnosis; event</td><td>model call through the inference gateway</td><td>No outside effect; the cost is tokens. Each attempt is recorded (Q8.11).</td></tr>
+<tr><td>investigate</td><td>incident (worker)</td><td>model_call, budget_entry, tool_call, evidence, hypothesis; event</td><td>model requests through the inference gateway; read tool calls through the tool layer (A9 9.4)</td><td>No outside effect; the cost is tokens and reads. Each model request and tool call is its own activity (A9 9.1). Each attempt is recorded (Q8.11).</td></tr>
+<tr><td>diagnose</td><td>incident (worker)</td><td>model_call, budget_entry, diagnosis; event</td><td>model request through the inference gateway</td><td>Same as investigate, with no tools.</td></tr>
 <tr><td>critic_review</td><td>incident (worker)</td><td>model_call, check_result (critic); event</td><td>model call (other model)</td><td>Same as diagnose.</td></tr>
 <tr><td>propose_action</td><td>incident (worker)</td><td>action, patch; event</td><td>fix only: branch and pull request on the Git host</td><td>Branch name contains the action ID; an existing branch or pull request is reused.</td></tr>
 <tr><td>notify</td><td>incident (worker)</td><td>notification</td><td>chat, pager or ticket message</td><td>The message carries the notification ID; a second send is visible as the same notice.</td></tr>
@@ -347,7 +348,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>From</th><th>Trigger</th><th>Guard (all must be true)</th><th>To</th><th>Q</th></tr>
 <tr><td>(none)</td><td>Intake saves the incident</td><td>Request is valid; not a duplicate (A7 7.8)</td><td>queued</td><td>Q8.26</td></tr>
 <tr><td>queued</td><td>Admission loop starts the workflow</td><td>Fewer than 3 incidents run (A4 QR-07)</td><td>investigating</td><td>Q8.25</td></tr>
-<tr><td>investigating</td><td>Diagnosis made</td><td><code>result = cause_found</code>; the hypothesis has at least one supporting and no open contradicting evidence item; every required source is collected or marked missing; the critic review is recorded (shown, not a vote, A5 SC-12)</td><td>diagnosed</td><td>Q8.27</td></tr>
+<tr><td>investigating</td><td>Diagnosis made</td><td><code>result = cause_found</code>; the hypothesis has at least one supporting and no open contradicting evidence item; every required source is collected or marked missing; the critic review is recorded (shown, not a vote, A5 SC-12). Exact rule: A9 9.7 (L9-A4)</td><td>diagnosed</td><td>Q8.27</td></tr>
 <tr><td>investigating</td><td>Diagnosis made</td><td><code>result = inconclusive</code> (a valid result, A1), or a model or source failure after its retries</td><td>escalated</td><td>Q8.27</td></tr>
 <tr><td>diagnosed</td><td>First action child starts</td><td>At least one action is proposed</td><td>remediating</td><td>Q8.25</td></tr>
 <tr><td>diagnosed</td><td>No action is proposed</td><td>The policy finds no safe action</td><td>escalated</td><td>Q8.25</td></tr>
@@ -364,7 +365,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>(none)</td><td>propose_action</td><td>Diagnosis is active</td><td>proposed</td><td>Q8.25</td></tr>
 <tr><td>proposed</td><td>Child workflow starts</td><td>Recovery: none. Fix: the recovery child has ended</td><td>testing</td><td>Q8.28</td></tr>
 <tr><td>testing</td><td>Checks complete</td><td>Policy checks pass. Fix: the repro test passes, the existing suite passes, no new failure. A test that fails then passes runs once more; another failure counts as failed.</td><td>review</td><td>Q8.28</td></tr>
-<tr><td>testing</td><td>Checks complete</td><td>Any check fails, or a partial pass. The report is kept. No automatic fix retry in V1 (Layer 9 decides).</td><td>blocked</td><td>Q8.28</td></tr>
+<tr><td>testing</td><td>Checks complete</td><td>Any check fails, or a partial pass. The report is kept. No automatic fix retry in V1 (confirmed in A9 9.9).</td><td>blocked</td><td>Q8.28</td></tr>
 <tr><td>review</td><td>Signal <code>decision</code> = approve</td><td>See the guard list in section 8.6</td><td>applying</td><td>Q8.29</td></tr>
 <tr><td>review</td><td>Signal <code>decision</code> = reject</td><td>Reason given</td><td>rejected</td><td>Q8.30</td></tr>
 <tr><td>review</td><td>Final timer fires</td><td>No decision</td><td>expired</td><td>Q8.31</td></tr>
@@ -399,7 +400,7 @@ pre code{border:0;padding:0;background:none}
 <div class="tw"><table class="reg">
 <tr><th>Activity</th><th>Start-to-close (one attempt)</th><th>Max attempts</th><th>Schedule-to-close</th><th>Schedule-to-start</th><th>Heartbeat</th><th>After the last attempt</th></tr>
 <tr><td>collect_evidence</td><td>per source (<code>platform_setting.source_timeouts</code>, default 30 s)</td><td>3</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Evidence marked <code>missing</code>; the workflow continues</td></tr>
-<tr><td>diagnose, critic_review</td><td>60 s (A4 QR-03)</td><td>2 (1 retry, A4 QR-03)</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Escalate. Malformed output: the workflow asks again with the parse error, at most 3 attempts (A4 QR-04). Inference down: halt and escalate (A2).</td></tr>
+<tr><td>investigate, diagnose, critic_review (each model request)</td><td>60 s (A4 QR-03)</td><td>2 (1 retry, A4 QR-03)</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Escalate. Malformed output: the workflow asks again with the parse error, at most 3 attempts (A4 QR-04). Inference down: halt and escalate (A2).</td></tr>
 <tr><td>sandbox_run</td><td>15 min</td><td>2</td><td>35 min</td><td>5 min</td><td>30 s</td><td>Action <code>blocked</code></td></tr>
 <tr><td>execute_action</td><td>2 min</td><td>3 (each rerun goes to reconciliation)</td><td>10 min</td><td>5 min</td><td>&mdash;</td><td><code>outcome_unknown</code></td></tr>
 <tr><td>reconcile_action</td><td>1 min</td><td>until the limit (L8-A2)</td><td>pipeline run timeout + 2 min</td><td>5 min</td><td>&mdash;</td><td>Stays <code>outcome_unknown</code>; escalate</td></tr>
@@ -638,7 +639,7 @@ pre code{border:0;padding:0;background:none}
 <h3>Open items</h3>
 <table>
 <tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
-<tr><td>Evidence threshold detail for <code>diagnosed</code>; fixer retry loop after a failed sandbox run</td><td>Dhanush</td><td>Layer 9</td></tr>
+<tr><td>Evidence threshold detail for <code>diagnosed</code>; fixer retry loop after a failed sandbox run</td><td>Dhanush</td><td>Closed in Artifact 9 (sections 9.7, 9.9)</td></tr>
 <tr><td>Executor dispatch details; fix merge detection; unknown-outcome limit (L8-A2)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Timeout values (L8-A3); history size (L8-A1); queued-age and schedule-to-start alert routing</td><td>Rinisha, Dhanush</td><td>Layer 12-A, 12-B</td></tr>
 <tr><td>Replay test fixtures</td><td>Irfan</td><td>Layer 12-D</td></tr>

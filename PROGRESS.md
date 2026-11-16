@@ -15,10 +15,10 @@ _Last updated: 2026-11-15_
 | 4 | Requirements | Dhanush (from Chirag) | Done — ChatGPT pass pending (H2) | [log](specs/layer-04-requirements/conversation-log.md) | [A4](specs/layer-04-requirements/artifact-4-requirements-specification.html) | 34 requirements, 5 provisional milestones |
 | 5 | Threat Modeling | Chirag | Done — ChatGPT pass pending (H2); consumer review by Dhanush done, fixes applied (2026-11-14) | [log](specs/layer-05-threat-modeling/conversation-log.md) | [A5](specs/layer-05-threat-modeling/artifact-5-threat-model.html) | 20 abuse cases, 25 controls, 19 security tests. Closes M11 (author may approve the revert, not the fix), NFR-08 method (rules-only redaction, fail closed), A1 E8 check, secret store requirements |
 | 6 | System Architecture | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-06-system-architecture/conversation-log.md) | [A6](specs/layer-06-system-architecture/artifact-6-system-architecture.html) | 4 processes (API, worker, executor, sandbox runner), 18 components, 10 ADRs. Temporal + PostgreSQL waiting queue. Revised A2 model rule: cloud providers by config, off by default |
-| 7 | Data, APIs and Events | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-07-data-apis-events/conversation-log.md) | [A7](specs/layer-07-data-apis-events/artifact-7-data-and-interface-specification.html) | 45 tables, CloudEvents envelope, outbox via queued row + event table, idempotency table, SSE timeline. Gap review F1–F9 applied. Revised A5 login (SC-25) and config (SC-24) |
+| 7 | Data, APIs and Events | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-07-data-apis-events/conversation-log.md) | [A7](specs/layer-07-data-apis-events/artifact-7-data-and-interface-specification.html) | 35 tables (after the S1–S11 schema review), CloudEvents envelope, outbox via queued row + event table, idempotency table, SSE timeline. Gap review F1–F9 applied. Revised A5 login (SC-25) and config (SC-24) |
 | 8 | Workflows and State Machines | Dhanush | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-08-workflows-state-machines/conversation-log.md) | [A8](specs/layer-08-workflows-state-machines/artifact-8-workflow-specification.html) | Incident workflow + one child per action; 7 incident and 13 action states; signals not Temporal cancel; one retry owner; intent-then-dispatch reconciliation; no notifier spool (A7 updated) |
-| 9 | Agent Architecture | Dhanush | Not started — inputs ready (A3, A7, A8) | | | Needs A3, A7, A8 |
-| 10 | Inference and Retrieval | Irfan | Not started | | | Needs A2, A9 |
+| 9 | Agent Architecture | Dhanush | Done (2026-11-16) — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-09-agent-architecture/conversation-log.md) | [A9](specs/layer-09-agent-architecture/artifact-9-agent-design-specification.html) | PydanticAI agents on Temporal; code coordinator; 4 agents (investigator, diagnoser, critic, fixer) + 3 code skills; baseline evidence by code; ≤ 3 rounds, ≤ 2 revisions, 30 requests / 30 tool calls; no agent write tools; escalation rubric closed (A1 E3). A7 and A8 updated |
+| 10 | Inference and Retrieval | Irfan | Not started — inputs ready (A2, A9) | | | Needs A2, A9 |
 | 11 | Safe Remediation | Rinisha | Not started | | | Needs A5, A8, A9 |
 | 12 | Reliability and Evaluation | All, by section (Dhanush merges) | Not started | | | Needs A3, A4, A10, A11 |
 | 13 | Implementation Planning | Team | Not started | | | Needs A1–A12 |
@@ -62,8 +62,8 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Item | Owner | Due |
 |---|---|---|
 | Is every deployment and config change recorded with time and version, and where? | Dhanush | Layer 6/7 |
-| Exact escalation rubric and gate limits (A1 E3) | Dhanush | Layer 9 |
-| Self-hosted model choice, GPU sizing incl. HA copies | Irfan | Layer 10 |
+| Exact escalation rubric and gate limits (A1 E3) | Dhanush | Closed in L9 log Q9.38 (2026-11-16) |
+| Self-hosted model choice, GPU sizing incl. HA copies; native JSON tool calling (L9-A1); need for a reasoning field; injection detector method | Irfan | Layer 10 |
 | Approval channel, timeouts, write-tool enforcement, sandbox design | Rinisha | Layer 11 |
 | Run the ChatGPT pass on A1–A3 decisions and record disagreements (H2) | Layer owners | Before submission |
 | Fill "Reviewed by" and "Date" on A1–A3 | Team | Before submission |
@@ -73,4 +73,6 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Team walk-through of A5 decisions (work-split rule 4; review R8) | Chirag | Before Layer 11 |
 | Confirm A5 changes from Layers 6 and 7: AB-19, AB-20, SC-01, SC-04, SC-24, SC-25, AST-11, TA-8, RR-6, ST-17, ST-18, ST-19 | Chirag | A5 walk-through |
 | Fix approval record: signed approval vs "merge is the approval" (A2 2.3, L7 F7) | Rinisha | Layer 11 |
+| PydanticAI version pin and Temporal spike on incident A (L9-A3) | Dhanush | Layer 13 |
+| Evaluation harness, fixture labels, seeded-fault fixtures, final agent targets (L9-A2, A4–A7) | Irfan, Dhanush | Layer 12 |
 | Rebalance load: Dhanush owns L3, L4, L6–L9 (311 Qs); Manish has no layer; Chirag owns L5 | Team | Before Layer 7 |

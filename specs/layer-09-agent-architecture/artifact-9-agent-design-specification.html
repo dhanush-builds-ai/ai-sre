@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 9 - Agent Design Specification</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8;--teal:#0e7490;--reg:rgba(29,29,27,.035);--hd:#f1f1ec}
+@media screen and (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140;--teal:#5cc8dc;--reg:rgba(236,236,230,.04);--hd:#2a2a26}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px}
+.sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
+.qs{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.tw{overflow-x:auto}
+.reg{min-width:1000px;font-size:13.5px}
+.reg td:first-child{white-space:nowrap;font-weight:600}
+.reg tr.grp td{background:var(--accent-bg);color:var(--accent);font-weight:600}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
+.fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
+.fig svg{display:block;min-width:720px;width:100%;height:auto}
+.cap{color:var(--muted);font-size:14px;margin:4px 0 0}
+.note{border-left:4px solid var(--human);background:var(--human-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+.no{border-left:4px solid var(--bad);background:var(--bad-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+ul,ol{padding-left:22px}li{margin:2px 0}
+.checks{list-style:none;padding-left:0}
+.L{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.F{background:var(--fix-bg);color:var(--fix);border:1px solid var(--fix)}
+.D{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent)}
+.A{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.R{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.Rl{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.Rm{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.Rh{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+svg text{fill:var(--fg);font-family:system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
+svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
+svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .zb{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zt{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zo{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
+svg .ac{fill:var(--muted)}
+svg .halo text{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-weight:700}
+.fig.erd{overflow:auto;max-height:92vh}
+.fig.erd svg{width:auto;min-width:0;max-width:none;height:auto}
+.erd svg text{fill:var(--fg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px}
+.erd svg .bgr{fill:var(--card)}
+.erd svg .reg{fill:var(--reg);stroke:var(--line);stroke-width:1.2;stroke-dasharray:6 4}
+.erd svg .rl{font-family:system-ui,sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;fill:var(--muted)}
+.erd svg .box{fill:var(--card);stroke:var(--muted);stroke-width:1.2}
+.erd svg .hd{fill:var(--hd)}
+.erd svg .hub .hd{fill:var(--accent-bg)}.erd svg .hub .box{stroke:var(--accent);stroke-width:1.8}
+.erd svg .t{font-size:12.5px;font-weight:700}
+.erd svg .im{font-size:9px;fill:var(--muted);font-style:italic}
+.erd svg .g{font-size:9.5px;font-weight:700}
+.erd svg .pk{fill:var(--fg)}.erd svg .fk{fill:var(--accent)}.erd svg .uk{fill:var(--fix)}.erd svg .pm{fill:var(--human)}
+.erd svg .c{fill:var(--muted)}.erd svg .c.k{fill:var(--fg)}
+.erd svg .m{font-size:10px;font-style:italic;fill:var(--muted)}
+.erd svg .nb{fill:var(--human-bg);stroke:var(--human);stroke-width:1.2;stroke-dasharray:5 3}
+.erd svg .nh{font-family:system-ui,sans-serif;font-size:11.5px;font-weight:700}
+.erd svg .nl{font-family:system-ui,sans-serif;font-size:10.5px}
+.erd svg .lg{font-family:system-ui,sans-serif;font-size:12px}
+.erd svg .sep{stroke:var(--line);stroke-width:1}
+.erd svg .net{color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.erd svg .net:hover{stroke-width:3}
+.erd svg .net .dash{stroke-dasharray:5 4}
+.erd svg .net .dot{fill:currentColor;stroke:none}
+.erd svg .net .opt{fill:var(--card)}
+.erd svg .net .sw{stroke-width:4}
+.erd svg .n-inc{color:var(--accent)}.erd svg .n-usr{color:var(--human)}.erd svg .n-svc{color:var(--ok)}.erd svg .n-int{color:var(--fix)}.erd svg .n-art{color:var(--bad)}.erd svg .n-act{color:var(--teal)}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-size:13px;line-height:1.45}
+pre code{border:0;padding:0;background:none}
+@page{size:A4;margin:14mm}
+@page erd{size:A3 landscape;margin:8mm}
+@media print{body{background:#fff;font-size:12px}main{max-width:none}.tw,.fig,pre{overflow:visible!important;max-height:none!important}.reg{min-width:0;font-size:9.5px}.reg td:first-child{white-space:normal}.fig svg{min-width:0!important;width:100%!important;max-width:100%!important;height:auto}.fig.erd,.fig.erd+.cap{page:erd}.fig.erd{break-before:page;border:0;padding:0}.fig.erd svg{max-height:262mm}code{font-size:.9em}pre{white-space:pre-wrap;word-break:break-word}.fig,tr{break-inside:avoid}.cap{break-before:avoid}h2,h3{break-after:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Artifact 9 - Agent Design Specification</h1>
+<p class="sub">Building an AI SRE &middot; Layer 9: Agent Architecture and Engineering Reasoning &middot; <b>Built from.</b> Artifacts 3, 7 and 8 (and the requirements of Artifact 4).</p>
+<table>
+<tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Dhanush (owner), Chirag, Manish, Rinisha, Irfan</td></tr>
+</table>
+<p class="qs">Decisions come from <code>conversation-log.md</code>. Focus of this layer: the agents reason and propose; the application enforces policy, authorization and every external write. Labels:
+<span class="L F">Fixed requirement</span> comes from an earlier artifact (source given).
+<span class="L D">Decision</span> was made in this layer, with a rationale in the log.
+<span class="L A">Assumption</span> is provisional, with an owner and a validation condition (see Appendix).</p>
+
+<h3>Required sections</h3>
+<table>
+<tr><th>Required section</th><th>Questions this section answers</th><th>Done</th></tr>
+<tr><td>9.1 Coordinator</td><td>Q9.1 to Q9.4, Q9.7, Q9.8, Q9.11</td><td>&#9745;</td></tr>
+<tr><td>9.2 Skill definitions</td><td>Q9.12, Q9.13, Q9.15 to Q9.19</td><td>&#9745;</td></tr>
+<tr><td>9.3 Typed contracts</td><td>Q9.6, Q9.13, Q9.14, Q9.28, Q9.29</td><td>&#9745;</td></tr>
+<tr><td>9.4 Tool registry</td><td>Q9.5, Q9.6, Q9.9, Q9.10, Q9.39 to Q9.47</td><td>&#9745;</td></tr>
+<tr><td>9.5 Evidence schema</td><td>Q9.20 to Q9.22, Q9.27, Q9.29</td><td>&#9745;</td></tr>
+<tr><td>9.6 Hypothesis schema</td><td>Q9.16, Q9.23 to Q9.26</td><td>&#9745;</td></tr>
+<tr><td>9.7 Diagnosis schema</td><td>Q9.17, Q9.24 to Q9.28</td><td>&#9745;</td></tr>
+<tr><td>9.8 Critic schema</td><td>Q9.30 to Q9.32, Q9.36, Q9.37</td><td>&#9745;</td></tr>
+<tr><td>9.9 Revision policy</td><td>Q9.33 to Q9.35</td><td>&#9745;</td></tr>
+<tr><td>9.10 Loop termination policy</td><td>Q9.4, Q9.34, Q9.37, Q9.38, Q9.47</td><td>&#9745;</td></tr>
+<tr><td>9.11 Agent evaluation metrics</td><td>Q9.36, Q9.48 to Q9.53</td><td>&#9745;</td></tr>
+</table>
+
+<!-- ============ 9.1 ============ -->
+<h2><span class="sec">9.1</span>Coordinator</h2>
+<p class="qs">Answers: Q9.1 to Q9.4, Q9.7, Q9.8, Q9.11</p>
+<div class="fig">
+<svg viewBox="0 0 1100 520" role="img" aria-label="Overview of Layer 9: the investigation path from baseline context to the executor, the escalation and fix branches, where each part runs, the limits per incident, and the safety and quality rules">
+<defs><marker id="g0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<text x="18" y="20" class="lbl">1. One investigation (sections 9.1, 9.2, 9.9, 9.10). Blue = PydanticAI agent. White = code, no model. Yellow = human. Red = production write.</text>
+<g text-anchor="middle">
+<rect x="18" y="30" width="120" height="78" rx="6" class="box"/><text x="78" y="52" class="md" font-weight="600">Baseline</text><text x="78" y="69" class="lbl">context, no model</text><text x="78" y="84" class="lbl">A3 required sources</text><text x="78" y="99" class="lbl">via the tool layer</text>
+<rect x="150" y="30" width="120" height="78" rx="6" class="box"/><text x="210" y="52" class="md" font-weight="600">Fixed rules</text><text x="210" y="69" class="lbl">System 1, code</text><text x="210" y="84" class="lbl">first hypotheses</text><text x="210" y="99" class="lbl">no token cost</text>
+<rect x="282" y="30" width="120" height="78" rx="6" class="uc"/><text x="342" y="52" class="md" font-weight="600">Investigator</text><text x="342" y="69" class="lbl">2 to 5 hypotheses</text><text x="342" y="84" class="lbl">read-only tools</text><text x="342" y="99" class="lbl">at most 3 rounds</text>
+<rect x="414" y="30" width="120" height="78" rx="6" class="uc"/><text x="474" y="52" class="md" font-weight="600">Diagnoser</text><text x="474" y="69" class="lbl">one cause or</text><text x="474" y="84" class="lbl">inconclusive; no tools</text><text x="474" y="99" class="lbl">at most 2 revisions</text>
+<rect x="546" y="30" width="120" height="78" rx="6" class="uc"/><text x="606" y="52" class="md" font-weight="600">Critic</text><text x="606" y="69" class="lbl">different model</text><text x="606" y="84" class="lbl">accept, revise,</text><text x="606" y="99" class="lbl">or escalate</text>
+<rect x="678" y="30" width="120" height="78" rx="6" class="box"/><text x="738" y="52" class="md" font-weight="600">Recovery map</text><text x="738" y="69" class="lbl">code, no model</text><text x="738" y="84" class="lbl">change X &#8594; redeploy</text><text x="738" y="99" class="lbl">or restore config</text>
+<rect x="810" y="30" width="120" height="78" rx="6" class="hum"/><text x="870" y="52" class="md" font-weight="600">Gates</text><text x="870" y="69" class="lbl">policy gate, then</text><text x="870" y="84" class="lbl">human approval</text><text x="870" y="99" class="lbl">outside the agents</text>
+<rect x="942" y="30" width="140" height="78" rx="6" class="bad"/><text x="1012" y="52" class="md" font-weight="600">Executor</text><text x="1012" y="69" class="lbl">only production writer</text><text x="1012" y="84" class="lbl">then the verifier</text><text x="1012" y="99" class="lbl">(A6, A8)</text>
+</g>
+<g class="ln"><path d="M138,69 H148" marker-end="url(#g0)"/><path d="M270,69 H280" marker-end="url(#g0)"/><path d="M402,69 H412" marker-end="url(#g0)"/><path d="M534,69 H544" marker-end="url(#g0)"/><path d="M666,69 H676" marker-end="url(#g0)"/><path d="M798,69 H808" marker-end="url(#g0)"/><path d="M930,69 H940" marker-end="url(#g0)"/>
+<path d="M474,108 V168 H478" marker-end="url(#g0)"/><path d="M606,108 V138" marker-end="url(#g0)"/>
+<path d="M870,168 H888" marker-end="url(#g0)"/></g>
+<g text-anchor="middle">
+<rect x="480" y="140" width="180" height="56" rx="22" class="hum"/><text x="570" y="163" class="md" font-weight="600">Escalated</text><text x="570" y="181" class="lbl">a human owns the incident</text>
+<rect x="700" y="140" width="170" height="56" rx="6" class="uc"/><text x="785" y="160" class="md" font-weight="600">Fixer</text><text x="785" y="176" class="lbl">after recovery: diff, undo,</text><text x="785" y="189" class="lbl">test plan; no retry in V1</text>
+<rect x="890" y="140" width="192" height="56" rx="6" class="box"/><text x="986" y="160" class="md" font-weight="600">Sandbox, critic, gates</text><text x="986" y="176" class="lbl">the same path as recovery;</text><text x="986" y="189" class="lbl">the approver merges the PR</text>
+</g>
+<g class="lbl halo"><text x="400" y="152">L9-A4 fails</text><text x="614" y="128">escalate</text></g>
+<text x="18" y="226" class="lbl">2. Where each part runs (section 9.1): PydanticAI agents on Temporal</text>
+<g text-anchor="middle">
+<rect x="18" y="236" width="255" height="64" rx="6" class="box"/><text x="145" y="258" class="md" font-weight="600">Temporal workflow code</text><text x="145" y="275" class="lbl">coordinator and each agent loop</text><text x="145" y="290" class="lbl">deterministic, no I/O</text>
+<rect x="287" y="236" width="255" height="64" rx="6" class="box"/><text x="414" y="258" class="md" font-weight="600">Temporal activities</text><text x="414" y="275" class="lbl">every model request, every tool call</text><text x="414" y="290" class="lbl">only retry owner (A8 8.5)</text>
+<rect x="556" y="236" width="255" height="64" rx="6" class="fx"/><text x="683" y="258" class="md" font-weight="600">Inference gateway</text><text x="683" y="275" class="lbl">budget, timeout, model_call row</text><text x="683" y="290" class="lbl">self-hosted models (A2, A6)</text>
+<rect x="825" y="236" width="257" height="64" rx="6" class="fx"/><text x="953" y="258" class="md" font-weight="600">Tool layer</text><text x="953" y="275" class="lbl">checks, redaction, evidence row</text><text x="953" y="290" class="lbl">HTTP and MCP adapters</text>
+</g>
+<g class="ln"><path d="M273,268 H285" marker-end="url(#g0)"/><path d="M542,268 H554" marker-end="url(#g0)"/><path d="M414,300 V314 H953 V302" marker-end="url(#g0)"/></g>
+<text x="18" y="342" class="lbl">3. Limits for each incident (section 9.10). At any limit the coordinator stops and escalates.</text>
+<g text-anchor="middle" class="sm">
+<rect x="18" y="352" width="146" height="40" rx="6" class="bad"/><text x="91" y="376">30 model requests</text>
+<rect x="171" y="352" width="146" height="40" rx="6" class="bad"/><text x="244" y="376">30 tool calls (A4)</text>
+<rect x="324" y="352" width="146" height="40" rx="6" class="bad"/><text x="397" y="376">10 GPU-minutes (A4)</text>
+<rect x="477" y="352" width="146" height="40" rx="6" class="bad"/><text x="550" y="370">tokens: 200k in,</text><text x="550" y="384">64k out (A4 QR-06)</text>
+<rect x="630" y="352" width="146" height="40" rx="6" class="bad"/><text x="703" y="376">20 min to diagnose</text>
+<rect x="783" y="352" width="146" height="40" rx="6" class="bad"/><text x="856" y="370">3 attempts for</text><text x="856" y="384">each output</text>
+<rect x="936" y="352" width="146" height="40" rx="6" class="bad"/><text x="1009" y="370">3 duplicate calls</text><text x="1009" y="384">stop that agent</text>
+</g>
+<text x="18" y="420" class="lbl">4. Safety and quality rules (sections 9.3 to 9.8, 9.11)</text>
+<rect x="18" y="430" width="258" height="78" rx="6" class="box"/><text x="30" y="450" class="md" font-weight="600">No write path</text><text x="30" y="468" class="sm">No agent has a write tool,</text><text x="30" y="482" class="sm">a shell, or a credential.</text><text x="30" y="496" class="sm">Tool results are untrusted data.</text>
+<rect x="288" y="430" width="258" height="78" rx="6" class="box"/><text x="300" y="450" class="md" font-weight="600">Claims cite evidence</text><text x="300" y="468" class="sm">Every claim lists evidence IDs.</text><text x="300" y="482" class="sm">Code checks that each ID exists</text><text x="300" y="496" class="sm">and belongs to this incident.</text>
+<rect x="558" y="430" width="258" height="78" rx="6" class="box"/><text x="570" y="450" class="md" font-weight="600">Independent critic</text><text x="570" y="468" class="sm">Critic model differs from the</text><text x="570" y="482" class="sm">diagnoser and fixer models. An</text><text x="570" y="496" class="sm">accept never authorizes an action.</text>
+<rect x="828" y="430" width="254" height="78" rx="6" class="okb"/><text x="840" y="450" class="md" font-weight="600">Evaluation targets</text><text x="840" y="468" class="sm">Top-1 accuracy at least 80%.</text><text x="840" y="482" class="sm">Missed escalations: 0.</text><text x="840" y="496" class="sm">Critic finds at least 90% of faults.</text>
+</svg>
+</div>
+<p class="cap">Figure 1. Layer 9 at a glance. Code collects the baseline evidence and applies the fixed rules. Three agents then investigate, diagnose and review. Code maps the cause to a recovery action, and every write passes the gates outside the agents. Hard limits stop the loop, and labelled fixtures measure the result.</p>
+
+<h3>What an agent is in this platform</h3>
+<table>
+<tr><th>Term</th><th>Meaning</th><th>Q</th><th>Label</th></tr>
+<tr><td>Large language model (LLM)</td><td>A model that generates text. It predicts the next token from the input tokens, one token at a time. V1 uses self-hosted open-weight models. All calls go through the one inference gateway.</td><td>Q9.1</td><td><span class="L F">Fixed requirement</span> A2 2.1, A6 ADR-06</td></tr>
+<tr><td>Agent</td><td>An LLM plus typed tools, a control loop, saved state and a goal. The model only requests a tool call. The application runs the call.</td><td>Q9.2</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Coordinator</td><td>Deterministic application code that runs the loop. It decides the next step. It enforces the budget, the limits and the stop rules. No model is the orchestrator.</td><td>Q9.7</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Skill</td><td>A versioned unit of behavior with typed input and output (section 9.2). A skill is either code or one PydanticAI agent.</td><td>Q9.13</td><td><span class="L D">Decision</span></td></tr>
+</table>
+<p>An investigation is not a chat session. One durable <code>IncidentWorkflow</code> (A8) holds the whole process. Each model call is one bounded activity with a structured output (Q9.3). One agent for every job is unreliable (Q9.11). An error in one step flows into every later step, and no part checks it. The agent would approve its own work. One injected instruction would control the whole chain. So the platform uses several agents with narrow jobs, and code coordinates them.</p>
+
+<h3>The coordinator loop</h3>
+<div class="fig">
+<svg viewBox="0 0 1100 420" role="img" aria-label="Flowchart of the coordinator loop with the investigation rounds, the evidence rule, the critic verdicts, the revision loop and the stop conditions">
+<defs><marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle">
+<rect x="18" y="40" width="150" height="56" rx="22" class="uc"/><text x="93" y="63" class="md" font-weight="600">Incident starts</text><text x="93" y="80" class="lbl">state: investigating</text>
+<rect x="188" y="40" width="150" height="56" rx="6" class="box"/><text x="263" y="63" class="md" font-weight="600">Baseline context</text><text x="263" y="80" class="lbl">code collects A3 list</text>
+<rect x="358" y="40" width="150" height="56" rx="6" class="box"/><text x="433" y="63" class="md" font-weight="600">Fixed rules</text><text x="433" y="80" class="lbl">rule hypotheses</text>
+<rect x="528" y="40" width="150" height="56" rx="6" class="uc"/><text x="603" y="63" class="md" font-weight="600">Investigator, round k</text><text x="603" y="80" class="lbl">runs disproving tests</text>
+<polygon points="700,68 790,30 880,68 790,106" class="box"/><text x="790" y="64" class="sm">untested hypothesis</text><text x="790" y="78" class="sm">and k &lt; 3?</text>
+<rect x="18" y="170" width="150" height="56" rx="6" class="uc"/><text x="93" y="193" class="md" font-weight="600">Diagnoser</text><text x="93" y="210" class="lbl">revision r = 0, 1, 2</text>
+<polygon points="200,198 290,160 380,198 290,236" class="box"/><text x="290" y="194" class="sm">passes the</text><text x="290" y="208" class="sm">L9-A4 rule?</text>
+<rect x="420" y="170" width="190" height="56" rx="6" class="uc"/><text x="515" y="190" class="md" font-weight="600">Critic</text><text x="515" y="206" class="lbl">may list missing evidence:</text><text x="515" y="219" class="lbl">one more round, counts in k</text>
+<polygon points="650,198 740,160 830,198 740,236" class="box"/><text x="740" y="202" class="sm">verdict?</text>
+<rect x="870" y="170" width="212" height="56" rx="6" class="okb"/><text x="976" y="190" class="md" font-weight="600">Diagnosed: propose actions</text><text x="976" y="206" class="lbl">recovery by code (9.2);</text><text x="976" y="219" class="lbl">fix by the fixer agent</text>
+<rect x="200" y="278" width="630" height="50" rx="22" class="hum"/><text x="515" y="300" class="md" font-weight="600">Escalated</text><text x="515" y="317" class="lbl">the human sees the diagnosis, the critic findings, what was checked, and what is missing</text>
+<rect x="18" y="356" width="1064" height="48" rx="6" class="bad"/><text x="550" y="376" class="md" font-weight="600">Stop at any step and escalate</text><text x="550" y="393" class="lbl">budget used up &#183; 30 model requests &#183; 30 tool calls &#183; 20 min &#183; inference down &#183; signal cancel or take_over (A8 8.7)</text>
+</g>
+<g class="ln">
+<path d="M168,68 H186" marker-end="url(#g1)"/><path d="M338,68 H356" marker-end="url(#g1)"/><path d="M508,68 H526" marker-end="url(#g1)"/><path d="M678,68 H698" marker-end="url(#g1)"/>
+<path d="M790,30 V18 H603 V38" marker-end="url(#g1)"/>
+<path d="M790,106 V124 H60 V168" marker-end="url(#g1)"/>
+<path d="M168,198 H198" marker-end="url(#g1)"/><path d="M380,198 H418" marker-end="url(#g1)"/><path d="M610,198 H648" marker-end="url(#g1)"/><path d="M830,198 H868" marker-end="url(#g1)"/>
+<path d="M740,160 V146 H126 V168" marker-end="url(#g1)"/>
+<path d="M290,236 V276" marker-end="url(#g1)"/><path d="M740,236 V276" marker-end="url(#g1)"/>
+<path d="M550,356 V330" marker-end="url(#g1)"/>
+</g>
+<g class="lbl halo"><text x="680" y="14">yes: next round</text><text x="804" y="120">no</text><text x="300" y="141">revise, and r &lt; 2</text><text x="384" y="190">yes</text><text x="834" y="190">accept</text><text x="298" y="260">no</text><text x="748" y="260">escalate, no verdict, or r = 2</text></g>
+</svg>
+</div>
+<p class="cap">Figure 2. The coordinator loop. The investigator runs at most 3 rounds. A diagnosis must pass the L9-A4 evidence rule before the critic sees it. A revise verdict returns to the diagnoser at most twice. Every other exit ends in escalation, and hard limits can stop the loop at any step.</p>
+
+<h3>Framework and where each part runs</h3>
+<div class="fig">
+<svg viewBox="0 0 1100 380" role="img" aria-label="Component diagram of PydanticAI agents on Temporal: workflow code, activities, the inference gateway, the tool layer, the stores and the rules that keep earlier decisions">
+<defs><marker id="g2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<rect x="18" y="24" width="352" height="262" rx="8" class="zt"/><text x="30" y="44" class="md" font-weight="600">Temporal workflow code (deterministic)</text>
+<rect x="390" y="24" width="340" height="262" rx="8" class="zo"/><text x="402" y="44" class="md" font-weight="600">Temporal activities (task queue incident)</text>
+<rect x="750" y="24" width="332" height="262" rx="8" class="zo"/><text x="762" y="44" class="md" font-weight="600">Services the activities call</text>
+<g text-anchor="middle">
+<rect x="34" y="56" width="320" height="54" rx="6" class="box"/><text x="194" y="78" class="md" font-weight="600">Coordinator (IncidentWorkflow)</text><text x="194" y="96" class="lbl">order, counters, limits, stop rules</text>
+<rect x="34" y="126" width="152" height="46" rx="6" class="uc"/><text x="110" y="146" class="md" font-weight="600">Investigator</text><text x="110" y="162" class="lbl">main model</text>
+<rect x="202" y="126" width="152" height="46" rx="6" class="uc"/><text x="278" y="146" class="md" font-weight="600">Diagnoser</text><text x="278" y="162" class="lbl">main model</text>
+<rect x="34" y="184" width="152" height="46" rx="6" class="uc"/><text x="110" y="204" class="md" font-weight="600">Critic</text><text x="110" y="220" class="lbl">reviewer model</text>
+<rect x="202" y="184" width="152" height="46" rx="6" class="uc"/><text x="278" y="204" class="md" font-weight="600">Fixer</text><text x="278" y="220" class="lbl">main model</text>
+<rect x="406" y="56" width="308" height="54" rx="6" class="box"/><text x="560" y="78" class="md" font-weight="600">Model request</text><text x="560" y="96" class="lbl">60 s, 1 retry, then escalate (A8 8.5)</text>
+<rect x="406" y="126" width="308" height="54" rx="6" class="box"/><text x="560" y="148" class="md" font-weight="600">Tool call</text><text x="560" y="166" class="lbl">timeout for each source (A8 8.5)</text>
+<rect x="406" y="196" width="308" height="66" rx="6" class="box"/><text x="560" y="216" class="md" font-weight="600">Code activities</text><text x="560" y="233" class="lbl">baseline context, fixed rules, evidence-ID</text><text x="560" y="248" class="lbl">checks, recovery map, write records</text>
+<rect x="766" y="56" width="300" height="54" rx="6" class="fx"/><text x="916" y="78" class="md" font-weight="600">Inference gateway</text><text x="916" y="96" class="lbl">budget, model_call, raw output to artifacts</text>
+<rect x="766" y="126" width="300" height="54" rx="6" class="fx"/><text x="916" y="148" class="md" font-weight="600">Tool layer</text><text x="916" y="166" class="lbl">checks, then HTTP or MCP adapter</text>
+<rect x="766" y="196" width="300" height="66" rx="6" class="box"/><text x="916" y="216" class="md" font-weight="600">PostgreSQL and artifact store</text><text x="916" y="233" class="lbl">evidence, hypotheses, diagnoses,</text><text x="916" y="248" class="lbl">check results, raw outputs (A7)</text>
+</g>
+<text x="194" y="256" text-anchor="middle" class="lbl">Each agent loop: model request &#8594; tool calls &#8594; output.</text><text x="194" y="272" text-anchor="middle" class="lbl">Agents never call other agents.</text>
+<g class="ln"><path d="M354,83 H404" marker-end="url(#g2)"/><path d="M354,153 H404" marker-end="url(#g2)"/><path d="M370,229 H404" marker-end="url(#g2)"/>
+<path d="M714,83 H764" marker-end="url(#g2)"/><path d="M714,153 H764" marker-end="url(#g2)"/><path d="M714,229 H764" marker-end="url(#g2)"/></g>
+<text x="18" y="312" class="lbl">Rules that keep the earlier decisions</text>
+<g class="sm">
+<rect x="18" y="320" width="258" height="44" rx="6" class="box"/><text x="28" y="338">ModelSettings max_retries = 0; transport</text><text x="28" y="352">retries off; Temporal is the only retry owner.</text>
+<rect x="288" y="320" width="258" height="44" rx="6" class="box"/><text x="298" y="338">Every agent model points at the gateway:</text><text x="298" y="352">the only path to a model (A6).</text>
+<rect x="558" y="320" width="258" height="44" rx="6" class="box"/><text x="568" y="338">Activities return IDs, hashes and short</text><text x="568" y="352">summaries: payload under 2 MB (L9-A3).</text>
+<rect x="828" y="320" width="254" height="44" rx="6" class="box"/><text x="838" y="338">No memory across incidents in V1. Past</text><text x="838" y="352">incidents come from retrieval (Layer 10).</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 3. PydanticAI agents on Temporal. The coordinator and each agent loop run as deterministic workflow code. Every model request and tool call is an activity. The gateway and the tool layer stay the only paths to models and to sources.</p>
+<table>
+<tr><th>Topic</th><th>Rule</th><th>Q</th><th>Label</th></tr>
+<tr><td>Framework</td><td>PydanticAI agents on Temporal, through the PydanticAI Temporal durability integration (<code>TemporalDurability</code>). The deprecated <code>TemporalAgent</code> wrapper is not used. The version is pinned in Layer 13.</td><td>Q9.7</td><td><span class="L D">Decision</span> <span class="L A">Assumption</span> L9-A3</td></tr>
+<tr><td>Loop style</td><td>Hybrid. Code collects the baseline evidence and applies the fixed rules. Then the investigator runs at most 3 rounds of model-chosen read queries. Then the diagnoser and the critic run.</td><td>Q9.4</td><td><span class="L D">Decision</span> <span class="L A">Assumption</span> L9-A2</td></tr>
+<tr><td>Order</td><td>The coordinator calls each agent in a fixed order. An agent can suggest the next step. The coordinator decides.</td><td>Q9.7</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Retries</td><td>Temporal is the only retry owner. <code>ModelSettings.max_retries = 0</code>. Transport retries are off. Values come from A8 8.5.</td><td>Q9.7</td><td><span class="L F">Fixed requirement</span> A8 8.5</td></tr>
+<tr><td>Model path</td><td>Every agent model points at the inference gateway. The gateway reserves budget, writes <code>model_call</code> and enforces the timeout.</td><td>Q9.7</td><td><span class="L F">Fixed requirement</span> A6 ADR-06</td></tr>
+</table>
+
+<h3>State kept between calls</h3>
+<p>A model has no memory between calls. Each call rebuilds its context from the database (Layer 10 assembles the context). The workflow holds IDs and counters only (A8).</p>
+<table>
+<tr><th>Kind of state</th><th>Where it is kept</th><th>Rule</th><th>Label</th></tr>
+<tr><td>Records: evidence, hypotheses, claims, critic findings, tool-call history, budget used</td><td>PostgreSQL (A7)</td><td>This is the only shared state between agents. Agents share no free-text notes.</td><td><span class="L D">Decision</span> Q9.8</td></tr>
+<tr><td>Counters: round k, revision r, attempts, duplicates, model requests, tool calls</td><td>Workflow variables, rebuilt by replay</td><td>The coordinator checks the limits in section 9.10 after every step.</td><td><span class="L D">Decision</span> Q9.8</td></tr>
+<tr><td>Configuration versions read at start</td><td>Workflow input (A8)</td><td>A running incident keeps the configuration it started with.</td><td><span class="L F">Fixed requirement</span> A7 F5</td></tr>
+<tr><td>Working memory of one agent run</td><td>PydanticAI message history, recorded by Temporal</td><td>It ends with the agent run. Tool results in it are short summaries.</td><td><span class="L D">Decision</span> Q9.8</td></tr>
+<tr><td>Model reasoning (scratchpad)</td><td>Part of the raw model output, redacted, in the artifact store</td><td>Reasoning is never evidence, and no gate reads it. The critic never sees the diagnoser's reasoning. A model without separate reasoning tokens gets an optional <code>reasoning</code> field first in its output type; code ignores it.</td><td><span class="L D">Decision</span> Q9.8</td></tr>
+</table>
+
+<!-- ============ 9.2 ============ -->
+<h2><span class="sec">9.2</span>Skill definitions</h2>
+<p class="qs">Answers: Q9.12, Q9.13, Q9.15 to Q9.19</p>
+<div class="fig">
+<svg viewBox="0 0 1100 340" role="img" aria-label="Data flow between the seven skills, the record each skill writes, the model each agent uses, and the gates outside the agents">
+<defs><marker id="g3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle">
+<rect x="18" y="30" width="140" height="92" rx="6" class="box"/><text x="88" y="51" class="md" font-weight="600">Baseline context</text><text x="88" y="68" class="lbl">code, no model</text><text x="88" y="84" class="lbl">fixed list of reads</text><text x="88" y="100" class="lbl">A3 required sources</text>
+<rect x="170" y="30" width="140" height="92" rx="6" class="box"/><text x="240" y="51" class="md" font-weight="600">Fixed rules</text><text x="240" y="68" class="lbl">code, System 1</text><text x="240" y="84" class="lbl">"errors began after</text><text x="240" y="100" class="lbl">change X"</text>
+<rect x="322" y="30" width="140" height="92" rx="6" class="uc"/><text x="392" y="51" class="md" font-weight="600">Investigator</text><text x="392" y="68" class="lbl">agent, main model</text><text x="392" y="84" class="lbl">8 read-only tools</text><text x="392" y="100" class="lbl">at most 3 rounds</text>
+<rect x="474" y="30" width="140" height="92" rx="6" class="uc"/><text x="544" y="51" class="md" font-weight="600">Diagnoser</text><text x="544" y="68" class="lbl">agent, main model</text><text x="544" y="84" class="lbl">no tools</text><text x="544" y="100" class="lbl">at most 2 revisions</text>
+<rect x="626" y="30" width="140" height="92" rx="6" class="uc"/><text x="696" y="51" class="md" font-weight="600">Critic</text><text x="696" y="68" class="lbl">agent, reviewer model</text><text x="696" y="84" class="lbl">no tools; asks the</text><text x="696" y="100" class="lbl">coordinator for reads</text>
+<rect x="778" y="30" width="140" height="92" rx="6" class="box"/><text x="848" y="51" class="md" font-weight="600">Recovery map</text><text x="848" y="68" class="lbl">code, no model</text><text x="848" y="84" class="lbl">cause &#8594; one of the</text><text x="848" y="100" class="lbl">two V1 actions</text>
+<rect x="930" y="30" width="152" height="92" rx="6" class="uc"/><text x="1006" y="51" class="md" font-weight="600">Fixer</text><text x="1006" y="68" class="lbl">agent, main model</text><text x="1006" y="84" class="lbl">2 repository read tools</text><text x="1006" y="100" class="lbl">no retry in V1</text>
+</g>
+<g class="ln"><path d="M158,76 H168" marker-end="url(#g3)"/><path d="M310,76 H320" marker-end="url(#g3)"/><path d="M462,76 H472" marker-end="url(#g3)"/><path d="M614,76 H624" marker-end="url(#g3)"/><path d="M766,76 H776" marker-end="url(#g3)"/><path d="M918,76 H928" marker-end="url(#g3)"/>
+<path d="M88,122 V152" marker-end="url(#g3)"/><path d="M240,122 V152" marker-end="url(#g3)"/><path d="M392,122 V152" marker-end="url(#g3)"/><path d="M544,122 V152" marker-end="url(#g3)"/><path d="M696,122 V152" marker-end="url(#g3)"/><path d="M848,122 V152" marker-end="url(#g3)"/><path d="M1006,122 V152" marker-end="url(#g3)"/>
+<path d="M848,194 V236" marker-end="url(#g3)"/><path d="M1006,194 V236" marker-end="url(#g3)"/></g>
+<g text-anchor="middle" class="sm">
+<rect x="18" y="154" width="140" height="40" rx="6" class="fx"/><text x="88" y="172">evidence</text><text x="88" y="186" class="lbl">status ok / missing</text>
+<rect x="170" y="154" width="140" height="40" rx="6" class="fx"/><text x="240" y="172">hypothesis</text><text x="240" y="186" class="lbl">created_by_rule</text>
+<rect x="322" y="154" width="140" height="40" rx="6" class="fx"/><text x="392" y="172">hypotheses, links,</text><text x="392" y="186">more evidence</text>
+<rect x="474" y="154" width="140" height="40" rx="6" class="fx"/><text x="544" y="172">diagnosis</text><text x="544" y="186" class="lbl">with claims</text>
+<rect x="626" y="154" width="140" height="40" rx="6" class="fx"/><text x="696" y="172">check_result</text><text x="696" y="186" class="lbl">kind = critic</text>
+<rect x="778" y="154" width="140" height="40" rx="6" class="fx"/><text x="848" y="172">action: redeploy or</text><text x="848" y="186">config_restore</text>
+<rect x="930" y="154" width="152" height="40" rx="6" class="fx"/><text x="1006" y="172">action: fix_pr</text><text x="1006" y="186" class="lbl">diff in artifact store</text>
+</g>
+<rect x="18" y="238" width="1064" height="86" rx="8" class="zb"/>
+<text x="30" y="258" class="md" font-weight="600">Outside the agents (A5, A6): deterministic code that the agents cannot change</text>
+<g text-anchor="middle" class="sm">
+<rect x="34" y="268" width="240" height="44" rx="6" class="box"/><text x="154" y="287" font-weight="600">Policy gate</text><text x="154" y="302" class="lbl">risk class, scope, preconditions</text>
+<rect x="290" y="268" width="240" height="44" rx="6" class="hum"/><text x="410" y="287" font-weight="600">Approval gate</text><text x="410" y="302" class="lbl">human approver (A4 FR-11)</text>
+<rect x="546" y="268" width="240" height="44" rx="6" class="bad"/><text x="666" y="287" font-weight="600">Executor</text><text x="666" y="302" class="lbl">only production writer (A5 SC-15)</text>
+<rect x="802" y="268" width="264" height="44" rx="6" class="box"/><text x="934" y="287" font-weight="600">Verifier</text><text x="934" y="302" class="lbl">the alert's own signals (A4 FR-13)</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 4. The seven skills and the record each one writes. Three skills are code and four are agents. The critic uses a different model from the diagnoser and the fixer. Only the gates outside the agents turn a proposed action into a production change.</p>
+<h3>Skill contract fields</h3>
+<p>Every skill has these fields (Q9.13). Prompts, schemas and the tool allow list live in the repository and change only by reviewed PR (A5 AST-10).</p>
+<table>
+<tr><th>Field</th><th>Content</th></tr>
+<tr><td>name, version</td><td>Stable name. The version changes with any change to the prompt, the schemas or the tools.</td></tr>
+<tr><td>kind</td><td><code>code</code> (one activity) or <code>agent</code> (one PydanticAI agent).</td></tr>
+<tr><td>model role</td><td>Agent only: <code>investigator</code>, <code>diagnoser</code>, <code>critic</code> or <code>fixer</code> (A7 <code>model_call.role</code>).</td></tr>
+<tr><td>prompt version</td><td>Agent only. Recorded in every <code>model_call</code> row.</td></tr>
+<tr><td>input model, output model</td><td>Pydantic classes (section 9.3). For an agent, the output model is its <code>output_type</code>.</td></tr>
+<tr><td>allowed tools</td><td>An explicit toolset from the registry (section 9.4). Empty for the diagnoser and the critic.</td></tr>
+<tr><td>limits</td><td>Timeout, attempts, tokens and tool calls for one run (PydanticAI <code>UsageLimits</code>).</td></tr>
+</table>
+<h3>The seven skills</h3>
+<div class="tw"><table class="reg">
+<tr><th>Skill</th><th>Kind</th><th>Responsibility</th><th>Boundary: what it must not do</th><th>Q</th><th>Label</th></tr>
+<tr><td>Baseline context</td><td>code</td><td>Collects the A3 required sources through the tool layer: alert, golden-signal metrics, recent log errors, deploys and config changes in the window, dependency health. The result is the investigator's default context.</td><td>No model decides which sources to read. It does not interpret the evidence.</td><td>Q9.15</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Fixed rules</td><td>code</td><td>System 1 rules from A1. Example: "the errors started after change X" creates a rule hypothesis (<code>hypothesis.created_by_rule</code>).</td><td>It never sets a diagnosis on its own.</td><td>Q9.12</td><td><span class="L F">Fixed requirement</span> A4 FR-06</td></tr>
+<tr><td>Investigator</td><td>agent</td><td>Gives 2 to 5 ranked hypotheses, including the rule hypotheses. Each has one disproving test. It runs the tests through its read-only tools, at most 3 rounds.</td><td>It does not select the cause. It cannot write.</td><td>Q9.16</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Diagnoser</td><td>agent</td><td>Tests each hypothesis against the evidence. It rules each one out with a reason. It selects one cause, or returns <code>inconclusive</code>. It lists the missing evidence and gives a confidence.</td><td>It has no tools. It does not choose the action.</td><td>Q9.17</td><td><span class="L F">Fixed requirement</span> A4 FR-05 to FR-08</td></tr>
+<tr><td>Critic</td><td>agent</td><td>Reviews each diagnosis and each fix (section 9.8).</td><td>It has no tools. Its accept never authorizes an action (A5 SC-12).</td><td>Q9.12</td><td><span class="L F">Fixed requirement</span> A1 1.5, A5 SC-12</td></tr>
+<tr><td>Recovery map</td><td>code</td><td>Maps the cause "change X" to one of the two V1 recovery actions: redeploy the last known-good artifact, or restore the previous config version (A2 2.3).</td><td>A model never invents a recovery action.</td><td>Q9.18</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Fixer</td><td>agent</td><td>After the recovery, writes the patch: a diff, a rationale, an undo path and a test plan. It reads files of the service repository at the deployed commit.</td><td>The patch stays in that one repository and under a size limit. The sandbox proves it, not the fixer. No retry in V1.</td><td>Q9.18</td><td><span class="L D">Decision</span></td></tr>
+</table></div>
+<p class="no">Authorization, security policy and every external write stay outside the agents (Q9.19). A model can be manipulated. It can give different outputs for one input. It cannot be accountable. A deterministic gate can be tested and audited (A5 SC-04, SC-12, SC-15).</p>
+<table>
+<tr><th>Model rule</th><th>Label</th></tr>
+<tr><td>The critic model must differ from the diagnoser model and from the fixer model. The settings API returns 409 for either match (A1 step 15: the critic also reviews the fix).</td><td><span class="L D">Decision</span> Q9.19 (extends A7 F5)</td></tr>
+<tr><td>The investigator, the diagnoser and the fixer may use the same main model.</td><td><span class="L D">Decision</span> Q9.19</td></tr>
+</table>
+
+<!-- ============ 9.3 ============ -->
+<h2><span class="sec">9.3</span>Typed contracts</h2>
+<p class="qs">Answers: Q9.6, Q9.13, Q9.14, Q9.28, Q9.29</p>
+<div class="fig">
+<svg viewBox="0 0 1100 370" role="img" aria-label="Flowchart of input and output validation for a tool call or an agent output, with the rejection path, the retry with the parse error, and escalation after the third attempt">
+<defs><marker id="g4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle">
+<rect x="18" y="40" width="130" height="56" rx="6" class="box"/><text x="83" y="62" class="md" font-weight="600">Request</text><text x="83" y="79" class="lbl">Pydantic input model</text>
+<polygon points="168,68 238,32 308,68 238,104" class="box"/><text x="238" y="64" class="sm">valid input?</text><text x="238" y="78" class="sm">scope, limits</text>
+<rect x="328" y="40" width="150" height="56" rx="6" class="uc"/><text x="403" y="62" class="md" font-weight="600">Run</text><text x="403" y="79" class="lbl">tool call or agent step</text>
+<rect x="498" y="40" width="130" height="56" rx="6" class="box"/><text x="563" y="62" class="md" font-weight="600">Output</text><text x="563" y="79" class="lbl">Pydantic output type</text>
+<polygon points="648,68 728,28 808,68 728,108" class="box"/><text x="728" y="58" class="sm">valid output?</text><text x="728" y="72" class="sm">schema, IDs exist,</text><text x="728" y="86" class="sm">same incident</text>
+<rect x="840" y="40" width="242" height="56" rx="6" class="okb"/><text x="961" y="62" class="md" font-weight="600">Record</text><text x="961" y="79" class="lbl">hypothesis, diagnosis or check_result</text>
+<rect x="150" y="160" width="200" height="60" rx="6" class="bad"/><text x="250" y="182" class="md" font-weight="600">Rejected</text><text x="250" y="198" class="lbl">tool_call status = rejected; the</text><text x="250" y="211" class="lbl">reason goes back as a tool error</text>
+<rect x="560" y="160" width="210" height="60" rx="6" class="hum"/><text x="665" y="182" class="md" font-weight="600">Attempt &lt; 3</text><text x="665" y="198" class="lbl">send the parse error</text><text x="665" y="211" class="lbl">and ask again</text>
+<rect x="560" y="258" width="210" height="48" rx="22" class="hum"/><text x="665" y="279" class="md" font-weight="600">Escalate</text><text x="665" y="295" class="lbl">third attempt failed (A4 QR-04)</text>
+</g>
+<g class="ln"><path d="M148,68 H166" marker-end="url(#g4)"/><path d="M308,68 H326" marker-end="url(#g4)"/><path d="M478,68 H496" marker-end="url(#g4)"/><path d="M628,68 H646" marker-end="url(#g4)"/><path d="M808,68 H838" marker-end="url(#g4)"/>
+<path d="M238,104 V158" marker-end="url(#g4)"/><path d="M350,190 H370 V98" marker-end="url(#g4)"/>
+<path d="M728,108 V158" marker-end="url(#g4)"/><path d="M560,190 H450 V98" marker-end="url(#g4)"/>
+<path d="M665,220 V256" marker-end="url(#g4)"/></g>
+<g class="lbl halo"><text x="246" y="132">no</text><text x="736" y="132">no</text><text x="812" y="60">yes</text><text x="312" y="60">yes</text><text x="378" y="150">fix</text><text x="458" y="128">retry</text></g>
+<g class="sm">
+<rect x="18" y="320" width="350" height="40" rx="6" class="box"/><text x="28" y="337">A rejected call counts toward the 30 tool calls.</text><text x="28" y="351">Every attempt counts toward the budget.</text>
+<rect x="380" y="320" width="350" height="40" rx="6" class="box"/><text x="390" y="337">Evidence IDs are checked in the database. The</text><text x="390" y="351">composite foreign key is the second guard.</text>
+<rect x="742" y="320" width="340" height="40" rx="6" class="box"/><text x="752" y="337">Skill, prompt and schema versions are</text><text x="752" y="351">recorded in each model_call row.</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 5. Typed contracts at both ends of each call. A bad input is rejected before any outside call, and the model can correct it. A bad output gets the parse error and at most 3 attempts in total. After the third failed attempt, the coordinator escalates.</p>
+<table>
+<tr><th>Contract point</th><th>Rule</th><th>Q</th><th>Label</th></tr>
+<tr><td>Tool request</td><td>The model returns a JSON tool request. Code checks it against the input model, the allow list, the service scope and the limits. Then code runs it and writes a <code>tool_call</code> row. The result goes back redacted and marked <code>trust = untrusted</code>.</td><td>Q9.6</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Input checks</td><td>Service, time window and output limit are checked before the call. A bad input gives <code>tool_call.status = rejected</code>, the reason, and the event <code>tool.rejected</code>.</td><td>Q9.14</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Output checks</td><td>The output must match its schema. A malformed output gets the parse error and another attempt. At most 3 attempts in total, then escalate.</td><td>Q9.14</td><td><span class="L F">Fixed requirement</span> A4 QR-04</td></tr>
+<tr><td>Evidence references</td><td>A PydanticAI output validator checks every cited evidence ID in the database before the output is accepted. A bad ID counts as a malformed output.</td><td>Q9.28</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Incident match</td><td>Every cited evidence row must have the same <code>incident_id</code>. The database also enforces it with the composite foreign key on <code>hypothesis_evidence</code> (A7 Q7.22).</td><td>Q9.29</td><td><span class="L F">Fixed requirement</span> A7 Q7.22</td></tr>
+<tr><td>Native tool calling</td><td>The main model must give valid JSON tool requests under a JSON schema. If it cannot, the coordinator asks for one structured output for each step, without native tool calling.</td><td>Q9.6</td><td><span class="L A">Assumption</span> L9-A1</td></tr>
+</table>
+
+<!-- ============ 9.4 ============ -->
+<h2><span class="sec">9.4</span>Tool registry</h2>
+<p class="qs">Answers: Q9.5, Q9.6, Q9.9, Q9.10, Q9.39 to Q9.47</p>
+<div class="fig">
+<svg viewBox="0 0 1100 350" role="img" aria-label="Flow of one tool call through the tool layer checks, the adapter, redaction, injection detection and recording, and the write paths that no agent can reach">
+<defs><marker id="g5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<text x="18" y="22" class="lbl">Request path: every check runs before any outside call. A failed check gives a rejected tool_call.</text>
+<g text-anchor="middle">
+<rect x="18" y="34" width="130" height="66" rx="6" class="uc"/><text x="83" y="56" class="md" font-weight="600">Agent</text><text x="83" y="73" class="lbl">investigator or fixer</text><text x="83" y="88" class="lbl">asks for a tool call</text>
+<rect x="168" y="34" width="120" height="66" rx="6" class="box"/><text x="228" y="56" class="md" font-weight="600">Allow list</text><text x="228" y="73" class="lbl">tool in this agent's</text><text x="228" y="88" class="lbl">toolset?</text>
+<rect x="308" y="34" width="120" height="66" rx="6" class="box"/><text x="368" y="56" class="md" font-weight="600">Schema, limits</text><text x="368" y="73" class="lbl">window at most 2 h,</text><text x="368" y="88" class="lbl">limit, query length</text>
+<rect x="448" y="34" width="120" height="66" rx="6" class="box"/><text x="508" y="56" class="md" font-weight="600">Service scope</text><text x="508" y="73" class="lbl">from the incident</text><text x="508" y="88" class="lbl">record, not the model</text>
+<rect x="588" y="34" width="120" height="66" rx="6" class="box"/><text x="648" y="56" class="md" font-weight="600">Duplicate?</text><text x="648" y="73" class="lbl">yes: return the</text><text x="648" y="88" class="lbl">recorded result</text>
+<rect x="728" y="34" width="140" height="66" rx="6" class="fx"/><text x="798" y="56" class="md" font-weight="600">Adapter</text><text x="798" y="73" class="lbl">HTTP or MCP, with the</text><text x="798" y="88" class="lbl">read-only credential</text>
+<rect x="888" y="34" width="194" height="66" rx="6" class="box"/><text x="985" y="56" class="md" font-weight="600">Source</text><text x="985" y="73" class="lbl">logs, metrics, traces,</text><text x="985" y="88" class="lbl">changes, config, repository</text>
+</g>
+<g class="ln"><path d="M148,67 H166" marker-end="url(#g5)"/><path d="M288,67 H306" marker-end="url(#g5)"/><path d="M428,67 H446" marker-end="url(#g5)"/><path d="M568,67 H586" marker-end="url(#g5)"/><path d="M708,67 H726" marker-end="url(#g5)"/><path d="M868,67 H886" marker-end="url(#g5)"/>
+<path d="M985,100 V148" marker-end="url(#g5)"/>
+<path d="M888,182 H870" marker-end="url(#g5)"/><path d="M588,182 H570" marker-end="url(#g5)"/><path d="M308,182 H290" marker-end="url(#g5)"/>
+<path d="M83,148 V102" marker-end="url(#g5)"/></g>
+<text x="18" y="134" class="lbl">Result path</text>
+<g text-anchor="middle">
+<rect x="18" y="150" width="270" height="66" rx="6" class="uc"/><text x="153" y="172" class="md" font-weight="600">Summary to the agent</text><text x="153" y="189" class="lbl">at most 200 lines or 32 KB, in a marked</text><text x="153" y="204" class="lbl">block: source, trust = untrusted</text>
+<rect x="308" y="150" width="260" height="66" rx="6" class="fx"/><text x="438" y="172" class="md" font-weight="600">Record</text><text x="438" y="189" class="lbl">evidence and tool_call rows; full</text><text x="438" y="204" class="lbl">redacted result in the artifact store</text>
+<rect x="588" y="150" width="280" height="66" rx="6" class="hum"/><text x="728" y="172" class="md" font-weight="600">Injection detector</text><text x="728" y="189" class="lbl">instruction-like text: event injection.flagged;</text><text x="728" y="204" class="lbl">the evidence is kept; critic and human see it</text>
+<rect x="888" y="150" width="194" height="66" rx="6" class="box"/><text x="985" y="172" class="md" font-weight="600">Redaction</text><text x="985" y="189" class="lbl">secrets and personal data</text><text x="985" y="204" class="lbl">removed first (A5)</text>
+</g>
+<rect x="18" y="240" width="1064" height="94" rx="8" class="zb"/>
+<text x="30" y="260" class="md" font-weight="600">No path from any agent to these</text>
+<g text-anchor="middle" class="sm">
+<rect x="34" y="272" width="250" height="48" rx="6" class="bad"/><text x="159" y="292" font-weight="600">Write tools</text><text x="159" y="308" class="lbl">redeploy, config restore, open PR: executor</text>
+<rect x="296" y="272" width="250" height="48" rx="6" class="bad"/><text x="421" y="292" font-weight="600">Shell or exec</text><text x="421" y="308" class="lbl">no such tool exists</text>
+<rect x="558" y="272" width="250" height="48" rx="6" class="bad"/><text x="683" y="292" font-weight="600">Production hosts</text><text x="683" y="308" class="lbl">no network route from the worker</text>
+<rect x="820" y="272" width="246" height="48" rx="6" class="bad"/><text x="943" y="292" font-weight="600">Credentials</text><text x="943" y="308" class="lbl">secret store; only the tool layer reads</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 6. One tool call through the tool layer. The checks run in order before any outside call. The result is redacted, checked for injected instructions and recorded. The agent then gets only a short summary marked as untrusted. No agent can reach a write, a shell, a production host or a credential.</p>
+<h3>Registered tools</h3>
+<p>Every tool has a registry entry: name, version, class, description, input schema, output schema, integration kind, limits, timeout, allowed agents and redaction rules (Q9.5, Q9.39). The model sees only the name, the description and the schemas. It never sees an endpoint or a credential.</p>
+<div class="tw"><table class="reg">
+<tr><th>Tool</th><th>Class</th><th>Allowed agents</th><th>Main parameters</th><th>Source (A7 integration kind)</th></tr>
+<tr><td>query_logs</td><td>read</td><td>investigator</td><td>service, window, text filter, limit</td><td>logs</td></tr>
+<tr><td>query_metrics</td><td>read</td><td>investigator</td><td>service, metric, window, step</td><td>metrics</td></tr>
+<tr><td>query_traces</td><td>read</td><td>investigator</td><td>service, window, filter, limit</td><td>traces</td></tr>
+<tr><td>list_changes</td><td>read</td><td>investigator</td><td>service, window (deploys and config versions)</td><td>cicd, config_store</td></tr>
+<tr><td>get_config_diff</td><td>read</td><td>investigator</td><td>service, from_version, to_version. A secret appears only as its name and fingerprint.</td><td>config_store</td></tr>
+<tr><td>get_dependency_health</td><td>read</td><td>investigator</td><td>service, window</td><td>metrics</td></tr>
+<tr><td>search_past_incidents</td><td>read</td><td>investigator</td><td>query, k</td><td>platform database (Layer 10 retrieval)</td></tr>
+<tr><td>search_runbooks</td><td>read</td><td>investigator</td><td>query, k</td><td>knowledge repository (A7 F6, Layer 10)</td></tr>
+<tr><td>read_repo_file</td><td>read</td><td>fixer</td><td>path, at the deployed commit</td><td>git</td></tr>
+<tr><td>search_repo</td><td>read</td><td>fixer</td><td>query, at the deployed commit</td><td>git</td></tr>
+</table></div>
+<h3>Tool rules</h3>
+<div class="tw"><table class="reg">
+<tr><th>Rule</th><th>Design</th><th>Q</th><th>Label</th></tr>
+<tr><td>Approved tools only</td><td>Each agent is built with an explicit toolset. No other Python function is callable. The allow list lives in the repository (A5 AST-10). An MCP server exposes only <code>integration.allowed_tools</code>, a subset of that list (A7 F5). The tool layer wraps every MCP toolset, so the checks run before the call. An unknown tool name is rejected and logged.</td><td>Q9.39</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Classes</td><td><b>read</b> and <b>write</b>. A write tool also has a risk class, type 1 or type 2 (A1). Agents get read tools only. The executor owns every write.</td><td>Q9.40</td><td><span class="L F">Fixed requirement</span> A5 SC-15</td></tr>
+<tr><td>Parameter checks</td><td><code>end &gt; start</code>, <code>end &le; now</code>, window inside the incident window and at most 2 h. Limit and query length under their maximums. The reason of a rejection goes back as a tool error.</td><td>Q9.41</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Service scope</td><td>The allowed services come from the incident record, not from the model: the incident's service and its declared dependencies (A7 <code>service_dependency</code>). Adapters query only the labels that map to them (A7 <code>service_alias</code>).</td><td>Q9.42</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Range and size</td><td>One query covers at most 2 h, inside [incident start &minus; 1 h, now]. The model gets at most 200 lines or 32 KB after repeated lines are grouped. The summary says when it was cut.</td><td>Q9.43</td><td><span class="L A">Assumption</span> L9-A6</td></tr>
+<tr><td>Credentials</td><td>One read-only service credential for each integration, in the secret store (A7 <code>auth_secret_ref</code>). Only the tool layer uses it. V1 has one tenant, so the tool layer enforces the service scope.</td><td>Q9.44</td><td><span class="L F">Fixed requirement</span> A5 SC-06</td></tr>
+<tr><td>No direct commands</td><td>Three layers: no shell or exec tool; no network route from the worker to production hosts and no production credentials (A6 egress allow list); patches run only in the isolated sandbox runner.</td><td>Q9.10, Q9.45</td><td><span class="L F">Fixed requirement</span> A2 2.3, A6</td></tr>
+<tr><td>Injected instructions</td><td>Results are data in a marked block with the source and <code>trust = untrusted</code>. The system prompt says this content is never an instruction. Redaction runs first. A detector flags instruction-like text. Code checks every tool call. No write tool exists, so injected text cannot cause a write.</td><td>Q9.46</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Repeated calls</td><td>Duplicate key = hash of the tool and the normalized arguments, within the incident. A duplicate returns the recorded result with no outside call, and the model is told "duplicate". A result with an earlier <code>content_hash</code> counts as "no new information". At 3 duplicates in one agent run, the coordinator stops that agent.</td><td>Q9.47</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Reasoning and policy</td><td>Model output is a proposal. A proposed action becomes an <code>action</code> row, and the policy gate evaluates it (Q9.9).</td><td>Q9.9</td><td><span class="L F">Fixed requirement</span> A5 SC-12, SC-15</td></tr>
+</table></div>
+
+<!-- ============ 9.5 to 9.8: records ============ -->
+<h2><span class="sec">9.5</span>Evidence schema</h2>
+<p class="qs">Answers: Q9.20 to Q9.22, Q9.27, Q9.29</p>
+<div class="fig">
+<svg viewBox="0 0 1100 444" role="img" aria-label="Data model of the reasoning records: tool call, evidence, hypothesis, hypothesis evidence link, diagnosis, critic check result, model call and artifact, with new fields marked">
+<defs><marker id="g6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g class="sm">
+<rect x="18" y="20" width="240" height="160" rx="6" class="box"/><rect x="18" y="20" width="240" height="26" rx="6" class="uc"/><text x="28" y="38" class="md" font-weight="600">tool_call</text>
+<text x="28" y="64">id, incident_id</text><text x="28" y="80">model_call_id (null for baseline)</text><text x="28" y="96">tool, arguments</text><text x="28" y="112">duplicate key (hash)</text><text x="28" y="128">status: ok / rejected / failed</text><text x="28" y="144">reject_reason</text><text x="28" y="160">started_at, ended_at</text>
+<rect x="290" y="20" width="250" height="210" rx="6" class="box"/><rect x="290" y="20" width="250" height="26" rx="6" class="uc"/><text x="300" y="38" class="md" font-weight="600">evidence (section 9.5)</text>
+<text x="300" y="64">id, incident_id, tool_call_id</text><text x="300" y="80">kind, integration_id, query</text><text x="300" y="96">window_start, window_end</text><text x="300" y="112">source_time, collected_at</text><text x="300" y="128">content_hash, redaction_version</text><text x="300" y="144">status: ok / partial / missing</text><text x="300" y="160">required, critical (new)</text><text x="300" y="176">trust = untrusted, injection flag</text><text x="300" y="192">summary, artifact_id</text><text x="300" y="214" class="lbl">immutable (A7)</text>
+<rect x="572" y="20" width="240" height="160" rx="6" class="box"/><rect x="572" y="20" width="240" height="26" rx="6" class="uc"/><text x="582" y="38" class="md" font-weight="600">hypothesis_evidence</text>
+<text x="582" y="64">hypothesis_id, evidence_id</text><text x="582" y="80">incident_id (composite FK)</text><text x="582" y="96">role: supports / contradicts</text><text x="582" y="112">explained (new)</text><text x="582" y="128">explanation (new)</text><text x="582" y="160" class="lbl">one bad ID: the output fails</text>
+<rect x="844" y="20" width="238" height="190" rx="6" class="box"/><rect x="844" y="20" width="238" height="26" rx="6" class="uc"/><text x="854" y="38" class="md" font-weight="600">hypothesis (section 9.6)</text>
+<text x="854" y="64">id, incident_id, rank</text><text x="854" y="80">statement, mechanism (new)</text><text x="854" y="96">disproving_test (new)</text><text x="854" y="112">confidence</text><text x="854" y="128">status: open / ruled_out /</text><text x="854" y="144">confirmed; ruled_out_reason</text><text x="854" y="160">created_by_rule or</text><text x="854" y="176">created_by_model_call_id</text>
+<rect x="18" y="250" width="240" height="160" rx="6" class="box"/><rect x="18" y="250" width="240" height="26" rx="6" class="uc"/><text x="28" y="268" class="md" font-weight="600">model_call</text>
+<text x="28" y="294">id, incident_id, step</text><text x="28" y="310">role: investigator (new) /</text><text x="28" y="326">diagnoser / critic / fixer</text><text x="28" y="342">model, prompt and skill version</text><text x="28" y="358">tokens, latency_ms, attempt</text><text x="28" y="374">result: valid / malformed / timeout</text><text x="28" y="390">output_artifact_id, output_hash</text>
+<rect x="290" y="270" width="250" height="110" rx="6" class="box"/><rect x="290" y="270" width="250" height="26" rx="6" class="uc"/><text x="300" y="288" class="md" font-weight="600">artifact</text>
+<text x="300" y="314">raw redacted model output,</text><text x="300" y="330">with its reasoning (audit only)</text><text x="300" y="346">full redacted tool result</text><text x="300" y="362">content hash</text>
+<rect x="572" y="250" width="240" height="160" rx="6" class="box"/><rect x="572" y="250" width="240" height="26" rx="6" class="uc"/><text x="582" y="268" class="md" font-weight="600">check_result (section 9.8)</text>
+<text x="582" y="294">kind = critic; model_call_id</text><text x="582" y="310">diagnosis_id or action_id</text><text x="582" y="326">verdict: accept / revise /</text><text x="582" y="342">escalate / no_verdict</text><text x="582" y="358">detail: findings per claim,</text><text x="582" y="374">missing evidence, reason</text><text x="582" y="396" class="lbl">immutable (A7)</text>
+<rect x="844" y="230" width="238" height="190" rx="6" class="box"/><rect x="844" y="230" width="238" height="26" rx="6" class="uc"/><text x="854" y="248" class="md" font-weight="600">diagnosis (section 9.7)</text>
+<text x="854" y="274">id, incident_id, hypothesis_id</text><text x="854" y="290">result: cause_found / inconclusive</text><text x="854" y="306">claims[]: text, evidence_ids (new)</text><text x="854" y="322">ruled_out[]: id, reason</text><text x="854" y="338">missing (JSONB), confidence</text><text x="854" y="354">revision (new)</text><text x="854" y="370">status: active / superseded</text><text x="854" y="386">feedback_correct (A7 F8)</text><text x="854" y="408" class="lbl">one active per incident (A7)</text>
+</g>
+<g class="ln"><path d="M258,100 H288" marker-end="url(#g6)"/><path d="M540,100 H570" marker-end="url(#g6)"/><path d="M842,100 H814" marker-end="url(#g6)"/>
+<path d="M963,210 V228" marker-end="url(#g6)"/><path d="M842,330 H814" marker-end="url(#g6)"/>
+<path d="M138,250 V182" marker-end="url(#g6)"/><path d="M258,325 H288" marker-end="url(#g6)"/><path d="M415,230 V268" marker-end="url(#g6)"/><path d="M572,400 H562 V420 H138 V412" stroke-dasharray="5 4"/></g>
+<g class="lbl halo"><text x="262" y="92">1 to n</text><text x="544" y="92">1 to n</text><text x="816" y="92">n to 1</text><text x="970" y="224">cause</text><text x="148" y="222">requested by</text><text x="262" y="318">output</text><text x="422" y="252">full result</text><text x="300" y="434">critic call: model_call_id</text></g>
+</svg>
+</div>
+<p class="cap">Figure 7. The reasoning records and their links (sections 9.5 to 9.8). A claim reaches its evidence through the diagnosis claims and the hypothesis links. Every row carries the incident ID, and the links must match it. Fields marked "new" are Layer 9 additions to Artifact 7.</p>
+<table>
+<tr><th>Field group</th><th>Fields</th><th>Purpose</th><th>Q</th><th>Label</th></tr>
+<tr><td>Provenance</td><td><code>integration_id</code>, <code>query</code>, <code>tool_call_id</code>, <code>adapter_version</code>, <code>redaction_version</code>, <code>artifact_id</code></td><td>Shows where each item came from and how it was read. A claim without a cited evidence ID is an unsupported claim.</td><td>Q9.20</td><td><span class="L F">Fixed requirement</span> A7 Q7.3, Q7.4</td></tr>
+<tr><td>Times</td><td><code>source_time</code> (event time at the source), <code>window_start</code> and <code>window_end</code> (the range asked for), <code>collected_at</code> (when the platform read it)</td><td>Two reads at different times are two rows, and both are kept.</td><td>Q9.21</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Change detection</td><td><code>content_hash</code></td><td>The same query with a different hash shows that the source changed. The new read is a new row. The diagnosis keeps the ID it cited. The action precondition checks the key fact (current config version) again just before the action (A7: current = v42).</td><td>Q9.22</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Completeness</td><td><code>status</code> (ok / partial / missing), <code>required</code>, <code>critical</code> (new)</td><td>A failed source is <code>missing</code>, not a negative result. A missing critical source caps the confidence (section 9.7) and leads to <code>inconclusive</code> or escalation (A3 incident C).</td><td>Q9.27</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Trust</td><td><code>trust = untrusted</code>, injection flag</td><td>Evidence is data, never an instruction (section 9.4).</td><td>Q9.46</td><td><span class="L F">Fixed requirement</span> A7 Q7.3</td></tr>
+<tr><td>Scope</td><td><code>incident_id</code></td><td>Every link and every cited ID must match the incident (section 9.3).</td><td>Q9.29</td><td><span class="L F">Fixed requirement</span> A7 Q7.22</td></tr>
+</table>
+
+<h2><span class="sec">9.6</span>Hypothesis schema</h2>
+<p class="qs">Answers: Q9.16, Q9.23 to Q9.26</p>
+<table>
+<tr><th>Field</th><th>Content</th><th>Q</th><th>Label</th></tr>
+<tr><td><code>statement</code>, <code>mechanism</code> (new)</td><td>The proposed cause and how it produces the symptom. Example: "config v42 removed <code>PAYMENT_TIMEOUT</code>; the handler raises <code>KeyError</code>; HTTP 500".</td><td>Q9.16</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>rank</code>, <code>confidence</code></td><td>2 to 5 hypotheses for each incident, ranked. The rule hypotheses are included.</td><td>Q9.16, Q9.23</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Supporting links</td><td><code>hypothesis_evidence</code> with <code>role = supports</code>.</td><td>Q9.24</td><td><span class="L F">Fixed requirement</span> A4 FR-05</td></tr>
+<tr><td>Contradicting links</td><td><code>hypothesis_evidence</code> with <code>role = contradicts</code>, <code>explained</code> (new) and <code>explanation</code> (new).</td><td>Q9.25</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>disproving_test</code> (new)</td><td>The read query that would rule this hypothesis out. The investigator runs it in a follow-up round.</td><td>Q9.16, Q9.23</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>status</code>, <code>ruled_out_reason</code></td><td>open, ruled_out or confirmed. A ruled-out hypothesis is kept with its reason (A3: record what is ruled out).</td><td>Q9.23</td><td><span class="L F">Fixed requirement</span> A4 FR-05</td></tr>
+<tr><td>Creator</td><td><code>created_by_rule</code> or <code>created_by_model_call_id</code>, never both (A7 CHECK).</td><td>Q9.16</td><td><span class="L F">Fixed requirement</span> A7 Q7.5</td></tr>
+</table>
+<h3>Correlation is not causation</h3>
+<p>A change just before the incident is a hypothesis, not a cause (Q9.26). The change hypothesis must pass every check below. The competing hypothesis, for example a database failure, is tested with dependency metrics at the same time. Only the verified recovery confirms the cause.</p>
+<table>
+<tr><th>Check (A3 Figure 5)</th><th>Disproves the change hypothesis when</th></tr>
+<tr><td>Timing</td><td>The errors started before the change, or long after it with no other link.</td></tr>
+<tr><td>Location</td><td>The errors appear where the change does not apply (other instances, other endpoints).</td></tr>
+<tr><td>Mechanism</td><td>The logs show no link to the changed key, code path or version.</td></tr>
+<tr><td>Dependencies</td><td>A dependency of the service failed at the same time (for example, the database).</td></tr>
+</table>
+
+<h2><span class="sec">9.7</span>Diagnosis schema</h2>
+<p class="qs">Answers: Q9.17, Q9.24 to Q9.28</p>
+<table>
+<tr><th>Field</th><th>Content</th><th>Q</th><th>Label</th></tr>
+<tr><td><code>result</code></td><td><code>cause_found</code> or <code>inconclusive</code>. Inconclusive is a valid result (A1). It says what was checked, what is missing, and the weak hints. It never shows a guessed cause.</td><td>Q9.17</td><td><span class="L F">Fixed requirement</span> A4 FR-08</td></tr>
+<tr><td><code>hypothesis_id</code></td><td>The selected hypothesis, for <code>cause_found</code> only.</td><td>Q9.17</td><td><span class="L F">Fixed requirement</span> A7 Q7.6</td></tr>
+<tr><td><code>claims</code> (new)</td><td>A list of <code>{text, evidence_ids[]}</code>. Every sentence of the rationale is one claim. Every claim cites at least one evidence ID (section 9.3).</td><td>Q9.24, Q9.28</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>ruled_out</code></td><td>Each other hypothesis, with the reason it was ruled out.</td><td>Q9.17</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Contradictions</td><td>Each contradicting link is marked explained (with a reason and evidence) or unexplained.</td><td>Q9.25</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>missing</code></td><td>The missing sources and what they could have shown.</td><td>Q9.27</td><td><span class="L F">Fixed requirement</span> A4 FR-08</td></tr>
+<tr><td><code>confidence</code></td><td>The model's value, capped by code: at most 0.5 when a critical source is missing.</td><td>Q9.27</td><td><span class="L D">Decision</span></td></tr>
+<tr><td><code>revision</code> (new), <code>status</code></td><td>0, 1 or 2. A revision supersedes the earlier diagnosis. One active diagnosis for each incident (A7).</td><td>Q9.35</td><td><span class="L D">Decision</span></td></tr>
+</table>
+<h3>Evidence rule for <code>cause_found</code></h3>
+<p>Code checks this rule before the critic sees the diagnosis. A diagnosis that fails it becomes <code>inconclusive</code>, and the incident escalates (A8 8.4).</p>
+<table>
+<tr><th>Condition</th><th>Incident A (A3)</th><th>Incident B</th><th>Incident C</th><th>Label</th></tr>
+<tr><td>At least 2 supporting evidence items from 2 different sources</td><td>Pass: change record, log errors</td><td>Pass</td><td>Fail: logs from 2 instances are missing</td><td rowspan="4"><span class="L A">Assumption</span> L9-A4</td></tr>
+<tr><td>0 unexplained contradictions</td><td>Pass</td><td>Pass</td><td>Fail: the evidence conflicts</td></tr>
+<tr><td>Every required source collected, or missing and not critical</td><td>Pass</td><td>Pass</td><td>Fail: traces and config history missing</td></tr>
+<tr><td>Confidence at least 0.7 after the cap</td><td>Pass</td><td>Pass</td><td>Fail</td></tr>
+</table>
+
+<h2><span class="sec">9.8</span>Critic schema</h2>
+<p class="qs">Answers: Q9.30 to Q9.32, Q9.36, Q9.37</p>
+<p>The critic uses a different model in a new context (A1, A5 SC-12). It reads the diagnosis claims, the cited evidence summaries and the ruled-out hypotheses. It does not read the diagnoser's reasoning, so it judges the result, not the argument (Q9.30).</p>
+<table>
+<tr><th>Output field</th><th>Content</th><th>Label</th></tr>
+<tr><td><code>verdict</code></td><td><code>accept</code>, <code>revise</code> or <code>escalate</code>. An invalid output after 3 attempts is recorded as <code>no_verdict</code> (Q9.37).</td><td><span class="L D">Decision</span> Q9.32</td></tr>
+<tr><td><code>findings</code></td><td>One finding for each claim: supported, unsupported or contradicted, with the evidence IDs it checked.</td><td><span class="L D">Decision</span> Q9.31</td></tr>
+<tr><td><code>missing_evidence</code></td><td>Read queries the critic wants run. The coordinator runs them through the tool layer (section 9.10).</td><td><span class="L D">Decision</span> Q9.34</td></tr>
+<tr><td><code>reason</code></td><td>Short text for the human.</td><td><span class="L D">Decision</span> Q9.32</td></tr>
+</table>
+<table>
+<tr><th>Criteria for a diagnosis</th><th>Criteria for a fix</th></tr>
+<tr><td><ol><li>Each claim is supported by its cited evidence.</li><li>The evidence says what the claim says.</li><li>The alternatives were tested and ruled out with a reason.</li><li>Every contradiction is explained.</li><li>The required sources are present.</li><li>The causation checks passed (section 9.6).</li><li>The confidence fits the evidence.</li></ol></td><td><ol><li>The diff matches the diagnosis.</li><li>The diff stays in the service repository and under the size limit.</li><li>The fix has an undo path.</li><li>The test plan reproduces the fault (A4 FR-09).</li></ol></td></tr>
+</table>
+<table>
+<tr><th>Rule</th><th>Label</th></tr>
+<tr><td>"Signal only" works in one direction. An <code>accept</code> never lets an action skip the policy gate or the human approval. A <code>revise</code> or <code>escalate</code> can stop the automatic path.</td><td><span class="L D">Decision</span> Q9.30 (reading of A5 SC-12)</td></tr>
+<tr><td>Agreement between two models is not ground truth (Q9.36). Both models see the same inputs, so their errors are linked. Evidence can be stale, incomplete or planted. So the critic checks the evidence, not only the conclusion. Ground truth comes only from the verification and from human feedback (section 9.11).</td><td><span class="L D">Decision</span> Q9.36</td></tr>
+<tr><td>A8 requires a recorded critic review before <code>diagnosed</code>. A <code>no_verdict</code> result escalates.</td><td><span class="L F">Fixed requirement</span> A8 8.4</td></tr>
+</table>
+
+<!-- ============ 9.9 ============ -->
+<h2><span class="sec">9.9</span>Revision policy</h2>
+<p class="qs">Answers: Q9.33 to Q9.35</p>
+<div class="fig">
+<svg viewBox="0 0 1100 470" role="img" aria-label="Sequence diagram of one revision: the critic returns revise with findings and missing evidence, the coordinator runs the reads, the diagnoser revises, and the critic reviews again">
+<defs><marker id="g7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle">
+<rect x="70" y="16" width="170" height="40" rx="6" class="box"/><text x="155" y="41" class="md" font-weight="600">Coordinator</text>
+<rect x="350" y="16" width="170" height="40" rx="6" class="uc"/><text x="435" y="41" class="md" font-weight="600">Diagnoser</text>
+<rect x="630" y="16" width="170" height="40" rx="6" class="uc"/><text x="715" y="41" class="md" font-weight="600">Critic</text>
+<rect x="910" y="16" width="170" height="40" rx="6" class="fx"/><text x="995" y="41" class="md" font-weight="600">Tool layer</text>
+</g>
+<g class="ln" stroke-dasharray="4 4"><path d="M155,56 V456"/><path d="M435,56 V456"/><path d="M715,56 V456"/><path d="M995,56 V456"/></g>
+<g class="ln">
+<path d="M155,84 H433" marker-end="url(#g7)"/><path d="M435,112 H157" marker-end="url(#g7)"/>
+<path d="M155,168 H713" marker-end="url(#g7)"/><path d="M715,194 H157" marker-end="url(#g7)"/>
+<path d="M155,220 H993" marker-end="url(#g7)"/><path d="M995,246 H157" marker-end="url(#g7)"/>
+<path d="M155,272 H433" marker-end="url(#g7)"/><path d="M435,298 H157" marker-end="url(#g7)"/>
+<path d="M155,356 H713" marker-end="url(#g7)"/><path d="M715,382 H157" marker-end="url(#g7)"/>
+</g>
+<g class="sm halo">
+<text x="170" y="78">1 evidence, hypotheses</text><text x="170" y="106">2 diagnosis, revision 0</text>
+<text x="170" y="162">4 claims and cited evidence only (no reasoning)</text><text x="170" y="188">5 revise: findings for each claim, missing evidence</text>
+<text x="170" y="214">6 missing-evidence reads, only if round k &lt; 3</text><text x="170" y="240">7 new evidence (counts in k)</text>
+<text x="170" y="266">8 findings and new evidence: revise</text><text x="170" y="292">9 diagnosis, revision 1</text>
+<text x="170" y="350">11 review revision 1</text><text x="170" y="376">12 verdict</text>
+</g>
+<rect x="20" y="122" width="270" height="22" rx="4" class="box"/><text x="30" y="137" class="sm">3 code checks the L9-A4 evidence rule</text>
+<rect x="20" y="308" width="400" height="22" rx="4" class="box"/><text x="30" y="323" class="sm">10 no change (same cause, claims, evidence)? stop and escalate</text>
+<rect x="20" y="398" width="1060" height="58" rx="6" class="hum"/><text x="30" y="418" class="md" font-weight="600">After step 12</text><text x="30" y="436" class="sm">accept: propose actions. revise: one more revision only while r &lt; 2, from step 6. escalate, no verdict, or r = 2: escalate.</text><text x="30" y="450" class="sm">The human sees the last diagnosis and every critic finding.</text>
+</svg>
+</div>
+<p class="cap">Figure 8. One revision cycle. The critic sees claims and evidence, never the diagnoser's reasoning. Its missing-evidence reads count toward the same 3 rounds. A revision that changes nothing stops the loop, and after 2 revisions the incident escalates.</p>
+<table>
+<tr><th>Rule</th><th>Value</th><th>Q</th><th>Label</th></tr>
+<tr><td>Critic says <code>revise</code></td><td>The coordinator returns the findings to the diagnoser for one revision. A contradiction that is still unexplained after it gives <code>inconclusive</code> and escalation.</td><td>Q9.33</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Critic says <code>escalate</code></td><td>Escalate at once. The human sees the diagnosis and the findings together.</td><td>Q9.33</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Critic asks for evidence</td><td>Only through the coordinator. The critic has no tools. The reads go through the tool layer with the same checks, and they count toward the 3 rounds.</td><td>Q9.34</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Revision limit</td><td>At most 2 revisions for each diagnosis, so 3 diagnoser outputs in total.</td><td>Q9.35</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>No progress</td><td>A revision with the same cause, the same claims and no new evidence stops the loop early.</td><td>Q9.35</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Fixer after a failed sandbox run</td><td>No automatic retry in V1. The recovery is already done. The failed fix goes to the human as a recommendation, with the sandbox report.</td><td>Q9.35</td><td><span class="L D">Decision</span> (confirms A8 8.6)</td></tr>
+</table>
+
+<!-- ============ 9.10 ============ -->
+<h2><span class="sec">9.10</span>Loop termination policy</h2>
+<p class="qs">Answers: Q9.4, Q9.34, Q9.37, Q9.38, Q9.47</p>
+<div class="fig">
+<svg viewBox="0 0 1100 330" role="img" aria-label="Nested scopes of the limits: one output, one agent run, one diagnosis and one incident, each with its counters and the result at the limit">
+<rect x="18" y="20" width="1064" height="294" rx="10" class="zb"/>
+<text x="34" y="44" class="md" font-weight="600">One incident: the coordinator adds up every agent run</text>
+<g class="sm">
+<text x="34" y="66">3 follow-up rounds (k) &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens (A4 QR-06) &#183; 20 min to diagnose (A2)</text>
+<text x="34" y="82" class="lbl">At the limit: stop, keep every record, escalate.</text>
+</g>
+<rect x="34" y="96" width="1032" height="204" rx="10" class="zt"/>
+<text x="50" y="118" class="md" font-weight="600">One diagnosis</text>
+<text x="50" y="136" class="sm">2 revisions (r) &#183; stop early when a revision changes nothing</text><text x="50" y="152" class="lbl">At the limit: escalate with the last diagnosis and the critic findings.</text>
+<rect x="50" y="166" width="1000" height="120" rx="10" class="zo"/>
+<text x="66" y="188" class="md" font-weight="600">One agent run (PydanticAI UsageLimits)</text>
+<text x="66" y="206" class="sm">model requests and tool calls for this run &#183; 3 duplicate calls</text><text x="66" y="222" class="lbl">At the limit: stop this agent; the coordinator escalates.</text>
+<rect x="66" y="234" width="968" height="40" rx="8" class="hum"/>
+<text x="82" y="252" class="md" font-weight="600">One output</text><text x="82" y="267" class="sm">3 attempts after malformed output or a bad evidence ID (A4 QR-04). At the limit: escalate.</text>
+</svg>
+</div>
+<p class="cap">Figure 9. The limits, from the smallest scope to the whole incident. Each scope has its own counters. Whichever limit is reached first stops the loop, and the incident always ends with a human.</p>
+<h3>Continue or stop</h3>
+<table>
+<tr><th>Outcome</th><th>Condition</th><th>Label</th></tr>
+<tr><td><b>Continue to actions</b></td><td>The diagnosis passes the L9-A4 rule and the critic says <code>accept</code>.</td><td><span class="L D">Decision</span> Q9.38</td></tr>
+<tr><td rowspan="2"><b>Stop and escalate</b></td><td>Any limit in Figure 9 is reached. All hypotheses are ruled out. A critical source is missing. An unexplained contradiction remains. The critic says <code>escalate</code> or gives no verdict.</td><td><span class="L D">Decision</span> Q9.38 <span class="L A">Assumption</span> L9-A2, L9-A5</td></tr>
+<tr><td>Inference is down (no CPU or cloud fallback, A2). The time limit is reached (A4 NFR-05).</td><td><span class="L F">Fixed requirement</span> A2 2.5, A4 NFR-05</td></tr>
+<tr><td><b>Stop as A8 says</b></td><td>Signal <code>cancel</code> or <code>take_over</code>. The running activity ends, and its records are kept (A8 8.7).</td><td><span class="L F">Fixed requirement</span> A8 8.7</td></tr>
+</table>
+<h3>Escalation rubric</h3>
+<p>This closes the rubric that Layer 1 left open (A1 E3).</p>
+<table>
+<tr><th>Stage</th><th>Content</th><th>Label</th></tr>
+<tr><td>System 1</td><td>The fixed rules of A1, run as code before any model call.</td><td><span class="L F">Fixed requirement</span> A4 FR-06</td></tr>
+<tr><td>System 2</td><td>The L9-A4 evidence rule, the critic verdict, and the stop list above.</td><td><span class="L D">Decision</span> Q9.38</td></tr>
+<tr><td>Decision model</td><td>No separate decision model in V1. It would add a model with no proven accuracy on unseen tasks. It stays a candidate for Layer 10.</td><td><span class="L D">Decision</span> Q9.38</td></tr>
+</table>
+
+<!-- ============ 9.11 ============ -->
+<h2><span class="sec">9.11</span>Agent evaluation metrics</h2>
+<p class="qs">Answers: Q9.36, Q9.48 to Q9.53</p>
+<div class="fig">
+<svg viewBox="0 0 1100 400" role="img" aria-label="Agent evaluation: escalation confusion matrix with targets, target bars for accuracy, coverage, unsupported claims and critic effectiveness, efficiency limits for the reference scenario, and the sources of ground truth">
+<text x="18" y="22" class="md" font-weight="600">Escalation quality (Q9.51)</text>
+<g text-anchor="middle" class="sm">
+<text x="250" y="46" class="lbl">fixture label: should escalate?</text>
+<text x="180" y="64">yes</text><text x="320" y="64">no</text>
+<text x="60" y="110" class="lbl">platform</text><text x="60" y="124" class="lbl">escalated</text>
+<text x="60" y="186" class="lbl">platform gave</text><text x="60" y="200" class="lbl">cause_found</text>
+<rect x="110" y="72" width="140" height="76" rx="6" class="okb"/><text x="180" y="104" font-weight="600">correct escalation</text><text x="180" y="120" class="lbl">C, seeded conflict</text>
+<rect x="250" y="72" width="140" height="76" rx="6" class="hum"/><text x="320" y="100" font-weight="600">unnecessary</text><text x="320" y="116">target at most 20%</text><text x="320" y="132" class="lbl">costs human time</text>
+<rect x="110" y="148" width="140" height="76" rx="6" class="bad"/><text x="180" y="176" font-weight="600">missed escalation</text><text x="180" y="192">target 0</text><text x="180" y="208" class="lbl">risk: a wrong action</text>
+<rect x="250" y="148" width="140" height="76" rx="6" class="okb"/><text x="320" y="180" font-weight="600">correct diagnosis</text><text x="320" y="196" class="lbl">A, B</text>
+</g>
+<text x="470" y="22" class="md" font-weight="600">Quality targets on the labelled fixtures (provisional)</text>
+<g class="sm">
+<text x="470" y="50">Top-1 diagnosis accuracy (Q9.48, A4 FR-06)</text><rect x="760" y="40" width="300" height="12" rx="3" class="box"/><rect x="760" y="40" width="240" height="12" rx="3" class="uc"/><text x="1066" y="50">&#8805; 80%</text>
+<text x="470" y="78">Key-evidence recall (Q9.49)</text><rect x="760" y="68" width="300" height="12" rx="3" class="box"/><rect x="760" y="68" width="240" height="12" rx="3" class="uc"/><text x="1066" y="78">&#8805; 80%</text>
+<text x="470" y="106">Required sources collected or missing (Q9.49)</text><rect x="760" y="96" width="300" height="12" rx="3" class="box"/><rect x="760" y="96" width="300" height="12" rx="3" class="uc"/><text x="1066" y="106">100%</text>
+<text x="470" y="134">Critic detects seeded faults (Q9.52)</text><rect x="760" y="124" width="300" height="12" rx="3" class="box"/><rect x="760" y="124" width="270" height="12" rx="3" class="uc"/><text x="1066" y="134">&#8805; 90%</text>
+<text x="470" y="162">Claims not supported by their evidence (Q9.50)</text><rect x="760" y="152" width="300" height="12" rx="3" class="box"/><rect x="760" y="152" width="15" height="12" rx="3" class="bad"/><text x="1066" y="162">&#8804; 5%</text>
+<text x="470" y="190">Critic rejects a good diagnosis (Q9.52)</text><rect x="760" y="180" width="300" height="12" rx="3" class="box"/><rect x="760" y="180" width="30" height="12" rx="3" class="bad"/><text x="1066" y="190">&#8804; 10%</text>
+<text x="470" y="218">Claims with no valid evidence ID (Q9.50)</text><rect x="760" y="208" width="300" height="12" rx="3" class="box"/><text x="1066" y="218">0</text>
+</g>
+<text x="18" y="262" class="md" font-weight="600">Efficiency for the reference scenario, incident A (Q9.53)</text>
+<g text-anchor="middle" class="sm">
+<rect x="18" y="272" width="200" height="40" rx="6" class="box"/><text x="118" y="296">at most 8 model requests</text>
+<rect x="230" y="272" width="200" height="40" rx="6" class="box"/><text x="330" y="296">at most 15 tool calls</text>
+<rect x="442" y="272" width="200" height="40" rx="6" class="box"/><text x="542" y="296">0 duplicate calls</text>
+<rect x="654" y="272" width="200" height="40" rx="6" class="box"/><text x="754" y="296">diagnosis within 5 min</text>
+<rect x="866" y="272" width="216" height="40" rx="6" class="box"/><text x="974" y="290">final value = measured</text><text x="974" y="304">baseline &#215; 1.5 (A4 QR-06)</text>
+</g>
+<text x="18" y="342" class="md" font-weight="600">Ground truth (Q9.36): never another model</text>
+<g class="sm">
+<rect x="18" y="352" width="350" height="36" rx="6" class="okb"/><text x="28" y="374">Labelled fixtures: cause, key evidence, escalate?</text>
+<rect x="380" y="352" width="340" height="36" rx="6" class="okb"/><text x="390" y="374">Verification: the alert's signals recover</text>
+<rect x="732" y="352" width="350" height="36" rx="6" class="okb"/><text x="742" y="374">Human feedback: diagnosis_feedback (A7 F8)</text>
+</g>
+</svg>
+</div>
+<p class="cap">Figure 10. How the agents are measured. Missed escalations have a target of 0, because a wrong cause can lead to a wrong action. Code compares results with labelled fixtures, so no model judges another model. Every target is provisional until Layer 12 measures it.</p>
+<div class="tw"><table class="reg">
+<tr><th>Metric</th><th>How it is measured</th><th>V1 target</th><th>Q</th><th>Label</th></tr>
+<tr><td>Diagnosis accuracy</td><td>Fixtures: top-1 (the cause matches the labelled change and cause type) and top-3 (the true cause is among the hypotheses). Real use: <code>diagnosis_feedback</code> and the verification result.</td><td>Top-1 at least 80%. A and B rank the true cause first.</td><td>Q9.48</td><td><span class="L F">Fixed requirement</span> A4 FR-06</td></tr>
+<tr><td>Evidence coverage</td><td>(1) Required sources collected or marked missing before diagnosis. (2) Key-evidence recall: the share of the labelled key evidence that the diagnosis cites.</td><td>(1) 100%. (2) At least 80%.</td><td>Q9.49</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Unsupported claims</td><td>(1) Claims with no valid evidence ID, counted by code. (2) Claims whose evidence does not support them, from critic findings and a human check of a sample.</td><td>(1) 0. (2) At most 5% of claims.</td><td>Q9.50</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Escalation quality</td><td>Confusion matrix against the "should escalate" label (Figure 10).</td><td>Missed 0. Unnecessary at most 20%.</td><td>Q9.51</td><td><span class="L F">Fixed requirement</span> A4 FR-07, FR-08</td></tr>
+<tr><td>Critic effectiveness</td><td>Seeded-fault fixtures: an unsupported claim, a wrong cause, an ignored contradiction. Detection = faults marked <code>revise</code> or <code>escalate</code>. Real use: the share of revisions that changed the outcome.</td><td>Detection at least 90%. False reject at most 10%.</td><td>Q9.52</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Efficiency</td><td>For each incident: model requests, tool calls, duplicates, tokens, GPU-minutes, rounds, revisions, time to diagnosis (A4 NFR-11).</td><td>Incident A: at most 8 requests and 15 tool calls, 0 duplicates, within 5 min.</td><td>Q9.53</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Calibration</td><td>Stated confidence against actual accuracy, for each confidence band.</td><td>Diagnoses at 0.7 to 0.8 are correct about 75% of the time.</td><td>Q9.53</td><td><span class="L A">Assumption</span> L9-A7</td></tr>
+</table></div>
+<p class="note">Layer 9 defines the metrics. Layer 12 builds the evaluation harness, the larger fixture set (at least 20 incidents, A4 L4-A1) and the seeded-fault fixtures, and sets the final numbers.</p>
+
+<h2>Acceptance checks before submission</h2>
+<ul class="checks">
+<li>&#9745; Every required section above is present and complete.</li>
+<li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
+<li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
+</ul>
+<table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
+
+<!-- ============ Appendix ============ -->
+<h2>Appendix: supporting records from the conversation log</h2>
+<p>These records are not template sections. They hold the evidence for the acceptance checks above.</p>
+<h3>Assumptions (all provisional)</h3>
+<table>
+<tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
+<tr><td>L9-A1</td><td>The main open-weight model gives valid JSON tool requests when its output is held to a JSON schema. If not, the coordinator asks for one structured output for each step.</td><td>Irfan</td><td>Layer 10 model selection, tested on the fixtures</td></tr>
+<tr><td>L9-A2</td><td>3 follow-up rounds are enough for incidents A and B and keep the investigation inside 20 min</td><td>Dhanush</td><td>Layer 12 evaluation: rounds used, time to diagnosis</td></tr>
+<tr><td>L9-A3</td><td>The PydanticAI Temporal durability integration fits V1: one activity for each model request and tool call, A8 retry and timeout values for each activity, payloads under 2 MB, history inside L8-A1</td><td>Dhanush</td><td>Layer 13 spike on incident A: history size, payload sizes, retry behavior</td></tr>
+<tr><td>L9-A4</td><td><code>cause_found</code> needs 2 supporting items from 2 sources, 0 unexplained contradictions, required sources present or non-critical, and confidence at least 0.7</td><td>Dhanush</td><td>Layer 12 evaluation: false <code>cause_found</code> rate, escalation rate</td></tr>
+<tr><td>L9-A5</td><td>30 model requests (new) and 30 tool calls (A4 NFR-06) for each incident are enough for A and B and stop a runaway loop</td><td>Dhanush</td><td>Layer 12 evaluation: requests and tool calls used</td></tr>
+<tr><td>L9-A6</td><td>Fixed tool limits (2 h for each query, 200 lines or 32 KB to the model) are enough for every severity</td><td>Dhanush</td><td>Layer 12 evaluation: queries cut by a limit, and the diagnoses they affected</td></tr>
+<tr><td>L9-A7</td><td>The stated confidence is calibrated well enough for the 0.7 threshold in L9-A4</td><td>Irfan</td><td>Layer 12 evaluation: accuracy for each confidence band</td></tr>
+</table>
+<h3>Consistency with Artifacts 3, 4, 6, 7 and 8</h3>
+<table>
+<tr><th>Earlier artifact says</th><th>Artifact 9 decides</th><th>Status</th></tr>
+<tr><td>A6, A8: fixed order collect_evidence &#8594; diagnose &#8594; critic_review.</td><td>Baseline context &#8594; fixed rules &#8594; investigator (up to 3 rounds) &#8594; diagnoser &#8594; critic. The single <code>diagnose</code> step becomes two agents. Each model request and tool call is its own activity.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-16. A8 updated.</td></tr>
+<tr><td>A7 <code>model_call.role</code>: diagnoser, critic, fixer. 409 when critic = diagnoser.</td><td>Add role <code>investigator</code>. The 409 check also covers critic = fixer.</td><td><b>Explicit decision.</b> A7 updated.</td></tr>
+<tr><td>A7 <code>diagnosis.rationale</code> (text); <code>hypothesis_evidence</code> (role only); <code>hypothesis</code> without mechanism or test.</td><td>Add <code>diagnosis.claims</code>, <code>diagnosis.revision</code>, <code>hypothesis_evidence.explained</code> and <code>explanation</code>, <code>hypothesis.mechanism</code> and <code>disproving_test</code>, <code>evidence.required</code> and <code>critical</code>.</td><td><b>Explicit decision.</b> A7 updated.</td></tr>
+<tr><td>A8 8.4 guard for <code>diagnosed</code>: at least one supporting item, no open contradiction.</td><td>Made exact by the L9-A4 rule (section 9.7).</td><td>Consistent. A8 points to Artifact 9.</td></tr>
+<tr><td>A8 8.6: no automatic fix retry in V1; Layer 9 decides.</td><td>No fixer retry in V1.</td><td>Consistent.</td></tr>
+<tr><td>A1 E3: the escalation rubric is open.</td><td>Closed in section 9.10.</td><td>Consistent.</td></tr>
+<tr><td>A4 NFR-06: 30 tool calls, 10 GPU-minutes; QR-06 token caps; QR-04 3 attempts.</td><td>Used as the incident limits in section 9.10. A limit of 30 model requests is added.</td><td>Consistent.</td></tr>
+<tr><td>A6: "evidence collector (tool layer)"; diagnoser; critic.</td><td>The name "tool layer" only. The diagnoser component holds the investigator and diagnoser agents.</td><td>Consistent.</td></tr>
+<tr><td>A6 ADR-06: the inference gateway is the only path to a model.</td><td>Every agent model points at the gateway.</td><td>Consistent.</td></tr>
+<tr><td>A3: evidence to collect before any diagnosis; how engineers test a hypothesis.</td><td>The baseline context; the disproving tests; the causation checks in section 9.6.</td><td>Consistent.</td></tr>
+</table>
+<h3>Open items</h3>
+<table>
+<tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
+<tr><td>Main and reviewer model choice; native tool calling (L9-A1); need for the <code>reasoning</code> field; retrieval tools; context assembly; token budget for each model</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>Injection detector method</td><td>Irfan</td><td>Layer 10 or 12</td></tr>
+<tr><td>Evaluation harness, fixture labels, seeded-fault fixtures, final targets (L9-A2, A4 to A7)</td><td>Irfan, Dhanush</td><td>Layer 12</td></tr>
+<tr><td>PydanticAI version pin and Temporal spike (L9-A3)</td><td>Dhanush</td><td>Layer 13</td></tr>
+<tr><td>Policy gate rules for a proposed action; fix approval record (F7)</td><td>Rinisha</td><td>Layer 11</td></tr>
+</table>
+<h3>Where Claude and ChatGPT disagreed</h3>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2).</p>
+</main>
+</body>
+</html>
