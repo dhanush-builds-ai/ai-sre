@@ -1,7 +1,7 @@
 # Layer 10 · Inference and Retrieval — Conversation Log
 
 Built from: Artifacts 2 and 9. Owner: Irfan.
-Focus: run models reliably and give them the right information. Artifact 2 was revised on 2026-11-14 (cloud providers by configuration, off by default). Artifact 9 was written on 2026-11-16. This log follows both, and the standing decisions of Artifacts 4 to 8. Every answer is provisional until the team reviews it. An item that says **Open** has a written rule, but a value or a name comes later.
+Focus: run models reliably and give them the right information. Artifact 2 was revised on 2026-11-14 (cloud providers by configuration, off by default). Artifact 9 was written on 2026-11-16. This log follows both, and the standing decisions of Artifacts 4 to 8. Every answer is provisional until the team reviews it. An item that says **Open** has a written rule, but a value or a name comes later. All open items are in `pending.md`.
 
 **Note on Claude and Tinker.** Worksheet section 10.3 (Claude adapter) is the Anthropic adapter. It exists and is off by default. Worksheet section 10.4 (Tinker adapter) is not used in V1, because Artifact 2 has no custom model.
 
