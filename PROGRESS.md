@@ -3,7 +3,7 @@
 The **only** place where project status is kept. Other files (README, work split) hold no status.
 Update this file whenever a layer moves, a review runs, or an open item is closed.
 
-_Last updated: 2026-11-15_
+_Last updated: 2026-11-17_
 
 ## Layers
 
@@ -18,7 +18,7 @@ _Last updated: 2026-11-15_
 | 7 | Data, APIs and Events | Dhanush (from Manish) | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-07-data-apis-events/conversation-log.md) | [A7](specs/layer-07-data-apis-events/artifact-7-data-and-interface-specification.html) | 35 tables (after the S1–S11 schema review), CloudEvents envelope, outbox via queued row + event table, idempotency table, SSE timeline. Gap review F1–F9 applied. Revised A5 login (SC-25) and config (SC-24) |
 | 8 | Workflows and State Machines | Dhanush | Done — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-08-workflows-state-machines/conversation-log.md) | [A8](specs/layer-08-workflows-state-machines/artifact-8-workflow-specification.html) | Incident workflow + one child per action; 7 incident and 13 action states; signals not Temporal cancel; one retry owner; intent-then-dispatch reconciliation; no notifier spool (A7 updated) |
 | 9 | Agent Architecture | Dhanush | Done (2026-11-16) — ChatGPT pass pending (H2); consumer review pending (Rinisha, Irfan) | [log](specs/layer-09-agent-architecture/conversation-log.md) | [A9](specs/layer-09-agent-architecture/artifact-9-agent-design-specification.html) | PydanticAI agents on Temporal; code coordinator; 4 agents (investigator, diagnoser, critic, fixer) + 3 code skills; baseline evidence by code; ≤ 3 rounds, ≤ 2 revisions, 30 requests / 30 tool calls; no agent write tools; escalation rubric closed (A1 E3). A7 and A8 updated |
-| 10 | Inference and Retrieval | Irfan | Not started — inputs ready (A2, A9) | | | Needs A2, A9 |
+| 10 | Inference and Retrieval | Irfan | Draft (2026-11-17) — all 64 questions answered; A2 and A9 applied; model choice, GPU sizing and HA design wait for a team session; ChatGPT pass (H2) and consumer review pending | [log](specs/layer-10-inference-retrieval/conversation-log.md) | [A10](specs/layer-10-inference-retrieval/artifact-10-inference-and-retrieval-spec.html) | Anthropic adapter present, off by default; Tinker not used. Temporal is the only retry owner (A8). Budget on the A7 ledger with an estimate rule. Runbooks from the Git knowledge repository, scope by service_id. BM25 confirmed. Open items: [pending](specs/layer-10-inference-retrieval/pending.md) (status mapping for model_call, one model request at a time, reproduction after 90 days, model choice) |
 | 11 | Safe Remediation | Rinisha | Not started | | | Needs A5, A8, A9 |
 | 12 | Reliability and Evaluation | All, by section (Dhanush merges) | Not started | | | Needs A3, A4, A10, A11 |
 | 13 | Implementation Planning | Team | Not started | | | Needs A1–A12 |
