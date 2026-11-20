@@ -148,15 +148,15 @@ pre code{border:0;padding:0;background:none}
 <g text-anchor="middle">
 <rect x="18" y="236" width="255" height="64" rx="6" class="box"/><text x="145" y="258" class="md" font-weight="600">Temporal workflow code</text><text x="145" y="275" class="lbl">coordinator and each agent loop</text><text x="145" y="290" class="lbl">deterministic, no I/O</text>
 <rect x="287" y="236" width="255" height="64" rx="6" class="box"/><text x="414" y="258" class="md" font-weight="600">Temporal activities</text><text x="414" y="275" class="lbl">every model request, every tool call</text><text x="414" y="290" class="lbl">only retry owner (A8 8.5)</text>
-<rect x="556" y="236" width="255" height="64" rx="6" class="fx"/><text x="683" y="258" class="md" font-weight="600">Inference gateway</text><text x="683" y="275" class="lbl">budget, timeout, model_call row</text><text x="683" y="290" class="lbl">self-hosted models (A2, A6)</text>
+<rect x="556" y="236" width="255" height="64" rx="6" class="fx"/><text x="683" y="258" class="md" font-weight="600">Inference gateway</text><text x="683" y="275" class="lbl">budget, timeout, model_call row</text><text x="683" y="290" class="lbl">cloud default; self-hosted by config</text>
 <rect x="825" y="236" width="257" height="64" rx="6" class="fx"/><text x="953" y="258" class="md" font-weight="600">Tool layer</text><text x="953" y="275" class="lbl">checks, redaction, evidence row</text><text x="953" y="290" class="lbl">HTTP and MCP adapters</text>
 </g>
 <g class="ln"><path d="M273,268 H285" marker-end="url(#g0)"/><path d="M542,268 H554" marker-end="url(#g0)"/><path d="M414,300 V314 H953 V302" marker-end="url(#g0)"/></g>
 <text x="18" y="342" class="lbl">3. Limits for each incident (section 9.10). At any limit the coordinator stops and escalates.</text>
 <g text-anchor="middle" class="sm">
 <rect x="18" y="352" width="146" height="40" rx="6" class="bad"/><text x="91" y="370">30 model requests</text><text x="91" y="384">(L9-A5)</text>
-<rect x="171" y="352" width="146" height="40" rx="6" class="bad"/><text x="244" y="370">30 tool calls</text><text x="244" y="384">(A4 NFR-06)</text>
-<rect x="324" y="352" width="146" height="40" rx="6" class="bad"/><text x="397" y="376">10 GPU-minutes (A4)</text>
+<rect x="171" y="352" width="146" height="40" rx="6" class="bad"/><text x="244" y="370">100 tool calls</text><text x="244" y="384">(A4 NFR-06)</text>
+<rect x="324" y="352" width="146" height="40" rx="6" class="bad"/><text x="397" y="370">USD 10 (cloud) or</text><text x="397" y="384">20 GPU-min (A4)</text>
 <rect x="477" y="352" width="146" height="40" rx="6" class="bad"/><text x="550" y="370">tokens: 200k in,</text><text x="550" y="384">64k out (A4 QR-06)</text>
 <rect x="630" y="352" width="146" height="40" rx="6" class="bad"/><text x="703" y="370">20 min to diagnose</text><text x="703" y="384">(A4 NFR-05)</text>
 <rect x="783" y="352" width="146" height="40" rx="6" class="bad"/><text x="856" y="370">3 attempts for</text><text x="856" y="384">each output</text>
@@ -169,12 +169,12 @@ pre code{border:0;padding:0;background:none}
 <rect x="828" y="430" width="254" height="78" rx="6" class="okb"/><text x="840" y="450" class="md" font-weight="600">Evaluation targets</text><text x="840" y="468" class="sm">Top-1 accuracy at least 80%.</text><text x="840" y="482" class="sm">Missed escalations: 0.</text><text x="840" y="496" class="sm">Critic finds at least 90% of faults.</text>
 </svg>
 </div>
-<p class="cap">Figure 1. Layer 9 at a glance. Code collects the baseline evidence and applies the fixed rules. Three agents then investigate, diagnose and review. Code maps the cause to a recovery action, and every write passes the gates outside the agents. Hard limits stop the loop, and labelled fixtures measure the result.</p>
+<p class="cap">Figure 1. Layer 9 at a glance. Code collects the baseline evidence and applies the fixed rules. Three agents then investigate, diagnose and review. Code maps the cause to a recovery action, and every write passes the gates outside the agents. Hard limits stop the loop, and labelled simulations in the dummy application measure the result.</p>
 
 <h3>What an agent is in this platform</h3>
 <table>
 <tr><th>Term</th><th>Meaning</th><th>Q</th><th>Label</th></tr>
-<tr><td>Large language model (LLM)</td><td>A model that generates text. It predicts the next token from the input tokens, one token at a time. V1 uses self-hosted open-weight models. All calls go through the one inference gateway.</td><td>Q9.1</td><td><span class="L F">Fixed requirement</span> A2 2.1, A6 ADR-06</td></tr>
+<tr><td>Large language model (LLM)</td><td>A model that generates text. It predicts the next token from the input tokens, one token at a time. V1 uses a cloud model provider by default. Self-hosted open-weight models are an option by configuration. All calls go through the one inference gateway.</td><td>Q9.1</td><td><span class="L F">Fixed requirement</span> A2 2.1, A6 ADR-06</td></tr>
 <tr><td>Agent</td><td>An LLM plus typed tools, a control loop, saved state and a goal. The model only requests a tool call. The application runs the call.</td><td>Q9.2</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Coordinator</td><td>Deterministic application code that runs the loop. It decides the next step. It enforces the budget, the limits and the stop rules. No model is the orchestrator.</td><td>Q9.7</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Skill</td><td>A versioned unit of behavior with typed input and output (section 9.2). A skill is either code or one PydanticAI agent.</td><td>Q9.13</td><td><span class="L D">Decision</span></td></tr>
@@ -197,7 +197,7 @@ pre code{border:0;padding:0;background:none}
 <polygon points="650,198 740,160 830,198 740,236" class="box"/><text x="740" y="202" class="sm">verdict?</text>
 <rect x="888" y="170" width="194" height="56" rx="6" class="okb"/><text x="985" y="190" class="md" font-weight="600">Diagnosed: propose actions</text><text x="985" y="206" class="lbl">recovery by code (9.2);</text><text x="985" y="219" class="lbl">fix by the fixer agent</text>
 <rect x="200" y="278" width="630" height="50" rx="22" class="hum"/><text x="515" y="300" class="md" font-weight="600">Escalated</text><text x="515" y="317" class="lbl">the human sees the diagnosis, the critic findings, what was checked, what is missing, and any recommended action</text>
-<rect x="18" y="356" width="1064" height="48" rx="6" class="bad"/><text x="550" y="376" class="md" font-weight="600">Stop at any step and escalate</text><text x="550" y="393" class="lbl">budget used up &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 20 min (A4 NFR-05) &#183; inference down &#183; signal cancel or take_over (A8 8.7)</text>
+<rect x="18" y="356" width="1064" height="48" rx="6" class="bad"/><text x="550" y="376" class="md" font-weight="600">Stop at any step and escalate</text><text x="550" y="393" class="lbl">budget used up &#183; 30 model requests &#183; 100 tool calls (A4 NFR-06) &#183; 20 min (A4 NFR-05) &#183; inference down &#183; signal cancel or take_over (A8 8.7)</text>
 </g>
 <g class="ln">
 <path d="M168,68 H186" marker-end="url(#g1)"/><path d="M338,68 H356" marker-end="url(#g1)"/><path d="M508,68 H526" marker-end="url(#g1)"/><path d="M678,68 H698" marker-end="url(#g1)"/>
@@ -357,7 +357,7 @@ pre code{border:0;padding:0;background:none}
 <path d="M665,220 V256" marker-end="url(#g4)"/></g>
 <g class="lbl halo"><text x="246" y="132">no</text><text x="736" y="132">no</text><text x="812" y="60">yes</text><text x="296" y="58">yes</text><text x="378" y="150">fix</text><text x="458" y="128">retry</text></g>
 <g class="sm">
-<rect x="18" y="320" width="350" height="40" rx="6" class="box"/><text x="28" y="337">A rejected call counts toward the 30 tool calls.</text><text x="28" y="351">Every attempt counts toward the budget.</text>
+<rect x="18" y="320" width="350" height="40" rx="6" class="box"/><text x="28" y="337">A rejected call counts toward the 100 tool calls.</text><text x="28" y="351">Every attempt counts toward the budget.</text>
 <rect x="380" y="320" width="350" height="40" rx="6" class="box"/><text x="390" y="337">Evidence IDs are checked in the database. The</text><text x="390" y="351">composite foreign key is the second guard.</text>
 <rect x="742" y="320" width="340" height="40" rx="6" class="box"/><text x="752" y="337">Model and prompt versions are</text><text x="752" y="351">recorded in each model_call row.</text>
 </g>
@@ -432,7 +432,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>Rule</th><th>Design</th><th>Q</th><th>Label</th></tr>
 <tr><td>Approved tools only</td><td>Each agent is built with an explicit toolset. No other Python function is callable. The allow list lives in the repository (A5 AST-10). An MCP server exposes only <code>integration.allowed_tools</code>, a subset of that list (A7 F5). The tool layer wraps every MCP toolset, so the checks run before the call. An unknown tool name is rejected and logged.</td><td>Q9.39</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Classes</td><td><b>read</b> and <b>write</b>. A write tool also has a risk class, type 1 or type 2 (A1). Agents get read tools only. The executor owns every write.</td><td>Q9.40</td><td><span class="L F">Fixed requirement</span> A5 SC-15</td></tr>
-<tr><td>Parameter checks</td><td><code>end &gt; start</code>, <code>end &le; now</code>, window inside the incident window and at most 2 h. Limit and query length under their maximums. The reason of a rejection goes back as a tool error. A rejected call counts toward the 30 tool calls.</td><td>Q9.41</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Parameter checks</td><td><code>end &gt; start</code>, <code>end &le; now</code>, window inside the incident window and at most 2 h. Limit and query length under their maximums. The reason of a rejection goes back as a tool error. A rejected call counts toward the 100 tool calls.</td><td>Q9.41</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Service scope</td><td>The allowed services come from the incident record, not from the model: the incident's service and its declared dependencies (A7 <code>service_dependency</code>). Adapters query only the labels that map to them (A7 <code>service_alias</code>).</td><td>Q9.42</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Range and size</td><td>One query covers at most 2 h, inside [incident start &minus; 1 h, now]. The model gets at most 200 lines or 32 KB after repeated lines are grouped. The summary says when it was cut.</td><td>Q9.43</td><td><span class="L A">Assumption</span> L9-A6</td></tr>
 <tr><td>Credentials</td><td>One read-only service credential for each integration, in the secret store (A7 <code>auth_secret_ref</code>). Only the tool layer uses it. V1 has one tenant, so the tool layer enforces the service scope.</td><td>Q9.44</td><td><span class="L F">Fixed requirement</span> A5 SC-06</td></tr>
@@ -602,7 +602,7 @@ pre code{border:0;padding:0;background:none}
 <rect x="18" y="20" width="1064" height="294" rx="10" class="zb"/><text x="1066" y="338" text-anchor="end" class="lbl">Values are provisional; Layer 12 sets the final values.</text>
 <text x="34" y="44" class="md" font-weight="600">One incident: the coordinator adds up every agent run</text>
 <g class="sm">
-<text x="34" y="66">3 follow-up rounds (k) &#183; 30 model requests &#183; 30 tool calls (A4 NFR-06) &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens (A4 QR-06) &#183; 20 min to diagnose (A4 NFR-05)</text>
+<text x="34" y="66">3 follow-up rounds (k) &#183; 30 model requests &#183; 100 tool calls (A4 NFR-06) &#183; USD 10 or 20 GPU-minutes &#183; 200k input and 64k output tokens (A4 QR-06) &#183; 20 min to diagnose (A4 NFR-05)</text>
 <text x="34" y="82" class="lbl">At the limit: stop, keep every record, escalate.</text>
 </g>
 <rect x="34" y="96" width="1032" height="204" rx="10" class="zt"/>
@@ -621,7 +621,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>Outcome</th><th>Condition</th><th>Label</th></tr>
 <tr><td><b>Continue to actions</b></td><td>The diagnosis passes the L9-A4 rule and the critic says <code>accept</code>.</td><td><span class="L D">Decision</span> Q9.38</td></tr>
 <tr><td rowspan="2"><b>Stop and escalate</b></td><td>Any limit in Figure 9 is reached. All hypotheses are ruled out. A critical source is missing. An unexplained contradiction remains. The critic says <code>escalate</code> or gives no verdict.</td><td><span class="L D">Decision</span> Q9.38 <span class="L A">Assumption</span> L9-A2, L9-A5</td></tr>
-<tr><td>Inference is down (no CPU or cloud fallback, A2). The time limit is reached (A4 NFR-05).</td><td><span class="L F">Fixed requirement</span> A2 2.5, A4 NFR-05</td></tr>
+<tr><td>Inference is down (no CPU fallback and no fallback to another provider, A2). The time limit is reached (A4 NFR-05).</td><td><span class="L F">Fixed requirement</span> A2 2.5, A4 NFR-05</td></tr>
 <tr><td><b>Stop as A8 says</b></td><td>Signal <code>cancel</code> or <code>take_over</code>. The running activity ends, and its records are kept (A8 8.7).</td><td><span class="L F">Fixed requirement</span> A8 8.7</td></tr>
 </table>
 <h3>Escalation rubric</h3>
@@ -640,7 +640,7 @@ pre code{border:0;padding:0;background:none}
 <svg viewBox="0 0 1100 400" role="img" aria-label="Agent evaluation: escalation confusion matrix with targets, target bars for accuracy, coverage, unsupported claims and critic effectiveness, efficiency limits for the reference scenario, and the sources of ground truth">
 <text x="18" y="22" class="md" font-weight="600">Escalation quality (Q9.51)</text>
 <g text-anchor="middle" class="sm">
-<text x="250" y="46" class="lbl">fixture label: should escalate?</text>
+<text x="250" y="46" class="lbl">simulation label: should escalate?</text>
 <text x="180" y="64">yes</text><text x="320" y="64">no</text>
 <text x="60" y="110" class="lbl">platform</text><text x="60" y="124" class="lbl">escalated</text>
 <text x="60" y="186" class="lbl">platform gave</text><text x="60" y="200" class="lbl">cause_found</text>
@@ -649,7 +649,7 @@ pre code{border:0;padding:0;background:none}
 <rect x="110" y="148" width="140" height="76" rx="6" class="bad"/><text x="180" y="176" font-weight="600">missed escalation</text><text x="180" y="192">target 0</text><text x="180" y="208" class="lbl">risk: a wrong action</text>
 <rect x="250" y="148" width="140" height="76" rx="6" class="okb"/><text x="320" y="180" font-weight="600">correct diagnosis</text><text x="320" y="196" class="lbl">A, B</text>
 </g>
-<text x="470" y="22" class="md" font-weight="600">Quality targets on the labelled fixtures (provisional)</text>
+<text x="470" y="22" class="md" font-weight="600">Quality targets on the labelled simulations (provisional)</text>
 <g class="sm">
 <text x="470" y="50">Top-1 diagnosis accuracy (Q9.48, A4 FR-06)</text><rect x="760" y="40" width="300" height="12" rx="3" class="box"/><rect x="760" y="40" width="240" height="12" rx="3" class="uc"/><text x="1066" y="50">&#8805; 80%</text>
 <text x="470" y="78">Key-evidence recall (Q9.49)</text><rect x="760" y="68" width="300" height="12" rx="3" class="box"/><rect x="760" y="68" width="240" height="12" rx="3" class="uc"/><text x="1066" y="78">&#8805; 80%</text>
@@ -670,24 +670,24 @@ pre code{border:0;padding:0;background:none}
 </g>
 <text x="18" y="342" class="md" font-weight="600">Ground truth (Q9.36): never another model</text>
 <g class="sm">
-<rect x="18" y="352" width="350" height="36" rx="6" class="okb"/><text x="28" y="374">Labelled fixtures: cause, key evidence, escalate?</text>
+<rect x="18" y="352" width="350" height="36" rx="6" class="okb"/><text x="28" y="374">Labelled simulations: cause, key evidence, escalate?</text>
 <rect x="380" y="352" width="340" height="36" rx="6" class="okb"/><text x="390" y="374">Verification: the alert's signals recover</text>
 <rect x="732" y="352" width="350" height="36" rx="6" class="okb"/><text x="742" y="374">Human feedback: diagnosis_feedback (A7 F8)</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 10. How the agents are measured. Missed escalations have a target of 0, because a wrong cause can lead to a wrong action. Code compares results with labelled fixtures, so no model judges another model. Every target is provisional until Layer 12 measures it.</p>
+<p class="cap">Figure 10. How the agents are measured. Missed escalations have a target of 0, because a wrong cause can lead to a wrong action. Code compares results with labelled simulations, so no model judges another model. Every target is provisional until Layer 12 measures it.</p>
 <div class="tw"><table class="reg">
 <tr><th>Metric</th><th>How it is measured</th><th>V1 target</th><th>Q</th><th>Label</th></tr>
-<tr><td>Diagnosis accuracy</td><td>Fixtures: top-1 (the cause matches the labelled change and cause type) and top-3 (the true cause is among the hypotheses). Real use: <code>diagnosis_feedback</code> and the verification result.</td><td>Top-1 at least 80%. A and B rank the true cause first.</td><td>Q9.48</td><td><span class="L F">Fixed requirement</span> A4 FR-06</td></tr>
+<tr><td>Diagnosis accuracy</td><td>Simulations: top-1 (the cause matches the labelled change and cause type) and top-3 (the true cause is among the hypotheses). Real use: <code>diagnosis_feedback</code> and the verification result.</td><td>Top-1 at least 80%. A and B rank the true cause first.</td><td>Q9.48</td><td><span class="L F">Fixed requirement</span> A4 FR-06</td></tr>
 <tr><td>Evidence coverage</td><td>(1) Required sources collected or marked missing before diagnosis. (2) Key-evidence recall: the share of the labelled key evidence that the diagnosis cites.</td><td>(1) 100%. (2) At least 80%.</td><td>Q9.49</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Unsupported claims</td><td>(1) Claims with no valid evidence ID, counted by code. (2) Claims whose evidence does not support them, from critic findings and a human check of a sample.</td><td>(1) 0. (2) At most 5% of claims.</td><td>Q9.50</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Escalation quality</td><td>Confusion matrix against the "should escalate" label (Figure 10).</td><td>Missed 0. Unnecessary at most 20%.</td><td>Q9.51</td><td><span class="L F">Fixed requirement</span> A4 FR-07, FR-08</td></tr>
-<tr><td>Critic effectiveness</td><td>Seeded-fault fixtures: an unsupported claim, a wrong cause, an ignored contradiction. Detection = faults marked <code>revise</code> or <code>escalate</code>. Real use: the share of revisions that changed the outcome.</td><td>Detection at least 90%. False reject at most 10%.</td><td>Q9.52</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Efficiency</td><td>For each incident: model requests, tool calls, duplicates, tokens, GPU-minutes, rounds, revisions, time to diagnosis (A4 NFR-11).</td><td>Incident A: at most 8 requests and 15 tool calls, 0 duplicates, within 5 min.</td><td>Q9.53</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Critic effectiveness</td><td>Seeded-fault simulations: an unsupported claim, a wrong cause, an ignored contradiction. Detection = faults marked <code>revise</code> or <code>escalate</code>. Real use: the share of revisions that changed the outcome.</td><td>Detection at least 90%. False reject at most 10%.</td><td>Q9.52</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Efficiency</td><td>For each incident: model requests, tool calls, duplicates, tokens, money or GPU-minutes, rounds, revisions, time to diagnosis (A4 NFR-11).</td><td>Incident A: at most 8 requests and 15 tool calls, 0 duplicates, within 5 min.</td><td>Q9.53</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Calibration</td><td>Stated confidence against actual accuracy, for each confidence band.</td><td>Diagnoses at 0.7 to 0.8 are correct about 75% of the time.</td><td>Q9.53</td><td><span class="L A">Assumption</span> L9-A7</td></tr>
 </table></div>
-<p class="note">Layer 9 defines the metrics. Layer 12 builds the evaluation harness, the larger fixture set (at least 20 incidents, A4 L4-A1) and the seeded-fault fixtures, and sets the final numbers.</p>
+<p class="note">Layer 9 defines the metrics. Layer 12 builds the evaluation harness, the larger simulation set (at least 20 incidents, A4 L4-A1) and the seeded-fault simulations, and sets the final numbers.</p>
 
 <h2>Acceptance checks before submission</h2>
 <ul class="checks">
@@ -706,11 +706,11 @@ pre code{border:0;padding:0;background:none}
 <h3>Assumptions (all provisional)</h3>
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
-<tr><td>L9-A1</td><td>The main open-weight model gives valid JSON tool requests when its output is held to a JSON schema. If not, the coordinator asks for one structured output for each step.</td><td>Irfan</td><td>Layer 10 model selection, tested on the fixtures</td></tr>
+<tr><td>L9-A1</td><td>The main model gives valid JSON tool requests when its output is held to a JSON schema. If not, the coordinator asks for one structured output for each step.</td><td>Irfan</td><td>Layer 10 model selection, tested on the simulated incidents</td></tr>
 <tr><td>L9-A2</td><td>3 follow-up rounds are enough for incidents A and B and keep the investigation inside 20 min</td><td>Dhanush</td><td>Layer 12 evaluation: rounds used, time to diagnosis</td></tr>
 <tr><td>L9-A3</td><td>The PydanticAI Temporal durability integration fits V1: one activity for each model request and tool call, A8 retry and timeout values for each activity, payloads under 2 MB, history inside L8-A1</td><td>Dhanush</td><td>Layer 13 spike on incident A: history size, payload sizes, retry behavior</td></tr>
 <tr><td>L9-A4</td><td><code>cause_found</code> needs 2 supporting items from 2 sources, 0 unexplained contradictions, required sources present or non-critical, and confidence at least 0.7</td><td>Dhanush</td><td>Layer 12 evaluation: false <code>cause_found</code> rate, escalation rate</td></tr>
-<tr><td>L9-A5</td><td>30 model requests (new) and 30 tool calls (A4 NFR-06) for each incident are enough for A and B and stop a runaway loop</td><td>Dhanush</td><td>Layer 12 evaluation: requests and tool calls used</td></tr>
+<tr><td>L9-A5</td><td>30 model requests (new) and 100 tool calls (A4 NFR-06, revised 2026-11-21) for each incident are enough for A and B and stop a runaway loop</td><td>Dhanush</td><td>Layer 12 evaluation: requests and tool calls used</td></tr>
 <tr><td>L9-A6</td><td>Fixed tool limits (2 h for each query, 200 lines or 32 KB to the model) are enough for every severity</td><td>Dhanush</td><td>Layer 12 evaluation: queries cut by a limit, and the diagnoses they affected</td></tr>
 <tr><td>L9-A7</td><td>The stated confidence is calibrated well enough for the 0.7 threshold in L9-A4</td><td>Irfan</td><td>Layer 12 evaluation: accuracy for each confidence band</td></tr>
 </table>
@@ -724,7 +724,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>A1 1.5 (2026-11-21): a failure with no change to revert gets a diagnosis, a recommended action and an escalation.</td><td><code>diagnosis.cause_kind</code> and <code>recommended_action</code> (section 9.7). The recovery map returns no action for <code>not_change</code>; A8 8.4 sends the incident from diagnosed to escalated.</td><td><b>Explicit decision.</b> A7 updated.</td></tr>
 <tr><td>A8 8.6: no automatic fix retry in V1; Layer 9 decides.</td><td>No fixer retry in V1.</td><td>Consistent.</td></tr>
 <tr><td>A1 E3: the escalation rubric is open.</td><td>Closed in section 9.10.</td><td>Consistent.</td></tr>
-<tr><td>A4 NFR-06: 30 tool calls, 10 GPU-minutes; QR-06 token caps; QR-04 3 attempts.</td><td>Used as the incident limits in section 9.10. A limit of 30 model requests is added.</td><td>Consistent.</td></tr>
+<tr><td>A4 NFR-06 (revised 2026-11-21): 100 tool calls, USD 10 (cloud) or 20 GPU-minutes (self-hosted); QR-06 token caps; QR-04 3 attempts.</td><td>Used as the incident limits in section 9.10. A limit of 30 model requests is added.</td><td>Consistent.</td></tr>
 <tr><td>A6: "evidence collector (tool layer)"; diagnoser; critic.</td><td>The name "tool layer" only. The diagnoser component holds the investigator and diagnoser agents.</td><td>Consistent.</td></tr>
 <tr><td>A6 ADR-06: the inference gateway is the only path to a model.</td><td>Every agent model points at the gateway.</td><td>Consistent.</td></tr>
 <tr><td>A3: evidence to collect before any diagnosis; how engineers test a hypothesis.</td><td>The baseline context; the disproving tests; the causation checks in section 9.6.</td><td>Consistent.</td></tr>
@@ -734,7 +734,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
 <tr><td>Main and reviewer model choice; native tool calling (L9-A1); need for the <code>reasoning</code> field; retrieval tools; context assembly; token budget for each model</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>Injection detector method</td><td>Irfan</td><td>Layer 10 or 12</td></tr>
-<tr><td>Evaluation harness, fixture labels, seeded-fault fixtures, final targets (L9-A2, A4 to A7)</td><td>Irfan, Dhanush</td><td>Layer 12</td></tr>
+<tr><td>Evaluation harness, simulation labels, seeded-fault simulations, final targets (L9-A2, A4 to A7)</td><td>Irfan, Dhanush</td><td>Layer 12</td></tr>
 <tr><td>PydanticAI version pin and Temporal spike (L9-A3)</td><td>Dhanush</td><td>Layer 13</td></tr>
 <tr><td>Policy gate rules for a proposed action; fix approval record (F7)</td><td>Rinisha</td><td>Layer 11</td></tr>
 </table>

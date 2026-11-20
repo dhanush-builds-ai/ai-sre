@@ -83,7 +83,7 @@ svg .ac{fill:var(--muted)}
 <rect x="342" y="10" width="316" height="309" rx="8" class="box"/><rect x="342" y="10" width="316" height="34" rx="8" class="uc"/>
 <rect x="674" y="10" width="316" height="309" rx="8" class="box"/><rect x="674" y="10" width="316" height="34" rx="8" class="bad"/>
 <g class="md" font-weight="600"><text x="24" y="32">In V1 scope (2.1, 2.2, 2.3, 2.5)</text><text x="356" y="32">V1 limits, provisional (2.4)</text><text x="688" y="32">Not in V1 (2.6)</text></g>
-<g class="md"><text x="24" y="70">One organization, one on-call schedule</text><text x="24" y="93">Python apps: one service to microservices</text><text x="24" y="116">Sanitized synthetic fixtures only</text><text x="24" y="139">CLI and HTTP API</text><text x="24" y="162">Docker, modular monolith, PostgreSQL</text><text x="24" y="185">Self-hosted main model + a different reviewer</text><text x="24" y="208">Existing GPUs only, no new spend</text><text x="24" y="231">Integrations: monitoring, Git, CI/CD, config</text><text x="24" y="254">Tools can be internal or approved hosted</text><text x="356" y="70">3 concurrent incidents (configurable)</text><text x="356" y="93">Queue: highest severity, then oldest</text><text x="356" y="116">Recovery (phase 1) pre-empts fix work</text><text x="356" y="139">Phase 1, propose the revert: 5 min</text><text x="356" y="162">Full investigation: 20 min</text><text x="356" y="185">Step limit: 30 tool calls</text><text x="356" y="208">Cost limit: 10 GPU-minutes per incident</text><text x="356" y="231">Not counted: approval waits, sandbox, apply</text><text x="356" y="254">Fix-phase limit: not set (see 2.7)</text><text x="356" y="277" font-weight="600">Limit reached: stop and escalate</text><text x="356" y="300">A new SEV1 pauses a running fix job</text><text x="688" y="70">Multi-tenancy</text><text x="688" y="93">Languages other than Python</text><text x="688" y="116">Real incident data</text><text x="688" y="139">A dashboard</text><text x="688" y="162">Kubernetes</text><text x="688" y="185">Microservices for the platform</text><text x="688" y="208">A custom or fine-tuned model</text><text x="688" y="231">Automatic or unapproved cloud model API</text><text x="688" y="254">A CPU fallback for the models</text></g>
+<g class="md"><text x="24" y="70">One organization, one on-call schedule</text><text x="24" y="93">Python apps: one service to microservices</text><text x="24" y="116">Dummy app with simulated failures</text><text x="24" y="139">CLI, HTTP API, and a web dashboard</text><text x="24" y="162">Docker, modular monolith, PostgreSQL</text><text x="24" y="185">Cloud main model + a different reviewer</text><text x="24" y="208">Self-hosted on own GPUs: by config only</text><text x="24" y="231">Integrations: monitoring, Git, CI/CD, config</text><text x="24" y="254">Tools can be internal or approved hosted</text><text x="356" y="70">3 concurrent incidents (configurable)</text><text x="356" y="93">Queue: highest severity, then oldest</text><text x="356" y="116">Recovery (phase 1) pre-empts fix work</text><text x="356" y="139">Phase 1, propose the revert: 5 min</text><text x="356" y="162">Full investigation: 20 min</text><text x="356" y="185">Step limit: 100 tool calls</text><text x="356" y="208">Cost: USD 10 (cloud) or 20 GPU-min (own)</text><text x="356" y="231">Not counted: approval waits, sandbox, apply</text><text x="356" y="254">Fix-phase limit: not set (see 2.7)</text><text x="356" y="277" font-weight="600">Limit reached: stop and escalate</text><text x="356" y="300">A new SEV1 pauses a running fix job</text><text x="688" y="70">Multi-tenancy</text><text x="688" y="93">Languages other than Python</text><text x="688" y="116">Real incident data</text><text x="688" y="139">Automatic fallback between providers</text><text x="688" y="162">Kubernetes</text><text x="688" y="185">Microservices for the platform</text><text x="688" y="208">A custom or fine-tuned model</text><text x="688" y="231">A model provider that is not approved</text><text x="688" y="254">A CPU fallback for the models</text></g>
 <rect x="10" y="335" width="980" height="122" rx="8" class="hum"/>
 <text x="24" y="357" class="md" font-weight="600">Fixed rules for every incident (2.1, 2.3, 2.5)</text>
 <g class="md">
@@ -92,9 +92,9 @@ svg .ac{fill:var(--muted)}
 <text x="24" y="422">3. Recovery = redeploy the last known-good artifact, or restore the previous config version.</text>
 <text x="24" y="443">4. A fix = branch + pull request. Only a human merges it.</text>
 <text x="600" y="380">5. Incident data goes only to approved parties.</text>
-<text x="600" y="401">6. Cloud model APIs are off by default.</text>
+<text x="600" y="401">6. Only the approved model provider is used.</text>
 <text x="600" y="422">7. Inference down: halt and escalate.</text>
-<text x="600" y="443">8. Open items: 15 dependencies (2.7).</text>
+<text x="600" y="443">8. Open items: 16 dependencies (2.7).</text>
 </g>
 </svg>
 </div>
@@ -106,7 +106,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Organizations</td><td>One engineering organization. One ownership list and one on-call schedule.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Infrastructure</td><td>Cloud and private infrastructure are both supported. The demo runs on <b>internal (private) infrastructure</b>.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>How the platform reaches infrastructure</td><td>Only through the existing CI/CD pipeline, or by restoring a config version in the config store (both after approval). The platform never touches infrastructure directly. So the type of infrastructure does not change the platform.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Data location</td><td>Incident data must not go to an external party that the organization has not approved. A cloud model provider is approved only when a platform admin enables it (see "Model hosting"). Default: no cloud model provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12), revised in Layer 6, 2026-11-14</span></td></tr>
+<tr><td>Data location</td><td>Incident data must not go to an external party that the organization has not approved. A platform admin approves the model provider when they configure it (see "Model hosting"). Default: one approved cloud model provider. With self-hosted models, no incident data leaves the organization.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12), revised in Layer 6, 2026-11-14, and on 2026-11-21</span></td></tr>
 <tr><td>Hosted tools</td><td>Tools that the organization already uses and approved can be internal <b>or hosted</b> (monitoring, Git, CI/CD, error tracker, chat). The platform reaches a hosted tool through allow-listed inbound and outbound network rules. Nothing else in the platform changes. The data is already in that tool by the organization&rsquo;s choice.</td><td><span class="L D">Decision</span> <span class="qs">review H3</span></td></tr>
 </table>
 
@@ -116,16 +116,16 @@ svg .ac{fill:var(--muted)}
 <rect x="15" y="30" width="893" height="585" rx="12" class="bound"/>
 <text x="30" y="52" class="md" font-weight="600" fill="var(--fix)">Trust boundary: no incident data to a party that the organization has not approved</text>
 <g text-anchor="middle" class="md">
-<rect x="30" y="75" width="180" height="55" rx="6" class="hum"/><text x="120" y="98">Engineers, approver</text><text x="120" y="115" class="lbl">CLI, HTTP API (chat: open, L11)</text>
+<rect x="30" y="75" width="180" height="55" rx="6" class="hum"/><text x="120" y="98">Engineers, approver</text><text x="120" y="115" class="lbl">CLI, API, dashboard; chat: L11</text>
 <rect x="30" y="240" width="180" height="60" rx="6" class="box"/><text x="120" y="264">Monitoring</text><text x="120" y="281" class="lbl">logs, metrics, traces</text>
-<rect x="30" y="450" width="180" height="112" rx="6" class="box"/><text x="120" y="474">Sandbox</text><text x="120" y="491" class="lbl">Docker, one per incident</text><text x="120" y="507" class="lbl">synthetic fixtures only</text><text x="120" y="523" class="lbl">no network route to prod</text><text x="120" y="539" class="lbl">no prod credentials</text><text x="120" y="555" class="lbl">destroyed at incident close</text>
+<rect x="30" y="450" width="180" height="112" rx="6" class="box"/><text x="120" y="474">Sandbox</text><text x="120" y="491" class="lbl">Docker, one per incident</text><text x="120" y="507" class="lbl">dummy app, simulated failures</text><text x="120" y="523" class="lbl">no network route to prod</text><text x="120" y="539" class="lbl">no prod credentials</text><text x="120" y="555" class="lbl">destroyed at incident close</text>
 <rect x="320" y="240" width="240" height="90" rx="8" class="uc"/><text x="440" y="268" font-weight="600">AI SRE platform</text><text x="440" y="286" class="lbl">modular monolith, Docker</text><text x="440" y="302" class="lbl">no production credentials</text><text x="440" y="318" class="lbl">its own credentials: secret store</text>
-<rect x="320" y="450" width="240" height="80" rx="6" class="uc"/><text x="440" y="474">Self-hosted inference</text><text x="440" y="492" class="lbl">existing GPUs: main + reviewer model</text><text x="440" y="508" class="lbl">reviewer model differs from main</text>
+<rect x="320" y="450" width="240" height="80" rx="6" class="uc"/><text x="440" y="470">Inference gateway (2.5)</text><text x="440" y="487" class="lbl">default: the approved cloud provider</text><text x="440" y="503" class="lbl">by config: self-hosted, existing GPUs</text><text x="440" y="519" class="lbl">reviewer model differs from main</text>
 <rect x="660" y="75" width="160" height="50" rx="6" class="box"/><text x="740" y="104">Git repositories</text>
 <rect x="660" y="185" width="160" height="50" rx="6" class="box"/><text x="740" y="214">CI/CD pipeline</text>
 <rect x="660" y="300" width="160" height="50" rx="6" class="box"/><text x="740" y="329">Config store</text>
 <rect x="660" y="450" width="160" height="60" rx="6" class="okb"/><text x="740" y="474">Production services</text><text x="740" y="491" class="lbl">Python, can be distributed</text>
-<rect x="915" y="450" width="80" height="65" rx="6" class="bad"/><text x="955" y="472">Cloud</text><text x="955" y="488">model APIs</text><text x="955" y="505" class="lbl">off by default</text>
+<rect x="915" y="450" width="80" height="65" rx="6" class="uc"/><text x="955" y="472">Cloud</text><text x="955" y="488">model API</text><text x="955" y="505" class="lbl">approved</text>
 </g>
 <g class="ln">
 <path d="M212,102 H380 V238" marker-start="url(#c1)" marker-end="url(#c1)"/>
@@ -140,7 +140,7 @@ svg .ac{fill:var(--muted)}
 <path d="M440,330 V448" marker-end="url(#c1)"/>
 </g>
 <path class="badln" d="M555,330 L658,462" marker-end="url(#c1b)"/>
-<path class="badln" d="M440,530 V548 H955 V517" marker-end="url(#c1b)"/>
+<path class="ln" d="M440,530 V548 H955 V517" marker-end="url(#c1)"/>
 <g class="lbl">
 <text x="226" y="95">findings, approval, takeover</text>
 <text x="222" y="251">alert webhook</text>
@@ -153,11 +153,11 @@ svg .ac{fill:var(--muted)}
 <text x="278" y="400">prove the fix</text>
 <text x="448" y="395">model calls</text>
 <text x="604" y="372" fill="var(--bad)">no direct access</text>
-<text x="600" y="541" fill="var(--bad)">blocked unless an admin enables it (2.5)</text><text x="450" y="566">if enabled: admin config change, key in secret store,</text><text x="450" y="581">host on allow list, redaction before every call</text>
+<text x="600" y="541">default: redacted calls, approved provider</text><text x="450" y="566">set by an admin config change, key in secret store,</text><text x="450" y="581">host on allow list, redaction before every call</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 2. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval (Figure 3). Red dashed = not allowed by default. A cloud model API is used only if the organization enables it by configuration (2.5).</p>
+<p class="cap">Figure 2. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval (Figure 3). Red dashed = not allowed. By default the gateway sends redacted model calls to one cloud provider that the organization approved. Self-hosted models on the existing GPUs are an option by configuration (2.5).</p>
 
 <h3>Integrations</h3>
 <table>
@@ -176,10 +176,10 @@ svg .ac{fill:var(--muted)}
 <tr><th>Item</th><th>V1 scope</th><th>Label</th></tr>
 <tr><td>Language</td><td><b>Python only.</b></td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Architecture of the target applications</td><td>Single services, distributed systems, and microservices. The platform must follow a request across services, so <b>traces</b> are in scope.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Data for build and test</td><td><b>Sanitized synthetic fixtures only.</b> No real incident data in V1.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Data for build and test</td><td><b>A dummy application with simulated failures.</b> The team builds a small Python web application and injects failures into it (for example, a bad config value in a deployment). No real incident data in V1.</td><td><span class="L D">Decision</span> <span class="qs">revised 2026-11-21</span></td></tr>
 <tr><td>Reference scenario</td><td>A Python web application. A deployment changes a configuration value. The application returns HTTP 500 errors.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: worksheet</span></td></tr>
 </table>
-<p>Synthetic fixtures have three effects. The baseline comes from a timed manual run (Artifact 1, C1). The fixtures must cover incidents A, B, and C from Layer 3. The sandbox uses the same fixtures.</p>
+<p>The dummy application has three effects. The baseline comes from a timed manual run on the dummy application (Artifact 1, C1). The simulated failures must cover incidents A, B, and C from Layer 3. The sandbox runs the same dummy application.</p>
 
 <!-- ============ 2.3 ============ -->
 <h2><span class="sec">2.3</span>Deployment boundaries</h2>
@@ -187,14 +187,14 @@ svg .ac{fill:var(--muted)}
 
 <table>
 <tr><th>Item</th><th>V1 scope</th><th>Label</th></tr>
-<tr><td>User interface</td><td>A CLI and an HTTP API. No dashboard.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>User interface</td><td>A CLI, an HTTP API, and a web dashboard. The dashboard is a client of the same HTTP API. It uses the same login and the same permissions as the CLI.</td><td><span class="L D">Decision</span> <span class="qs">revised 2026-11-21</span></td></tr>
 <tr><td>Platform deployment</td><td>Docker only. No Kubernetes. Scale later when the load needs it.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Platform structure</td><td>A modular monolith in one repository, with clear module boundaries. A module can be deployed on its own later if its load needs it.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Production access</td><td>The agent has <b>no access</b> to the production environment and holds <b>no production credentials</b>.</td><td><span class="L D">Decision</span> <span class="qs">rationale: Q2.14; matches the approval rule in Artifact 1</span></td></tr>
 <tr><td>Write path</td><td>The agent can use write tools, but <b>every write goes through checks and human approval</b>. The checks are enforced outside the agent. A revert is one of two actions: (1) redeploy the last known-good artifact through the pipeline, or (2) restore the previous config version in the config store (undo: restore the newer version). A fix is a branch and a pull request that the pipeline deploys. Nothing is pushed directly to the main branch or to production.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 1 (1.5)</span></td></tr>
 <tr><td>Emergency revert path</td><td>A revert redeploys an artifact that already passed staging and QA. It goes straight to production after human approval, with no new staging or QA run. A config restore is the same. A permanent fix takes the normal path: sandbox proof, pull request, staging, QA, production. The phase 1 limit covers only proposing the revert, not the deploy time.</td><td><span class="L D">Decision</span> <span class="qs">review M1</span></td></tr>
 <tr><td>Fix merge</td><td>The platform opens the pull request. The human approver reviews and merges it. The merge is the approval for the fix. Branch protection on the main branch needs one human review. The platform can never merge. Detail: Layer 11.</td><td><span class="L D">Decision</span> <span class="qs">review M2</span></td></tr>
-<tr><td>Sandbox</td><td>A set of Docker containers, built for each incident from the same image and configuration. It holds synthetic fixtures only. It has no network route and no credentials to production. It is destroyed when the incident closes.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Sandbox</td><td>A set of Docker containers, built for each incident from the same image and configuration. It runs the dummy application with simulated failures only. It has no network route and no credentials to production. It is destroyed when the incident closes.</td><td><span class="L D">Decision</span></td></tr>
 </table>
 
 <div class="fig">
@@ -256,15 +256,15 @@ svg .ac{fill:var(--muted)}
 <p class="qs">Answers: Q2.12, Q2.15, Q2.16, Q2.17, Q2.18</p>
 <table>
 <tr><th>Item</th><th>V1 limit</th><th>Label</th></tr>
-<tr><td>Infrastructure</td><td>Fixed, existing hardware. V1 uses GPUs that the organization already has. No new infrastructure spend.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>GPUs</td><td>The GPUs are reserved for the platform. They are not shared with other teams.</td><td><span class="L A">Assumption</span> L2-A12</td></tr>
-<tr><td>Model budget per incident</td><td>Set by experiment. Run the synthetic fixtures. Measure the model calls, tokens, and GPU time. Set the cap at the measured baseline plus a buffer.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Cap during the experiments</td><td>A provisional hard cap applies, so a runaway loop cannot take the GPUs.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Infrastructure</td><td>No new infrastructure spend. By default, V1 pays a cloud model provider for each call. Self-hosted models (by configuration) use GPUs that the organization already has.</td><td><span class="L D">Decision</span> <span class="qs">revised 2026-11-21</span></td></tr>
+<tr><td>GPUs</td><td>When self-hosted models are enabled, the GPUs are reserved for the platform. They are not shared with other teams.</td><td><span class="L A">Assumption</span> L2-A12</td></tr>
+<tr><td>Model budget per incident</td><td>Set by experiment. Run the simulated failures. Measure the model calls, tokens, money, and GPU time. Set the cap at the measured baseline plus a buffer.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Cap during the experiments</td><td>A provisional hard cap applies, so a runaway loop cannot use up the money or the GPUs.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Concurrent incidents</td><td>3 at the start. The number is configurable. Extra incidents wait in a queue. The queue order is: highest severity first, then the oldest.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Time limit, phase 1 (propose the revert)</td><td>Shorter than the investigation limit, because recovery comes first. Provisional start: 5 minutes. Tuned by the experiments.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Time limit, full investigation</td><td>20 minutes (provisional; upper end of 15 to 20). Human approval waits, sandbox tests, and applying the fix are not counted.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Step limit</td><td>30 tool calls for each investigation (provisional; tuned by the experiments).</td><td><span class="L D">Decision</span> <span class="qs">review M7</span></td></tr>
-<tr><td>Cost limit</td><td>10 GPU-minutes for each incident (provisional; tuned by the experiments).</td><td><span class="L D">Decision</span> <span class="qs">review M7</span></td></tr>
+<tr><td>Step limit</td><td>100 tool calls for each investigation (provisional default; tuned by the experiments).</td><td><span class="L D">Decision</span> <span class="qs">review M7; revised 2026-11-21</span></td></tr>
+<tr><td>Cost limit</td><td>Cloud provider (default): USD 10 for each incident. Self-hosted models: 20 GPU-minutes for each incident. Both are provisional; the experiments tune them.</td><td><span class="L D">Decision</span> <span class="qs">review M7; revised 2026-11-21</span></td></tr>
 <tr><td>Recovery first in the queue</td><td>Recovery work (phase 1) pre-empts fix-phase work. A new SEV1 takes the slot of a running fix-phase job. That job pauses and goes back to the queue.</td><td><span class="L D">Decision</span> <span class="qs">review M8</span></td></tr>
 <tr><td>Time limit, fix phase (sandbox tests)</td><td>Not set. Tuned by the experiments.</td><td><span class="L A">Assumption</span> see 2.7</td></tr>
 </table>
@@ -275,26 +275,26 @@ svg .ac{fill:var(--muted)}
 
 <table>
 <tr><th>Item</th><th>V1 position</th><th>Label</th></tr>
-<tr><td>Model hosting</td><td>V1 runs self-hosted open-weight models on our own GPUs. The model interface also supports cloud providers (Anthropic API and OpenAI-compatible APIs) <b>by configuration only</b>: enable or disable, endpoint, key name, model names. No code change. <b>Off by default.</b> Rules: (1) only a platform admin enables it, through a reviewed configuration change, with an audit entry; enabling it is the organization approval of that provider; (2) the API key is kept in the secret store, and the configuration holds only its name; (3) the provider host is added to the outbound allow list; (4) redaction runs before every model call; (5) no automatic fallback to a cloud provider; (6) the reviewer model must differ from the main model, or the platform does not start.</td><td><span class="L D">Decision</span> <span class="qs">revised in Layer 6, 2026-11-14 (Q6.12); replaces "no external model API"</span></td></tr>
+<tr><td>Model hosting</td><td><b>Default: a cloud model provider</b> (Anthropic API or an OpenAI-compatible API). Self-hosted open-weight models on our own GPUs are an option <b>by configuration only</b>: enable or disable, endpoint, key name, model names. No code change. Rules: (1) only a platform admin sets or changes the provider, through a reviewed configuration change, with an audit entry; setting a cloud provider is the organization approval of that provider; (2) the API key is kept in the secret store, and the configuration holds only its name; (3) the provider host is added to the outbound allow list; (4) redaction runs before every model call; (5) no automatic fallback from one provider to another; (6) the reviewer model must differ from the main model, or the platform does not start.</td><td><span class="L D">Decision</span> <span class="qs">revised on 2026-11-21: cloud is the default, self-hosted by configuration. Earlier: Layer 6, 2026-11-14 (Q6.12)</span></td></tr>
 <tr><td>Models</td><td>One main model for the agent. A <b>different</b> model for the reviewer (Artifact 1). The decision model and the embedding model run on CPU.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Custom model</td><td>No custom model. We do not have enough data or past incidents to learn from. General models plus retrieval (RAG) are good enough. Revisit when we have enough learned incidents.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Model interface</td><td>All model access goes through one model interface. A change of model is then a configuration change.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Model quality</td><td>Self-hosted models are good enough for multi-step tool use, for both the agent and the reviewer.</td><td><span class="L A">Assumption</span> L2-A8</td></tr>
-<tr><td>Availability</td><td>The model servers run with high availability (more than one copy).</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Model quality</td><td>The cloud models are good enough for multi-step tool use, for both the agent and the reviewer. Self-hosted models must give the same results on the simulated failures before an admin enables them.</td><td><span class="L A">Assumption</span> L2-A8</td></tr>
+<tr><td>Availability</td><td>The cloud provider gives the availability of its service. Self-hosted model servers run with high availability (more than one copy).</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Monitoring, Git, CI/CD tools</td><td>They push alerts by webhook and expose data by API or MCP. MCP servers exist, or we can write them.</td><td><span class="L A">Assumption</span> L2-A3, L2-A4</td></tr>
 </table>
 
-<h3>When our inference service is not available</h3>
+<h3>When the model service is not available</h3>
 <div class="fig">
 <svg viewBox="0 0 1000 255" role="img" aria-label="Flowchart for an inference failure">
 <defs><marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="f1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="20" y="60" width="150" height="50" rx="6" class="box"/><text x="95" y="82">Incident needs</text><text x="95" y="98">a model call</text>
 <polygon points="330,30 450,85 330,140 210,85" class="uc"/><text x="330" y="80">Main and reviewer</text><text x="330" y="96">model available?</text>
-<rect x="590" y="60" width="200" height="50" rx="6" class="okb"/><text x="690" y="81">Continue the incident</text><text x="690" y="98" class="lbl">high availability: 2+ copies</text>
+<rect x="590" y="60" width="200" height="50" rx="6" class="okb"/><text x="690" y="81">Continue the incident</text><text x="690" y="98" class="lbl">only the configured provider</text>
 <rect x="240" y="180" width="180" height="60" rx="6" class="hum"/><text x="330" y="202" font-weight="600">Halt and escalate</text><text x="330" y="218" class="lbl">to a human, with the alert</text><text x="330" y="232" class="lbl">and the evidence so far</text>
 <rect x="20" y="180" width="180" height="60" rx="6" class="bad"/><text x="110" y="205">CPU fallback</text><text x="110" y="222" class="lbl">not allowed (2.6)</text>
-<rect x="460" y="180" width="200" height="60" rx="6" class="bad"/><text x="560" y="205">Automatic cloud fallback</text><text x="560" y="222" class="lbl">not allowed (2.6)</text>
+<rect x="460" y="180" width="200" height="60" rx="6" class="bad"/><text x="560" y="205">Automatic provider fallback</text><text x="560" y="222" class="lbl">not allowed (2.6)</text>
 </g>
 <g class="ln"><path d="M170,85 H208" marker-end="url(#f1)"/><path d="M450,85 H588" marker-end="url(#f1)"/><path d="M330,140 V178" marker-end="url(#f1)"/></g>
 <path class="badln" d="M330,160 H110 V178" marker-end="url(#f1b)"/><path class="badln" d="M330,160 H560 V178" marker-end="url(#f1b)"/>
@@ -306,9 +306,10 @@ svg .ac{fill:var(--muted)}
 <h3>Assumptions that can change the architecture (Q2.22)</h3>
 <table>
 <tr><th>Assumption</th><th>What breaks if it is false</th></tr>
-<tr><td>The data rule (it can become stricter and forbid hosted tools too)</td><td>All integrations must be internal.</td></tr>
-<tr><td>L2-A8: self-hosted models are good enough</td><td>The agent design (Layer 9) must change, for example to a narrower agent or more fixed workflows. Or the organization enables a cloud provider by configuration (2.5).</td></tr>
-<tr><td>L2-A10: the GPUs have enough capacity</td><td>Concurrency, queueing, and latency.</td></tr>
+<tr><td>The data rule (it can become stricter and forbid hosted tools and cloud models too)</td><td>All integrations must be internal. The admin enables self-hosted models (2.5), and L2-A10 then applies.</td></tr>
+<tr><td>L2-A8: the models are good enough</td><td>The agent design (Layer 9) must change, for example to a narrower agent or more fixed workflows. Or the admin selects a stronger model by configuration (2.5).</td></tr>
+<tr><td>L2-A10: the GPUs have enough capacity (self-hosted only)</td><td>Concurrency, queueing, and latency.</td></tr>
+<tr><td>L2-A14: USD 10 is enough for one incident</td><td>The cost limit, or the choice of cloud models.</td></tr>
 <tr><td>L2-A2: the pipeline can redeploy an earlier version</td><td>The full recovery-first flow.</td></tr>
 <tr><td>B1: the sandbox can reproduce the problem</td><td>The fix phase.</td></tr>
 <tr><td>L2-A4: MCP servers exist</td><td>The integration layer.</td></tr>
@@ -321,12 +322,11 @@ svg .ac{fill:var(--muted)}
 <div class="no"><ol>
 <li><b>Multi-tenancy.</b> It adds tenant isolation, full data isolation, per-tenant access control, more workload and model cost, rate limits, noisy-neighbour problems, queueing, and priority service for premium users. V1 serves one organization.</li>
 <li><b>Languages other than Python.</b></li>
-<li><b>Real incident data.</b> V1 uses sanitized synthetic fixtures only.</li>
-<li><b>A dashboard.</b> V1 has a CLI and an HTTP API.</li>
+<li><b>Real incident data.</b> V1 uses a dummy application with simulated failures only.</li>
 <li><b>Kubernetes.</b> V1 uses Docker.</li>
 <li><b>Microservices for the platform.</b> V1 is a modular monolith.</li>
 <li><b>A custom or fine-tuned model.</b></li>
-<li><b>Automatic fallback to a cloud model API</b>, and any cloud model API that the organization has not enabled. (The adapters exist; they are off by default.)</li>
+<li><b>Automatic fallback from one model provider to another</b>, and any model provider that the organization has not approved.</li>
 <li><b>A CPU fallback for the main or reviewer model.</b> The platform escalates instead.</li>
 </ol></div>
 
@@ -356,12 +356,13 @@ svg .ac{fill:var(--muted)}
 <tr><td>Where the platform credentials are stored (secret store)</td><td>Chirag</td><td>Layer 5</td></tr>
 <tr><td>How MCP write tools are blocked until approval (enforcement outside the agent)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Where the 2 AM approval happens (chat action, API, or CLI)</td><td>Rinisha</td><td>Layer 11</td></tr>
-<tr><td>Which open-weight models (main and reviewer), and GPU sizing</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>Which models (main and reviewer) for the cloud default and for the self-hosted option, and GPU sizing</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>High-availability design for the model servers</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>Buffer size, provisional cap, and the phase 1 and fix-phase time limits</td><td>Irfan, Dhanush</td><td>Layer 10, Layer 8 (from the experiments)</td></tr>
 <tr><td>Platform module boundaries</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>Trigger to move to an orchestrator or to split a module</td><td>Dhanush</td><td>Layer 13</td></tr>
-<tr><td>Which Python web framework the reference app uses</td><td>Dhanush</td><td>Fixtures (Layer 3)</td></tr>
+<tr><td>Which Python web framework the dummy application uses</td><td>Dhanush</td><td>Layer 3</td></tr>
+<tr><td>Dashboard pages and web technology</td><td>Dhanush</td><td>Layer 6, Layer 13</td></tr>
 <tr><td>Sandbox design</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Queue order details and pre-emption</td><td>Dhanush</td><td>Layer 8</td></tr>
 <tr><td>Trigger to revisit a custom model</td><td>Irfan</td><td>Layer 10</td></tr>
@@ -387,34 +388,35 @@ svg .ac{fill:var(--muted)}
 <h3>Assumptions (all provisional)</h3>
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
-<tr><td>L2-A1</td><td>Every Python service has one Git repository and one CI/CD pipeline that can be mapped</td><td>Dhanush</td><td>Layer 3 fixtures</td></tr>
+<tr><td>L2-A1</td><td>Every Python service has one Git repository and one CI/CD pipeline that can be mapped</td><td>Dhanush</td><td>Layer 3 (dummy application)</td></tr>
 <tr><td>L2-A2</td><td>The CI/CD pipeline can redeploy an earlier version on request</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>L2-A3</td><td>Monitoring tools push alert events by webhook and expose data by API or MCP</td><td>Dhanush</td><td>Layer 6</td></tr>
 <tr><td>L2-A4</td><td>MCP servers exist, or can be written, for the monitoring, Git, and CI/CD tools</td><td>Dhanush</td><td>Layer 9 (tool architecture)</td></tr>
-<tr><td>L2-A5</td><td>Synthetic fixtures are realistic enough to evaluate diagnosis</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>L2-A5</td><td>The simulated failures in the dummy application are realistic enough to evaluate diagnosis</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>L2-A6</td><td>Services pass trace context, so a request can be followed across services</td><td>Dhanush</td><td>Layer 3 (observability)</td></tr>
 <tr><td>L2-A7</td><td>The config store has an API or MCP server with read access to its change history, keeps every version, and can restore a previous version</td><td>Dhanush</td><td>Layer 6</td></tr>
-<tr><td>L2-A8</td><td>Self-hosted open-weight models are good enough for the agent and the reviewer</td><td>Irfan</td><td>Layer 10</td></tr>
-<tr><td>L2-A10</td><td>The existing GPUs can hold 2 models &times; 2 copies (high availability) and serve 3 concurrent incidents</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
+<tr><td>L2-A8</td><td>The cloud models are good enough for the agent and the reviewer. Self-hosted open-weight models must match them before they are enabled.</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>L2-A10</td><td>When self-hosted models are enabled, the existing GPUs can hold 2 models &times; 2 copies (high availability) and serve 3 concurrent incidents</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
 <tr><td>L2-A11</td><td>20 minutes is enough for a typical investigation</td><td>Dhanush</td><td>Q2.16 experiments</td></tr>
-<tr><td>L2-A12</td><td>The existing GPUs are reserved for the platform, not shared</td><td>Dhanush</td><td>Before V1 build (Layer 13)</td></tr>
+<tr><td>L2-A12</td><td>When self-hosted models are enabled, the existing GPUs are reserved for the platform, not shared</td><td>Dhanush</td><td>Before V1 build (Layer 13)</td></tr>
 <tr><td>L2-A13</td><td>V1 data volume fits one PostgreSQL instance</td><td>Dhanush</td><td>Q2.16 experiments, Layer 7</td></tr>
+<tr><td>L2-A14</td><td>USD 10 for each incident is enough for incidents A and B with the cloud models</td><td>Irfan</td><td>Q2.16 experiments, Layer 10</td></tr>
 </table>
 
 <h3>Consistency with Artifact 1</h3>
 <table>
 <tr><th>Artifact 1 says</th><th>Artifact 2 adds</th><th>Status</th></tr>
 <tr><td>The platform applies an approved revert or fix (1.5).</td><td>The platform does this only through the CI/CD pipeline or a config-store version restore, after approval. The agent has no production access.</td><td>Refinement. No conflict.</td></tr>
-<tr><td>The reviewer uses a different model (1.5).</td><td>Both models are self-hosted by default. So we host two models. If a cloud provider is enabled, the platform still checks that the two models differ.</td><td>Consistent. GPU sizing must include both.</td></tr>
-<tr><td>A non-production copy proves a fix (B1).</td><td>The copy is a per-incident Docker sandbox with synthetic fixtures.</td><td>Refinement. No conflict.</td></tr>
-<tr><td>Loop limits for time, steps, and cost (B3).</td><td>Provisional values: phase 1 5 minutes, investigation 20 minutes, 30 tool calls, 10 GPU-minutes.</td><td>Provisional values; tune by experiment.</td></tr>
-<tr><td>Cost per incident is an outcome measure (1.6).</td><td>The hardware is fixed, so the cost is measured as GPU time per incident.</td><td>Explicit decision.</td></tr>
+<tr><td>The reviewer uses a different model (1.5).</td><td>Both models come from the configured provider (cloud by default). The platform checks that the two models differ.</td><td>Consistent. With self-hosted models, GPU sizing must include both.</td></tr>
+<tr><td>A non-production copy proves a fix (B1).</td><td>The copy is a per-incident Docker sandbox that runs the dummy application.</td><td>Refinement. No conflict.</td></tr>
+<tr><td>Loop limits for time, steps, and cost (B3).</td><td>Provisional values: phase 1 5 minutes, investigation 20 minutes, 100 tool calls, USD 10 (cloud) or 20 GPU-minutes (self-hosted).</td><td>Provisional values; tune by experiment.</td></tr>
+<tr><td>Cost per incident is an outcome measure (1.6).</td><td>Cost is money per incident with a cloud provider, and GPU time per incident with self-hosted models.</td><td>Explicit decision.</td></tr>
 <tr><td>Secrets are never read (E8).</td><td>Config changes are read from Git diff or the config store, without secret values. Platform credentials are never shown to a model.</td><td>Consistent.</td></tr>
-<tr><td>The baseline comes from past incidents, or a timed manual run (C1).</td><td>V1 has no real incident data.</td><td>Explicit decision: use the timed manual run.</td></tr>
+<tr><td>The baseline comes from past incidents, or a timed manual run (C1).</td><td>V1 has no real incident data.</td><td>Explicit decision: use a timed manual run on the dummy application.</td></tr>
 </table>
 
 <h3>Where Claude and ChatGPT disagreed</h3>
-<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2). Note: in Q2.12, Claude first advised a hosted model API. The team rule "no incident data to a new external party" overruled this. The team decided on self-hosted models.</p>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2). Note: in Q2.12, Claude first advised a hosted model API. The team rule "no incident data to a new external party" overruled this. The team decided on self-hosted models. On 2026-11-21 the team made a cloud provider the default, and kept self-hosted models as a configuration option.</p>
 </main>
 </body>
 </html>

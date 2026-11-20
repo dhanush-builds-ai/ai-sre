@@ -101,11 +101,11 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="820" y="36" width="140" height="82" rx="6" class="hum"/><text x="890" y="58" font-weight="600">Human approver</text><text x="890" y="76" class="lbl">approval gate signs,</text><text x="890" y="92" class="lbl">bound to a hash;</text><text x="890" y="108" class="lbl">agent cannot approve</text>
 <rect x="980" y="36" width="150" height="82" rx="6" class="uc"/><text x="1055" y="58" font-weight="600">Executor</text><text x="1055" y="76" class="lbl">only production writer</text><text x="1055" y="92" class="lbl">checks signature, hash,</text><text x="1055" y="108" class="lbl">expiry, single use</text>
 <rect x="640" y="150" width="180" height="54" rx="6" class="uc"/><text x="730" y="170" font-weight="600">Inference gateway</text><text x="730" y="186" class="lbl">down: halt and escalate</text>
-<rect x="420" y="150" width="190" height="54" rx="6" class="box"/><text x="515" y="170">Self-hosted models</text><text x="515" y="186" class="lbl">on (OpenAI-compatible)</text>
-<rect x="850" y="150" width="130" height="54" rx="6" class="bad" stroke-dasharray="6 4"/><text x="915" y="170">Cloud models</text><text x="915" y="186" class="lbl">off by default</text>
+<rect x="420" y="150" width="190" height="54" rx="6" class="box" stroke-dasharray="6 4"/><text x="515" y="170">Self-hosted models</text><text x="515" y="186" class="lbl">by config (off by default)</text>
+<rect x="850" y="150" width="130" height="54" rx="6" class="box"/><text x="915" y="170">Cloud models</text><text x="915" y="186" class="lbl">default (approved)</text>
 <rect x="20" y="150" width="380" height="54" rx="6" class="okb"/><text x="210" y="167" font-weight="600">Fix path</text><text x="210" y="183" class="lbl">branch and PR; the human approver merges;</text><text x="210" y="196" class="lbl">the pipeline deploys</text>
 <rect x="990" y="144" width="140" height="72" rx="6" class="okb"/><text x="1060" y="161">Pipeline: redeploy</text><text x="1060" y="176" class="lbl">last good artifact,</text><text x="1060" y="192">or config store:</text><text x="1060" y="207" class="lbl">restore a version</text>
-<rect x="20" y="244" width="170" height="86" rx="6" class="uc"/><text x="105" y="266" font-weight="600">API</text><text x="105" y="284" class="lbl">FastAPI, Pydantic</text><text x="105" y="300" class="lbl">ADR-02, ADR-05</text><text x="105" y="316" class="lbl">1 to n copies</text>
+<rect x="20" y="244" width="170" height="86" rx="6" class="uc"/><text x="105" y="266" font-weight="600">API</text><text x="105" y="284" class="lbl">FastAPI, Pydantic</text><text x="105" y="300" class="lbl">ADR-02, 05, 11 (UI)</text><text x="105" y="316" class="lbl">1 to n copies</text>
 <rect x="205" y="244" width="170" height="86" rx="6" class="uc"/><text x="290" y="266" font-weight="600">Worker</text><text x="290" y="284" class="lbl">workflows, agent steps</text><text x="290" y="300" class="lbl">ADR-03, 06, 09 (BM25)</text><text x="290" y="316" class="lbl">1 to n copies</text>
 <rect x="390" y="244" width="170" height="86" rx="6" class="uc"/><text x="475" y="266" font-weight="600">Executor</text><text x="475" y="284" class="lbl">only write tokens</text><text x="475" y="300" class="lbl">ADR-08</text><text x="475" y="316" class="lbl">1 copy</text>
 <rect x="575" y="244" width="170" height="86" rx="6" class="uc"/><text x="660" y="266" font-weight="600">Sandbox runner</text><text x="660" y="284" class="lbl">only Docker access</text><text x="660" y="300" class="lbl">ADR-07</text><text x="660" y="316" class="lbl">1 copy</text>
@@ -124,8 +124,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M800,77 H820" marker-end="url(#c0)"/>
 <path d="M960,77 H980" marker-end="url(#c0)"/>
 <path d="M730,118 V150" marker-end="url(#c0)"/>
-<path d="M640,177 H610" marker-end="url(#c0)"/>
-<path d="M820,177 H850" stroke-dasharray="6 4" marker-end="url(#c0)"/>
+<path d="M640,177 H610" stroke-dasharray="6 4" marker-end="url(#c0)"/>
+<path d="M820,177 H850" marker-end="url(#c0)"/>
 <path d="M1060,118 V144" marker-end="url(#c0)"/>
 </g>
 </svg>
@@ -136,14 +136,14 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <svg viewBox="0 0 1150 460" role="img" aria-label="Context diagram of the AI SRE platform and its neighbours">
 <defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
-<rect x="20" y="40" width="200" height="56" rx="6" class="hum"/><text x="120" y="63">On-call engineer, approver</text><text x="120" y="80" class="lbl">CLI, HTTP API</text>
+<rect x="20" y="40" width="200" height="56" rx="6" class="hum"/><text x="120" y="63">On-call engineer, approver</text><text x="120" y="80" class="lbl">CLI, dashboard, HTTP API</text>
 <rect x="20" y="150" width="200" height="56" rx="6" class="hum"/><text x="120" y="173">Platform admin</text><text x="120" y="190" class="lbl">configuration (reviewed PR)</text>
 <rect x="20" y="260" width="200" height="56" rx="6" class="box"/><text x="120" y="283">Monitoring</text><text x="120" y="300" class="lbl">alert webhook (signed)</text>
 <rect x="420" y="20" width="140" height="50" rx="6" class="box"/><text x="490" y="42">Single sign-on</text><text x="490" y="58" class="lbl">optional (config)</text>
 <rect x="590" y="20" width="140" height="50" rx="6" class="box"/><text x="660" y="42">Secret store</text><text x="660" y="58" class="lbl">platform credentials</text>
 <rect x="400" y="150" width="350" height="130" rx="10" class="uc"/><text x="575" y="195" class="md" font-weight="600">AI SRE platform</text><text x="575" y="218" class="lbl">API, worker, executor, sandbox runner</text><text x="575" y="236" class="lbl">PostgreSQL, Temporal</text>
-<rect x="400" y="350" width="170" height="56" rx="6" class="box"/><text x="485" y="373">Self-hosted models</text><text x="485" y="390" class="lbl">OpenAI-compatible server</text>
-<rect x="590" y="350" width="160" height="56" rx="6" class="bad" stroke-dasharray="6 4"/><text x="670" y="373">Cloud model APIs</text><text x="670" y="390" class="lbl">config: disabled</text>
+<rect x="400" y="350" width="170" height="56" rx="6" class="box" stroke-dasharray="6 4"/><text x="485" y="373">Self-hosted models</text><text x="485" y="390" class="lbl">config: disabled</text>
+<rect x="590" y="350" width="160" height="56" rx="6" class="box"/><text x="670" y="373">Cloud model API</text><text x="670" y="390" class="lbl">default, approved</text>
 <rect x="900" y="30" width="220" height="50" rx="6" class="okb"/><text x="1010" y="52">CI/CD pipeline</text><text x="1010" y="68" class="lbl">redeploy, deploy merged fix</text>
 <rect x="900" y="100" width="220" height="50" rx="6" class="okb"/><text x="1010" y="122">Config store</text><text x="1010" y="138" class="lbl">restore a version</text>
 <rect x="900" y="185" width="220" height="50" rx="6" class="box"/><text x="1010" y="207">Git host</text><text x="1010" y="223" class="lbl">read code, push branch, open PR</text>
@@ -156,8 +156,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M220,288 H310 V250 H400" marker-end="url(#c1)"/>
 <path d="M490,70 V150" marker-end="url(#c1)"/>
 <path d="M660,70 V150" marker-end="url(#c1)"/>
-<path d="M485,280 V350" marker-end="url(#c1)"/>
-<path d="M670,280 V350" stroke-dasharray="6 4" marker-end="url(#c1)"/>
+<path d="M485,280 V350" stroke-dasharray="6 4" marker-end="url(#c1)"/>
+<path d="M670,280 V350" marker-end="url(#c1)"/>
 <path d="M750,165 H820 V55 H900" marker-end="url(#c1)"/>
 <path d="M820,125 H900" marker-end="url(#c1)"/>
 <path d="M750,210 H900" marker-end="url(#c1)" marker-start="url(#c1)"/>
@@ -171,21 +171,21 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="812" y="95" text-anchor="end">write only:</text><text x="812" y="109" text-anchor="end">executor, after</text><text x="812" y="123" text-anchor="end">signed approval</text>
 <text x="770" y="204">read, branch, PR</text>
 <text x="842" y="292">read only</text>
-<text x="500" y="320">inference</text>
-<text x="680" y="320">off by default</text>
-<text x="590" y="426" text-anchor="start">Cloud edge: enabled only by a platform admin through a reviewed config change;</text><text x="590" y="442" text-anchor="start">key in secret store, host on allow list, redaction before each call</text>
+<text x="500" y="320">off by default</text>
+<text x="680" y="320">inference</text>
+<text x="590" y="426" text-anchor="start">Cloud edge (default): a provider that a platform admin set through a reviewed config change;</text><text x="590" y="442" text-anchor="start">key in secret store, host on allow list, redaction before each call</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 2. Context diagram. Green = the only two ways to change production. Dashed red = off by default (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
+<p class="cap">Figure 2. Context diagram. Green = the only two ways to change production. Dashed = off by default: self-hosted models are an option by configuration (A2 2.5, A5 SC-24). The platform never merges a pull request; the human approver merges it.</p>
 <table>
 <tr><th>Neighbour</th><th>What crosses</th><th>Direction</th><th>Label</th></tr>
-<tr><td>On-call engineer, approver</td><td>Incidents, approvals, stop and take-over, timeline queries</td><td>In</td><td><span class="L F">Fixed</span> A2 2.3 (CLI, HTTP API, no dashboard)</td></tr>
+<tr><td>On-call engineer, approver</td><td>Incidents, approvals, stop and take-over, timeline queries</td><td>In</td><td><span class="L F">Fixed</span> A2 2.3 (CLI, HTTP API, dashboard; revised 2026-11-21)</td></tr>
 <tr><td>Monitoring</td><td>Signed alert webhook (Q6.9)</td><td>In</td><td><span class="L F">Fixed</span> A2 2.1; A5 SC-02</td></tr>
 <tr><td>Evidence sources, Git host</td><td>Read-only queries (Q6.14). A branch and a pull request for a fix.</td><td>Out (read)</td><td><span class="L F">Fixed</span> A5 SC-06, SC-07</td></tr>
 <tr><td>CI/CD pipeline, config store</td><td>Approved actions from the executor only (Q6.19)</td><td>Out (write)</td><td><span class="L F">Fixed</span> A2 2.3, A4 FR-12</td></tr>
-<tr><td>Self-hosted models</td><td>Redacted prompts, structured outputs (Q6.12)</td><td>Out and back</td><td><span class="L F">Fixed</span> A2 2.5</td></tr>
-<tr><td>Cloud model APIs</td><td>Nothing unless a platform admin enables a provider (Q6.12)</td><td>Off</td><td><span class="L D">Decision</span> revises A2 2.1, 2.5</td></tr>
+<tr><td>Cloud model API (default)</td><td>Redacted prompts, structured outputs (Q6.12)</td><td>Out and back</td><td><span class="L F">Fixed</span> A2 2.5 (revised 2026-11-21)</td></tr>
+<tr><td>Self-hosted models</td><td>Nothing unless a platform admin enables them (Q6.12)</td><td>Off</td><td><span class="L F">Fixed</span> A2 2.5 (revised 2026-11-21)</td></tr>
 <tr><td>Chat, pager</td><td>Notifications and escalations, also when the database is down</td><td>Out</td><td><span class="L D">Decision</span> (A4 NFR-03)</td></tr>
 </table>
 
@@ -197,9 +197,9 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <svg viewBox="0 0 1150 580" role="img" aria-label="Container diagram: four platform processes, PostgreSQL, Temporal and external systems">
 <defs><marker id="c2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="sm">
-<rect x="10" y="50" width="150" height="46" rx="6" class="hum"/><text x="85" y="70">Engineer</text><text x="85" y="86" class="lbl">CLI (Typer)</text>
+<rect x="10" y="50" width="150" height="46" rx="6" class="hum"/><text x="85" y="70">Engineer</text><text x="85" y="86" class="lbl">CLI (Typer), browser</text>
 <rect x="10" y="115" width="150" height="46" rx="6" class="box"/><text x="85" y="135">Monitoring</text><text x="85" y="151" class="lbl">webhook</text>
-<rect x="200" y="55" width="190" height="92" rx="6" class="uc"/><text x="295" y="76" font-weight="600">API</text><text x="295" y="94" class="lbl">FastAPI, Pydantic</text><text x="295" y="110" class="lbl">intake, approvals, queries</text><text x="295" y="126" class="lbl">signing key; notifier</text><text x="295" y="141" class="lbl">1 to n copies</text>
+<rect x="200" y="55" width="190" height="92" rx="6" class="uc"/><text x="295" y="76" font-weight="600">API</text><text x="295" y="94" class="lbl">FastAPI, Pydantic</text><text x="295" y="110" class="lbl">intake, approvals, dashboard</text><text x="295" y="126" class="lbl">signing key; notifier</text><text x="295" y="141" class="lbl">1 to n copies</text>
 <rect x="450" y="60" width="190" height="80" rx="6" class="fx"/><text x="545" y="88" font-weight="600">PostgreSQL</text><text x="545" y="106" class="lbl">incidents, waiting queue,</text><text x="545" y="122" class="lbl">audit record; Temporal DB</text>
 <rect x="700" y="55" width="190" height="92" rx="6" class="uc"/><text x="795" y="76" font-weight="600">Executor</text><text x="795" y="94" class="lbl">only writer to production</text><text x="795" y="110" class="lbl">task queue "executor"</text><text x="795" y="126" class="lbl">holds the write tokens</text><text x="795" y="141" class="lbl">1 copy</text>
 <rect x="950" y="55" width="190" height="42" rx="6" class="okb"/><text x="1045" y="81">CI/CD pipeline</text>
@@ -208,8 +208,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="450" y="250" width="190" height="80" rx="6" class="box"/><text x="545" y="278" font-weight="600">Temporal server</text><text x="545" y="296" class="lbl">durable workflows,</text><text x="545" y="312" class="lbl">timers, task queues</text>
 <rect x="700" y="245" width="190" height="92" rx="6" class="uc"/><text x="795" y="266" font-weight="600">Sandbox runner</text><text x="795" y="284" class="lbl">only container with Docker</text><text x="795" y="300" class="lbl">task queue "sandbox"</text><text x="795" y="316" class="lbl">returns a test report</text><text x="795" y="331" class="lbl">1 copy</text>
 <rect x="10" y="260" width="150" height="60" rx="6" class="box"/><text x="85" y="283">Evidence sources</text><text x="85" y="299" class="lbl">and Git host</text>
-<rect x="200" y="440" width="190" height="70" rx="6" class="box"/><text x="295" y="468" font-weight="600">Model server</text><text x="295" y="486" class="lbl">self-hosted, OpenAI-compatible</text>
-<rect x="10" y="440" width="150" height="70" rx="6" class="bad" stroke-dasharray="6 4"/><text x="85" y="468">Cloud model APIs</text><text x="85" y="486" class="lbl">config: disabled</text>
+<rect x="200" y="440" width="190" height="70" rx="6" class="box" stroke-dasharray="6 4"/><text x="295" y="468" font-weight="600">Model server</text><text x="295" y="486" class="lbl">self-hosted: config, off</text>
+<rect x="10" y="440" width="150" height="70" rx="6" class="box"/><text x="85" y="468">Cloud model API</text><text x="85" y="486" class="lbl">default, approved</text>
 <rect x="450" y="440" width="190" height="70" rx="6" class="fx"/><text x="545" y="468" font-weight="600">Artifact volume</text><text x="545" y="486" class="lbl">logs, diffs, test output</text>
 <rect x="700" y="440" width="190" height="70" rx="6" class="bad"/><text x="795" y="468" font-weight="600">Sandboxes</text><text x="795" y="486" class="lbl">one per incident, no network</text>
 </g>
@@ -226,8 +226,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M700,290 H640" marker-end="url(#c2)" marker-start="url(#c2)"/>
 <path d="M745,147 L620,250" marker-start="url(#c2)" marker-end="url(#c2)"/>
 <path d="M200,290 H160" marker-end="url(#c2)" marker-start="url(#c2)"/>
-<path d="M295,337 V440" marker-end="url(#c2)"/>
-<path d="M230,337 L130,440" stroke-dasharray="6 4" marker-end="url(#c2)"/>
+<path d="M295,337 V440" stroke-dasharray="6 4" marker-end="url(#c2)"/>
+<path d="M230,337 L130,440" marker-end="url(#c2)"/>
 <path d="M370,337 L480,440" marker-end="url(#c2)"/>
 <path d="M795,337 V440" marker-end="url(#c2)"/>
 </g>
@@ -240,12 +240,12 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <text x="670" y="282" text-anchor="middle">poll</text>
 <text x="706" y="200">poll</text>
 <text x="163" y="282">read;</text><text x="163" y="306">PR</text>
-<text x="303" y="390">inference</text>
-<text x="190" y="400">off</text>
+<text x="303" y="390">off</text>
+<text x="190" y="400">inference</text>
 <text x="440" y="390">blobs</text>
 <text x="803" y="390">create, run, destroy</text>
 </g>
-<text x="20" y="548" class="lbl">The notifier (in the API and the worker) posts directly to the chat or pager webhook, also when the database is down (A4 NFR-03).</text><text x="20" y="566" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). This is not a product dashboard (A2 2.3).</text>
+<text x="20" y="548" class="lbl">The notifier (in the API and the worker) posts directly to the chat or pager webhook, also when the database is down (A4 NFR-03).</text><text x="20" y="566" class="lbl">All containers send OpenTelemetry signals to Prometheus. Grafana shows them to the platform's operators (Q6.31). The product dashboard is separate: the API serves it (ADR-11).</text>
 </svg>
 </div>
 <p class="cap">Figure 3. Container diagram. Blue = platform processes from one image. Purple = data stores. The executor and the sandbox runner are Temporal workers on their own task queues, so the worker never calls them directly.</p>
@@ -331,10 +331,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="605" y="70" width="250" height="44" rx="6" class="uc"/><text x="730" y="89">Policy gate</text><text x="730" y="104" class="lbl">fixed rules (L9), patch checks (L11)</text>
 <rect x="605" y="140" width="250" height="44" rx="6" class="uc"/><text x="730" y="159">Verifier</text><text x="730" y="174" class="lbl">Q6.20; plain code; L11</text>
 <rect x="605" y="250" width="250" height="44" rx="6" class="uc"/><text x="730" y="269">Inference gateway</text><text x="730" y="284" class="lbl">Q6.12; budget, retries, halt; L10</text>
-<rect x="605" y="330" width="120" height="44" rx="6" class="box"/><text x="665" y="349">OpenAI-compat.</text><text x="665" y="364" class="lbl">adapter: on</text>
-<rect x="735" y="330" width="120" height="44" rx="6" class="box" stroke-dasharray="6 4"/><text x="795" y="349">Anthropic</text><text x="795" y="364" class="lbl">adapter: off</text>
-<rect x="605" y="395" width="120" height="40" rx="6" class="box"/><text x="665" y="419">Self-hosted</text>
-<rect x="735" y="395" width="120" height="40" rx="6" class="bad" stroke-dasharray="6 4"/><text x="795" y="419">Cloud (off)</text>
+<rect x="605" y="330" width="120" height="44" rx="6" class="box" stroke-dasharray="6 4"/><text x="665" y="349">OpenAI-compat.</text><text x="665" y="364" class="lbl">adapter: config</text>
+<rect x="735" y="330" width="120" height="44" rx="6" class="box"/><text x="795" y="349">Anthropic</text><text x="795" y="364" class="lbl">adapter: on</text>
+<rect x="605" y="395" width="120" height="40" rx="6" class="box" stroke-dasharray="6 4"/><text x="665" y="419">Self-hosted</text>
+<rect x="735" y="395" width="120" height="40" rx="6" class="box"/><text x="795" y="419">Cloud (default)</text>
 <rect x="915" y="70" width="200" height="56" rx="6" class="uc"/><text x="1015" y="93">Executor</text><text x="1015" y="110" class="lbl">Q6.19; signature, hash; L11</text>
 <rect x="915" y="210" width="200" height="56" rx="6" class="uc"/><text x="1015" y="233">Sandbox runner</text><text x="1015" y="250" class="lbl">Q6.17; test report only; L11</text>
 <rect x="35" y="510" width="200" height="50" rx="6" class="fx"/><text x="135" y="532">Incident store</text><text x="135" y="548" class="lbl">Q6.10; L7</text>
@@ -351,10 +351,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <path d="M555,302 H580 V272 H605" marker-end="url(#c3)"/>
 <path d="M555,372 H590 V285 H605" marker-end="url(#c3)"/>
 <path d="M555,92 H605" marker-end="url(#c3)"/>
-<path d="M665,294 V330" marker-end="url(#c3)"/>
-<path d="M795,294 V330" stroke-dasharray="6 4" marker-end="url(#c3)"/>
-<path d="M665,374 V395" marker-end="url(#c3)"/>
-<path d="M795,374 V395" stroke-dasharray="6 4" marker-end="url(#c3)"/>
+<path d="M665,294 V330" stroke-dasharray="6 4" marker-end="url(#c3)"/>
+<path d="M795,294 V330" marker-end="url(#c3)"/>
+<path d="M665,374 V395" stroke-dasharray="6 4" marker-end="url(#c3)"/>
+<path d="M795,374 V395" marker-end="url(#c3)"/>
 </g>
 <g class="sm"><text x="905" y="330" font-weight="600">Owner of each module</text>
 <text x="905" y="350" class="lbl">L = layer that designs it</text>
@@ -400,11 +400,11 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>ORM</td><td>SQLAlchemy</td><td>Accept</td><td>Incident store</td><td>Q6.24</td></tr>
 <tr><td>Migrations</td><td>Alembic</td><td>Accept; expand first, contract later</td><td>Incident store</td><td>Q6.25</td></tr>
 <tr><td>Workflow engine</td><td>Temporal</td><td>Accept; waiting queue stays in PostgreSQL</td><td>Workflow orchestrator</td><td>Q6.26</td></tr>
-<tr><td>Model providers</td><td>Claude and Tinker</td><td><b>Replace:</b> self-hosted open-weight models behind an OpenAI-compatible server; Anthropic adapter present, off by default. Tinker is a fine-tuning service, and A2 excludes fine-tuned models in V1.</td><td>Inference gateway</td><td>Q6.27, Q6.28</td></tr>
+<tr><td>Model providers</td><td>Claude and Tinker</td><td><b>Accept Claude</b> (revised 2026-11-21): the Anthropic adapter with the approved cloud provider is the V1 default. Self-hosted open-weight models behind an OpenAI-compatible server are an option by configuration. <b>Replace Tinker:</b> it is a fine-tuning service, and A2 excludes fine-tuned models in V1.</td><td>Inference gateway</td><td>Q6.27, Q6.28</td></tr>
 <tr><td>Retrieval</td><td>BM25</td><td>Accept; PostgreSQL full-text search or in the process</td><td>Knowledge retriever</td><td>Q6.29</td></tr>
 <tr><td>Execution</td><td>Restricted sandbox</td><td>Accept: hardened Docker container (A5 SC-17)</td><td>Sandbox runner</td><td>Q6.30</td></tr>
 <tr><td>Metrics</td><td>Prometheus</td><td>Accept</td><td>Platform telemetry</td><td>Q6.31</td></tr>
-<tr><td>Dashboard</td><td>Grafana</td><td>Accept, for the platform's operators only</td><td>Platform telemetry</td><td>Q6.31</td></tr>
+<tr><td>Dashboard</td><td>Grafana</td><td>Accept, for the platform's operators only. The product dashboard for engineers is ADR-11.</td><td>Platform telemetry</td><td>Q6.31</td></tr>
 <tr><td>Tracing</td><td>OpenTelemetry</td><td>Accept</td><td>Platform telemetry</td><td>Q6.31</td></tr>
 <tr><td>Development environment</td><td>Docker Compose</td><td>Accept</td><td>All processes</td><td>Q6.32</td></tr>
 <tr><td>Dependency management</td><td>uv</td><td>Accept</td><td>All processes</td><td>Q6.32</td></tr>
@@ -413,6 +413,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <table>
 <tr><th>Responsibility</th><th>Selection</th><th>Label</th></tr>
 <tr><td>CLI</td><td>Typer, a thin client over the HTTP API</td><td><span class="L D">Decision</span> Q6.23</td></tr>
+<tr><td>Dashboard</td><td>Server-rendered pages from the API process (Jinja2 templates, htmx); live timeline over SSE (A7 7.9). No separate frontend build.</td><td><span class="L D">Decision</span> ADR-11</td></tr>
 <tr><td>Model adapters</td><td>Own internal schema; two thin adapters on the official <code>openai</code> and <code>anthropic</code> SDKs</td><td><span class="L D">Decision</span> Q6.28</td></tr>
 <tr><td>Artifact store</td><td>A filesystem Docker volume in V1</td><td><span class="L A">Assumption</span> L6-A3</td></tr>
 <tr><td>Secret store</td><td>HashiCorp Vault, or the organization's existing store</td><td><span class="L A">Assumption</span> L5-A2</td></tr>
@@ -439,11 +440,12 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>ADR-03</td><td>Workflows must survive crashes and wait up to 24 h for approval (A4 NFR-02, QR-05).</td><td>Temporal for workflows. PostgreSQL holds the waiting queue; an admission loop starts workflows (ID = incident ID). No Celery or RQ.</td><td>One more server (Temporal), with its state in the same PostgreSQL server. Layer 8 designs the workflows.</td><td>Accepted</td><td>Q6.26</td></tr>
 <tr><td>ADR-04</td><td>Records and transactions; several engineers change the schema.</td><td>PostgreSQL, SQLAlchemy, Alembic. Migrations expand first and contract later.</td><td>Old and new containers can run together during a deploy.</td><td>Accepted</td><td>Q6.24, Q6.25</td></tr>
 <tr><td>ADR-05</td><td>HTTP endpoints and strict input validation.</td><td>FastAPI and Pydantic; a Typer CLI over the same API.</td><td>One code path for the CLI and the API.</td><td>Accepted</td><td>Q6.23</td></tr>
-<tr><td>ADR-06</td><td>V1 uses self-hosted models. The team also wants cloud providers without code changes.</td><td>One inference gateway with an internal schema and two adapters (OpenAI-compatible, Anthropic). Self-hosted on; cloud off by default. Enabling a cloud provider follows A5 SC-24.</td><td><b>Revises A2</b> (no external model API). Two adapters to maintain. No automatic fallback.</td><td>Accepted</td><td>Q6.12, Q6.27, Q6.28</td></tr>
+<tr><td>ADR-06</td><td>V1 uses a cloud model provider by default (revised 2026-11-21). The team also wants self-hosted models without code changes.</td><td>One inference gateway with an internal schema and two adapters (Anthropic, OpenAI-compatible). Default: the Anthropic adapter with the approved provider. Self-hosted models use the OpenAI-compatible adapter, by configuration. A provider change follows A5 SC-24.</td><td>Two adapters to maintain. No automatic fallback. Each call costs money, so the budget has a money limit (A2 2.4).</td><td>Accepted (revised 2026-11-21)</td><td>Q6.12, Q6.27, Q6.28</td></tr>
 <tr><td>ADR-07</td><td>AI-generated code must run in isolation; Docker access is close to root on the host.</td><td>A separate sandbox runner container, the only one with Docker access. Hardened containers (A5 SC-17).</td><td>The worker cannot reach the host. gVisor is the upgrade (Layer 11).</td><td>Accepted</td><td>Q6.30, Q6.38</td></tr>
 <tr><td>ADR-08</td><td>Only one component may change production (A5 SC-15).</td><td>A separate executor container, a Temporal worker on its own task queue. It holds the only write credentials.</td><td>A fault in the worker cannot use write credentials.</td><td>Accepted</td><td>Q6.3, Q6.19</td></tr>
 <tr><td>ADR-09</td><td>Runbook retrieval in V1.</td><td>BM25 keyword search; no vector database.</td><td>No new service. Layer 10 confirms the method.</td><td>Accepted</td><td>Q6.29</td></tr>
-<tr><td>ADR-10</td><td>Operators must see the platform's health.</td><td>OpenTelemetry, Prometheus, Grafana (operators only). Docker Compose and uv for development.</td><td>No product dashboard is added (A2 2.3).</td><td>Accepted</td><td>Q6.31, Q6.32</td></tr>
+<tr><td>ADR-10</td><td>Operators must see the platform's health.</td><td>OpenTelemetry, Prometheus, Grafana (operators only). Docker Compose and uv for development.</td><td>Grafana is for operators only. The product dashboard is ADR-11.</td><td>Accepted</td><td>Q6.31, Q6.32</td></tr>
+<tr><td>ADR-11</td><td>Engineers need a dashboard (A2 2.3, revised 2026-11-21).</td><td>The API process serves server-rendered pages (Jinja2 templates, htmx). The pages call the same HTTP API, with the same login and roles. The live timeline uses SSE (A7 7.9). Security rules: A5 SC-26.</td><td>One image, one code path, no Node toolchain. A rich client-side UI is not possible without a later change.</td><td>Accepted</td><td>Q6.23</td></tr>
 </table></div>
 
 <!-- ============ 6.6 ============ -->
@@ -481,10 +483,10 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <rect x="370" y="260" width="160" height="70" rx="6" class="box"/><text x="450" y="290" font-weight="600">Temporal</text>
 <rect x="550" y="260" width="160" height="70" rx="6" class="uc"/><text x="630" y="285" font-weight="600">Executor</text><text x="630" y="302" class="lbl">key: pipeline and</text><text x="630" y="316" class="lbl">config-store write tokens</text>
 <rect x="770" y="70" width="160" height="60" rx="6" class="bad"/><text x="850" y="96">Sandboxes</text><text x="850" y="112" class="lbl">no network, dummy creds</text>
-<rect x="960" y="150" width="160" height="60" rx="6" class="bad"/><text x="1040" y="176">Model server</text><text x="1040" y="192" class="lbl">output is untrusted</text>
+<rect x="960" y="150" width="160" height="60" rx="6" class="bad"/><text x="1040" y="176">Cloud model API</text><text x="1040" y="192" class="lbl">default; output untrusted</text>
 <rect x="770" y="285" width="160" height="60" rx="6" class="okb"/><text x="850" y="311">Pipeline,</text><text x="850" y="326">config store</text>
 <rect x="960" y="285" width="160" height="60" rx="6" class="box"/><text x="1040" y="311">Evidence sources,</text><text x="1040" y="326">Git host</text>
-<rect x="770" y="370" width="160" height="50" rx="6" class="bad" stroke-dasharray="6 4"/><text x="850" y="393">Cloud model APIs</text><text x="850" y="408" class="lbl">off by default</text>
+<rect x="770" y="370" width="160" height="50" rx="6" class="box" stroke-dasharray="6 4"/><text x="850" y="393">Self-hosted models</text><text x="850" y="408" class="lbl">by config; off by default</text>
 <rect x="960" y="370" width="160" height="50" rx="6" class="box"/><text x="1040" y="393">SSO (optional), secrets</text>
 </g>
 <g class="ln">
@@ -575,7 +577,8 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <tr><td>Temporal (ADR-03)</td><td>PostgreSQL queue with our own state machine</td><td>We would build timers, resume, retries and cancellation ourselves</td><td>One more server to run</td><td>Temporal operation costs more than it saves at V1 load</td></tr>
 <tr><td>Temporal (ADR-03)</td><td>Celery or RQ</td><td>A second queue and a broker; weak durability for 24 h waits</td><td>—</td><td>—</td></tr>
 <tr><td>Own thin adapters (ADR-06)</td><td>A large multi-provider library</td><td>A large dependency for two adapters</td><td>We maintain two adapters</td><td>More than two provider APIs are needed</td></tr>
-<tr><td>Self-hosted first (ADR-06)</td><td>Cloud model as the default</td><td>Data rule: no unapproved external party (A2 2.1)</td><td>GPU sizing and model quality risk (L2-A8)</td><td>Layer 10 shows the self-hosted models are not good enough</td></tr>
+<tr><td>Cloud model as the default (ADR-06, revised 2026-11-21)</td><td>Self-hosted first</td><td>GPU sizing, serving work and model quality risk (L2-A8) before V1 can run</td><td>Redacted incident data goes to the approved provider; each call costs money (USD 10 limit for each incident)</td><td>The organization does not accept the provider terms, or the cost per incident is too high: enable self-hosted models</td></tr>
+<tr><td>Server-rendered dashboard (ADR-11)</td><td>A separate single-page app</td><td>A second build and toolchain for a small set of pages</td><td>Limited client-side interaction</td><td>The pages need rich interaction</td></tr>
 <tr><td>BM25 (ADR-09)</td><td>A vector database</td><td>A new service before we know keyword search fails</td><td>Lower recall on paraphrased runbooks</td><td>Retrieval tests show misses (Layer 10)</td></tr>
 <tr><td>Filesystem artifact store</td><td>Object storage (MinIO, S3)</td><td>A new service for one host</td><td>No access from a second host</td><td>More than one Docker host</td></tr>
 </table></div>
@@ -608,6 +611,7 @@ svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-
 <table>
 <tr><th>Earlier artifact says</th><th>Artifact 6 decides</th><th>Status</th></tr>
 <tr><td>A2 2.1, 2.5 (original): no external model API.</td><td>ADR-06: cloud providers by configuration, off by default; rules in A5 SC-24.</td><td><b>Explicit decision</b> (Q6.12). A2, A5 and AGENTS.md were updated on 2026-11-14.</td></tr>
+<tr><td>A2 2.3, 2.5 (revised 2026-11-21): a cloud provider by default, self-hosted models by configuration; a web dashboard.</td><td>ADR-06 revised; ADR-11 added; Figures 1, 2, 3, 5 and 6 updated.</td><td>Consistent.</td></tr>
 <tr><td>A2 Q2.10: modular monolith.</td><td>ADR-01: four process types from one image.</td><td>Consistent. Adds the process split.</td></tr>
 <tr><td>A4 NFR-02, NFR-07, QR-07: checkpoints, concurrency, queue limit.</td><td>ADR-03: Temporal plus a PostgreSQL waiting queue and an admission loop.</td><td>Consistent. Layer 8 designs the details.</td></tr>
 <tr><td>A4 NFR-03: notify humans when the database is down.</td><td>Notifier posts directly to the chat or pager webhook.</td><td>Consistent.</td></tr>

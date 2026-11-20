@@ -228,7 +228,7 @@ pre code{border:0;padding:0;background:none}
 <tr class="grp"><td colspan="5">Incident workflow</td></tr>
 <tr><td>set_status</td><td>incident (worker)</td><td>incident.status, version; event</td><td>none</td><td>Compare-and-set on <code>incident.version</code>; the same target state is a no-op.</td></tr>
 <tr><td>collect_evidence</td><td>incident (worker)</td><td>tool_call, evidence, artifact; event</td><td>read from a source</td><td>Reads only. A rerun adds a new tool_call; the workflow uses the recorded result.</td></tr>
-<tr><td>investigate</td><td>incident (worker)</td><td>model_call, budget_entry, tool_call, evidence, hypothesis; event</td><td>model requests through the inference gateway; read tool calls through the tool layer (A9 9.4)</td><td>No outside effect; the cost is tokens and reads. Each model request and tool call is its own activity (A9 9.1). Each attempt is recorded (Q8.11).</td></tr>
+<tr><td>investigate</td><td>incident (worker)</td><td>model_call, budget_entry, tool_call, evidence, hypothesis; event</td><td>model requests through the inference gateway; read tool calls through the tool layer (A9 9.4)</td><td>No outside effect; the cost is tokens (money with the cloud provider, GPU time with self-hosted models) and reads. Each model request and tool call is its own activity (A9 9.1). Each attempt is recorded (Q8.11).</td></tr>
 <tr><td>diagnose</td><td>incident (worker)</td><td>model_call, budget_entry, diagnosis; event</td><td>model request through the inference gateway</td><td>Same as investigate, with no tools.</td></tr>
 <tr><td>critic_review</td><td>incident (worker)</td><td>model_call, check_result (critic); event</td><td>model call (other model)</td><td>Same as diagnose.</td></tr>
 <tr><td>propose_action</td><td>incident (worker)</td><td>action, patch; event</td><td>fix only: branch and pull request on the Git host</td><td>Branch name contains the action ID; an existing branch or pull request is reused.</td></tr>
@@ -533,7 +533,7 @@ pre code{border:0;padding:0;background:none}
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Versioning (Q8.23)</td><td>Small change: <code>workflow.patched</code> keeps the old path for runs that started on it. Large change: a new type (<code>IncidentWorkflowV2</code>); old runs finish on the old code, which stays in the image until none remain.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Replay test</td><td>CI saves the histories of fixture runs. Every change to workflow code replays them; a non-determinism error fails the build.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Replay test</td><td>CI saves the histories of simulation runs on the dummy application. Every change to workflow code replays them; a non-determinism error fails the build.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Deploy</td><td>Workers stop after their running tasks. New workers replay running workflows. Old and new database schemas work together (A6 ADR-04).</td><td><span class="L F">Fixed requirement</span> A6 ADR-04</td></tr>
 <tr><td>Execution history for people (Q8.7)</td><td>The <code>event</code> table shows which steps finished, with time and actor. Temporal history is for platform operators only.</td><td><span class="L F">Fixed requirement</span> A7 Q7.53</td></tr>
 </table>
@@ -633,7 +633,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
 <tr><td>L8-A1</td><td>An incident workflow and one child per action stay well under Temporal's history limits (about 50 MB or 51,200 events) when activities return IDs and hashes only</td><td>Dhanush</td><td>Layer 12-B load test: largest history size and event count</td></tr>
 <tr><td>L8-A2</td><td>The limit for an unknown production outcome (pipeline run timeout + 2 min; config restore 2 min) is long enough to see a real result</td><td>Rinisha</td><td>Layer 11 executor design; fault test with a slow pipeline</td></tr>
-<tr><td>L8-A3</td><td>The timeout and attempt values in section 8.5 fit V1 sources, models and the sandbox</td><td>Rinisha</td><td>Layer 12-B: measured on fixtures</td></tr>
+<tr><td>L8-A3</td><td>The timeout and attempt values in section 8.5 fit V1 sources, models and the sandbox</td><td>Rinisha</td><td>Layer 12-B: measured on the dummy application</td></tr>
 <tr><td>L6-A1</td><td>Temporal, with its state in PostgreSQL, runs reliably at V1 load on one host</td><td>Dhanush</td><td>Layer 12-B workflow fault tests</td></tr>
 </table>
 <h3>Consistency with Artifacts 4, 6 and 7</h3>
@@ -654,7 +654,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>Evidence threshold detail for <code>diagnosed</code>; fixer retry loop after a failed sandbox run</td><td>Dhanush</td><td>Closed in Artifact 9 (sections 9.7, 9.9)</td></tr>
 <tr><td>Executor dispatch details; fix merge detection; unknown-outcome limit (L8-A2)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Timeout values (L8-A3); history size (L8-A1); queued-age and schedule-to-start alert routing</td><td>Rinisha, Dhanush</td><td>Layer 12-A, 12-B</td></tr>
-<tr><td>Replay test fixtures</td><td>Irfan</td><td>Layer 12-D</td></tr>
+<tr><td>Replay test histories</td><td>Irfan</td><td>Layer 12-D</td></tr>
 <tr><td>PostgreSQL backup and restore (shared with Temporal)</td><td>Dhanush</td><td>Layer 12-C</td></tr>
 </table>
 <h3>Where Claude and ChatGPT disagreed</h3>

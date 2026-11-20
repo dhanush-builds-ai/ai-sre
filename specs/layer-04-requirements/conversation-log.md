@@ -41,6 +41,7 @@ Focus: separate what the system does from how well it must do it. Every requirem
 | Q4.32 | C | (this session) | Approval validity: **revert 30 min** (then re-check signals and ask again); **permanent fix 24 h** (open PR). Backup approver asked after **10 min (SEV1) / 15 min (others)**. Silence is never approval (provisional). Must. | Final values — Rinisha, Layer 11 | Quantified |
 | Q4.33 | C | (this session) | Token caps per incident, starting values: **200k input tokens, 64k output tokens** (team set output default to 64k); **32k context per call**. Final value = measured baseline × 1.5 (provisional). Must. | Depends on the chosen model's context size — Irfan, Layer 10 | Quantified |
 | Q4.34 | C | (this session) | **3 active** investigations (A2), **queue up to 20**; when full, new incidents go straight to humans ("not processed by the platform"), never dropped (provisional). Must. | None | Quantified |
+| Review 2026-11-21: A2 changes | C | (this session) | Validation method "Fixture test" renamed "Simulation test" (an incident simulated in the dummy application). NFR-06: USD 10 (cloud) or 20 GPU-minutes (self-hosted), 100 tool calls. FR-01 and FR-15 add the dashboard. QR-03 and QR-07 rationale no longer assume own GPUs. Still 34 requirements. (Dhanush, 2026-11-21) | — | 4.5, 4.6, register, Appendix |
 
 ## Assumptions (all provisional)
 

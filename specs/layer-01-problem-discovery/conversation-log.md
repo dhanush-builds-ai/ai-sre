@@ -12,6 +12,7 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 | Q1.20–Q1.22 (Section D) | C | (this session) | See "Decisions D" below | See "Open unknowns / assumptions D" below | 1.3, 1.4, 1.5 |
 | Review of Artifact 1 (affects Q1.11, Q1.12, Q1.13, Q1.15, Q1.16, Q1.18, Q1.19, Q1.20, Q1.21, Q1.22) | C | (this session) | See "Decisions R" below | See "Open unknowns R" below | 1.1–1.7 |
 | Review 2026-11-21: failures with no change to revert (Q1.11, Q1.21, Q1.22) | C | (this session) | **Decision (Dhanush):** a failure that no recent change explains (out of memory, network fault, failed dependency) gets a diagnosis, a recommended recovery action (for example restart or more memory) and an escalation. A human carries out the recovery. V1 keeps 2 write actions: no restart, scale or resize. A resource increase goes through the permanent-fix path. Fig 3 now shows step 1 (the deployment). | Recommended-action field in the diagnosis and the A9 recovery-map rule for a non-change cause: Dhanush, Layers 7 and 9 | 1.3, 1.5, 1.7, Fig 1, Fig 3 |
+| Review 2026-11-21: demonstration data (Q1.21) | C | (this session) | **Decision (Dhanush):** the demonstration, the tests and the baseline run use a dummy application with simulated failures. No real incident data. Layer 1 still names no technology. | — | 1.6, Appendix |
 
 ### Decisions A
 

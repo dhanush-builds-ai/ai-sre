@@ -126,7 +126,7 @@ svg .ac{fill:var(--muted)}
 <rect x="800" y="222" width="146" height="70" rx="5" class="bad"/><text x="873" y="242">cannot be</text><text x="873" y="258">established</text><text x="873" y="274">(memory hint weak)</text>
 <rect x="952" y="222" width="146" height="70" rx="5" class="hum"/><text x="1025" y="242">Escalate at once</text><text x="1025" y="258">human investigates</text><text x="1025" y="274">by hand</text>
 </g>
-<text x="40" y="316" class="lbl">Green = cause found. Red = evidence missing or no cause. Yellow = a human decides. Each row is one synthetic fixture (L3-A4).</text>
+<text x="40" y="316" class="lbl">Green = cause found. Red = evidence missing or no cause. Yellow = a human decides. Each row is one failure simulated in the dummy app (L3-A4).</text>
 </svg>
 </div>
 <p class="cap">Figure 1. The three incidents at a glance. Each row follows one incident from the alert to the action. In A and B the evidence points to one change. In C the evidence is missing, so the platform escalates.</p>
@@ -330,7 +330,7 @@ svg .ac{fill:var(--muted)}
 <text x="115" y="250" class="lbl">Time runs left to right (not to scale). Purple = change. Red = errors start. Yellow = alert. Green = mitigation that a human approves.</text>
 </svg>
 </div>
-<p class="cap">Figure 4. Timeline of each incident. Each incident is an independent fixture with its own versions. In A and B a change comes just before the errors, and undoing it is the mitigation. In C there is no change to link, so a human takes over.</p>
+<p class="cap">Figure 4. Timeline of each incident. Each incident is an independent simulated failure in the dummy application, with its own versions. In A and B a change comes just before the errors, and undoing it is the mitigation. In C there is no change to link, so a human takes over.</p>
 
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
@@ -430,7 +430,7 @@ svg .ac{fill:var(--muted)}
 <rect x="830" y="102" width="260" height="50" rx="6" class="bad"/><text x="960" y="124">Incident commander</text><text x="960" y="140" class="lbl">SEV1: coordinates, does not fix</text>
 <rect x="10" y="202" width="340" height="40" rx="5" class="bad"/><text x="180" y="226">every source checked, no hypothesis passes</text>
 <rect x="380" y="202" width="340" height="40" rx="5" class="bad"/><text x="550" y="226">the evidence conflicts</text>
-<rect x="750" y="202" width="340" height="40" rx="5" class="bad"/><text x="920" y="219">loop limit reached (Artifact 2)</text><text x="920" y="235" class="lbl">20 min, tool calls or cost</text>
+<rect x="750" y="202" width="340" height="40" rx="5" class="bad"/><text x="920" y="219">loop limit reached (Artifact 2)</text><text x="920" y="235" class="lbl">20 min, 100 tool calls, or cost</text>
 <rect x="10" y="250" width="340" height="40" rx="5" class="bad"/><text x="180" y="267">deploy had a database migration</text><text x="180" y="283" class="lbl">rollback not safe: escalate</text>
 <rect x="380" y="250" width="340" height="40" rx="5" class="bad"/><text x="550" y="267">errors continue after revert or rollback</text><text x="550" y="283" class="lbl">escalate</text>
 <rect x="750" y="250" width="340" height="40" rx="5" class="bad"/><text x="920" y="267">a source is down: evidence incomplete</text><text x="920" y="283" class="lbl">lower confidence; escalate if critical source missing</text>
@@ -472,10 +472,10 @@ svg .ac{fill:var(--muted)}
 <h3>Assumptions (all provisional)</h3>
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
-<tr><td>L3-A1</td><td>The reference app is a Python web app behind a load balancer and reverse proxy, with a database</td><td>Dhanush</td><td>When the fixtures are built</td></tr>
-<tr><td>L3-A2</td><td>Rough SLO and severity values (section 3.1)</td><td>Dhanush</td><td>Layer 4 (quantified requirements); tune on fixtures</td></tr>
+<tr><td>L3-A1</td><td>The reference app is a Python web app behind a load balancer and reverse proxy, with a database</td><td>Dhanush</td><td>When the dummy application is built</td></tr>
+<tr><td>L3-A2</td><td>Rough SLO and severity values (section 3.1)</td><td>Dhanush</td><td>Layer 4 (quantified requirements); tune on the simulated failures</td></tr>
 <tr><td>L3-A3</td><td>Rough escalation path and times (Figure 6)</td><td>Rinisha</td><td>Layer 11</td></tr>
-<tr><td>L3-A4</td><td>Incidents A, B, and C are realistic enough to be the V1 synthetic fixtures</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>L3-A4</td><td>Incidents A, B, and C, simulated in the dummy application, are realistic enough for V1</td><td>Irfan</td><td>Layer 12</td></tr>
 </table>
 
 <h3>Open items</h3>
@@ -490,10 +490,10 @@ svg .ac{fill:var(--muted)}
 <h3>Validation status of earlier assumptions due in Layer 3</h3>
 <table>
 <tr><th>Assumption</th><th>Status after Layer 3</th></tr>
-<tr><td>L2-A6: services pass trace context</td><td>True for <code>shop-api</code> in the fixtures. <b>Deliberately false for <code>orders</code></b>: Incident C tests missing telemetry. Real world: open.</td></tr>
-<tr><td>A1 A2: alerts carry the rule, the limit, and an initial severity</td><td>Validated for the fixtures (section 3.1). Real world: open.</td></tr>
-<tr><td>L2-A1: one Git repository and one pipeline per service</td><td>Validated for the fixtures (<code>shop-api</code>, <code>orders</code>). Real world: open.</td></tr>
-<tr><td>A1 E1: the on-call schedule can be read</td><td>Still open. Add an on-call schedule to the fixtures (Dhanush).</td></tr>
+<tr><td>L2-A6: services pass trace context</td><td>True for <code>shop-api</code> in the dummy application. <b>Deliberately false for <code>orders</code></b>: Incident C tests missing telemetry. Real world: open.</td></tr>
+<tr><td>A1 A2: alerts carry the rule, the limit, and an initial severity</td><td>Validated for the dummy application (section 3.1). Real world: open.</td></tr>
+<tr><td>L2-A1: one Git repository and one pipeline per service</td><td>Validated for the dummy application (<code>shop-api</code>, <code>orders</code>). Real world: open.</td></tr>
+<tr><td>A1 E1: the on-call schedule can be read</td><td>Still open. Add an on-call schedule to the dummy application setup (Dhanush).</td></tr>
 </table>
 
 <h3>Consistency with Artifacts 1 and 2</h3>
@@ -504,7 +504,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>A1: Type 1 (cannot be undone) actions are not allowed.</td><td>A rollback after a database migration may not be safe.</td><td><b>Finding forwarded as a constraint</b> to Layer 4 and Layer 11 (Rinisha): a rollback across a database migration can be a Type 1 action, so it must be escalated, not proposed.</td></tr>
 <tr><td>A1: initial severity comes from the alert.</td><td>Rough SEV levels and thresholds (L3-A2).</td><td>Consistent.</td></tr>
 <tr><td>A2: Python only; distributed systems supported; traces in scope.</td><td>All three incidents are Python services; <code>orders</code> is a downstream service; traces are used in A and B.</td><td>Consistent.</td></tr>
-<tr><td>A2: sanitized synthetic fixtures only.</td><td>Incidents A, B, and C become the fixtures (L3-A4).</td><td>Consistent.</td></tr>
+<tr><td>A2 (revised 2026-11-21): a dummy application with simulated failures.</td><td>The dummy application has the services <code>shop-api</code> and <code>orders</code>. Incidents A, B, and C are the simulated failures (L3-A4).</td><td>Consistent.</td></tr>
 <tr><td>A2: investigation limit 20 minutes.</td><td>Used as an escalation trigger (section 3.10).</td><td>Consistent.</td></tr>
 </table>
 

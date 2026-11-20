@@ -150,17 +150,17 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <path d="M625,245 L700,185" marker-end="url(#a1)"/></g>
 <g class="dash"><path d="M625,262 L700,250" marker-end="url(#a1)"/><path d="M645,350 H700" marker-end="url(#a1)"/></g>
 <g text-anchor="middle" class="md">
-<rect x="700" y="60" width="280" height="150" rx="8" class="uc"/><text x="840" y="86" font-weight="600">Inference service</text><text x="840" y="102" class="lbl">existing GPUs, 2 models &#215; 2 copies</text>
+<rect x="700" y="60" width="280" height="150" rx="8" class="uc"/><text x="840" y="86" font-weight="600">Cloud model provider (default)</text><text x="840" y="102" class="lbl">approved by the organization (10.3)</text>
 <rect x="715" y="120" width="120" height="50" rx="6" class="box"/><text x="775" y="150">Main model</text>
 <rect x="845" y="120" width="120" height="50" rx="6" class="box"/><text x="905" y="150">Reviewer model</text>
 <text x="785" y="190" class="lbl">investigator, diagnoser, fixer</text><text x="915" y="190" class="lbl">critic</text>
-<rect x="700" y="225" width="280" height="62" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="840" y="248">Cloud model APIs: off by default</text><text x="840" y="266" class="lbl">any cloud host (Anthropic, OpenAI-compatible)</text><text x="840" y="280" class="lbl">needs an admin and a second admin</text>
-<rect x="700" y="302" width="280" height="100" rx="8" class="bad"/><text x="840" y="323" font-weight="600">Escalates to a person when</text><text x="840" y="341" class="lbl">budget is short &#183; deadline has passed</text><text x="840" y="357" class="lbl">3 bad outputs &#183; the model refused</text><text x="840" y="373" class="lbl">inference is down</text><text x="840" y="389" class="lbl">(no CPU fallback, no cloud fallback)</text>
+<rect x="700" y="225" width="280" height="62" rx="8" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="840" y="248">Self-hosted models: off by default</text><text x="840" y="266" class="lbl">existing GPUs, 2 models &#215; 2 copies</text><text x="840" y="280" class="lbl">enable: an admin and a second admin</text>
+<rect x="700" y="302" width="280" height="100" rx="8" class="bad"/><text x="840" y="323" font-weight="600">Escalates to a person when</text><text x="840" y="341" class="lbl">budget is short &#183; deadline has passed</text><text x="840" y="357" class="lbl">3 bad outputs &#183; the model refused</text><text x="840" y="373" class="lbl">inference is down</text><text x="840" y="389" class="lbl">(no CPU fallback, no provider fallback)</text>
 </g>
 <rect x="20" y="430" width="960" height="146" rx="8" class="box"/>
 <text x="36" y="452" class="md" font-weight="600">Starting limits (the experiments tune them)</text>
 <g class="sm">
-<text x="36" y="474">For each incident: 30 model requests &#183; 30 tool calls &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens &#183; 32k context for each call</text>
+<text x="36" y="474">For each incident: 30 model requests &#183; 100 tool calls &#183; USD 10 (cloud) or 20 GPU-min (self-hosted) &#183; 200k in, 64k out tokens &#183; 32k context per call</text>
 <text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model call = min(60 s, time left), then 1 retry</text>
 <text x="36" y="510">Loop: up to 3 investigator rounds &#183; up to 2 revisions &#183; up to 3 output attempts for bad output &#183; 3 duplicate calls stop an agent</text>
 <text x="36" y="528">Incident admission (a separate limit, before the gateway): 3 active incidents &#183; queue of 20</text>
@@ -168,45 +168,46 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 </g>
 </svg>
 </div>
-<p class="cap">Figure 1. Layer 10 at a glance. Four agent roles call one gateway. The gateway reserves budget, waits for a model slot, calls the model, checks the output, and records the usage. The default model service is self-hosted. Cloud models are off. The platform escalates to a person when the budget is short, the deadline has passed, output is bad 3 times, the model refuses, or inference is down.</p>
+<p class="cap">Figure 1. Layer 10 at a glance. Four agent roles call one gateway. The gateway reserves budget, waits for a model slot, calls the model, checks the output, and records the usage. The default model service is one cloud provider that the organization approved. Self-hosted models are an option by configuration. The platform escalates to a person when the budget is short, the deadline has passed, output is bad 3 times, the model refuses, or inference is down.</p>
 
 <!-- ============ 10.1 ============ -->
 <h2><span class="sec">10.1</span>Provider capability matrix</h2>
 <p class="qs">Answers: Q10.1, Q10.2, Q10.3, Q10.4, Q10.5, Q10.6, Q10.7, Q10.8, Q10.22, Q10.24</p>
-<p>Artifact 2 sets the hosting model for V1. The platform runs self-hosted open-weight models on the existing GPUs. The gateway can also call a cloud provider, but only when an administrator enables it (see 10.3).</p>
+<p>Artifact 2 sets the hosting model for V1 (revised 2026-11-21). By default, the platform calls one cloud model provider that the organization approved (see 10.3). Self-hosted open-weight models on the existing GPUs are an option by configuration.</p>
 <table>
 <tr><th>Item</th><th>V1 rule</th><th>Label</th></tr>
 <tr><td>Model type</td><td>Every model is a decoder-only transformer LLM. It predicts the next token, adds it to the input, and repeats until a stop token or the token limit.</td><td><span class="L A">Assumption</span> L10-A1</td></tr>
-<tr><td>Data location</td><td>Incident data must not go to an external party that the organization has not approved. Default: no cloud model provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.1, Q2.12)</span></td></tr>
-<tr><td>Hosting</td><td>Self-hosted open-weight models on the organization's existing GPUs, with high availability. The team runs the serving software.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
-<tr><td>Cloud providers</td><td>The gateway supports the Anthropic API and OpenAI-compatible APIs by configuration only. They are off by default.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (2.5), Artifact 6 (ADR-06)</span></td></tr>
+<tr><td>Data location</td><td>Incident data must not go to an external party that the organization has not approved. Default: one approved cloud model provider. Redaction runs before every call.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.1, Q2.12)</span></td></tr>
+<tr><td>Hosting</td><td>Default: a cloud provider through the Anthropic adapter (10.3). The gateway also supports OpenAI-compatible cloud APIs by configuration.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (2.5), Artifact 6 (ADR-06), revised 2026-11-21</span></td></tr>
+<tr><td>Self-hosted option</td><td>Self-hosted open-weight models on the organization's existing GPUs, with high availability, by configuration only. The team then runs the serving software. Off by default.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (2.5), revised 2026-11-21</span></td></tr>
 <tr><td>Custom model</td><td>None in V1.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (Q2.11)</span></td></tr>
-<tr><td>Fallback</td><td>No CPU fallback. No automatic fallback to a cloud provider. If the main or reviewer model is down, the platform halts and escalates (see 10.7).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5), Artifact 4 (NFR-12)</span></td></tr>
+<tr><td>Fallback</td><td>No CPU fallback. No automatic fallback from one provider to another. If the main or reviewer model is down, the platform halts and escalates (see 10.7).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5), Artifact 4 (NFR-12)</span></td></tr>
 <tr><td>One model for each role</td><td>The settings hold one model for each role: investigator, diagnoser, critic, fixer, and embedding. The critic model must differ from the diagnoser model and from the fixer model. The settings API returns 409 if it does not.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (platform_setting), Artifact 9 (9.2)</span></td></tr>
 <tr><td>Main model and reviewer model</td><td>The investigator, the diagnoser, and the fixer may use the same main model. The critic uses the reviewer model. The platform does not start if the two are equal.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (Q9.19), Artifact 5 (SC-24)</span></td></tr>
 <tr><td>Decision model</td><td>Not used in V1. It stays a candidate. Layer 10 does not host it now.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (9.10)</span></td></tr>
 <tr><td>Embedding model</td><td>Runs on CPU. It is added only if retrieval misses documents because of wording (see 10.9).</td><td><span class="L A">Assumption</span> L10-A9</td></tr>
 <tr><td>Model and provider</td><td>These are two separate fields. The platform records both, with the exact model version, on every request and result. The provider field says: self-hosted, Anthropic, or OpenAI-compatible cloud.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Model name</td><td>The application uses an internal model name. A configuration maps it to the server and the model ID.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Model choice and GPU sizing</td><td><b>Open.</b> The team decides together. Size the GPUs for 2 models and 2 high-availability copies of each.</td><td><span class="L A">Assumption</span> L2-A8, L2-A10, L6-A2</td></tr>
+<tr><td>Model choice and GPU sizing</td><td><b>Open.</b> The team decides together: the cloud models for the default, and the open-weight models for the self-hosted option. For the self-hosted option, size the GPUs for 2 models and 2 high-availability copies of each.</td><td><span class="L A">Assumption</span> L2-A8, L2-A10, L6-A2</td></tr>
 </table>
 
 <h3>Who runs what (Q10.4, Q10.6)</h3>
 <table>
-<tr><th>Task</th><th>V1 default: self-hosted (our team)</th><th>If a cloud provider is enabled</th></tr>
-<tr><td>GPUs and drivers</td><td>Team, on existing hardware. No new GPU spend.</td><td>Provider</td></tr>
-<tr><td>Serving software and patches</td><td>Team</td><td>Provider</td></tr>
-<tr><td>Scaling and capacity</td><td>Team. 3 active incidents, queue of 20.</td><td>Provider</td></tr>
-<tr><td>High availability</td><td>Team. More than one copy of each model server.</td><td>Provider, under an SLA</td></tr>
-<tr><td>Monitoring and uptime</td><td>Team</td><td>Provider</td></tr>
+<tr><th>Task</th><th>V1 default: cloud provider</th><th>If self-hosted models are enabled (our team)</th></tr>
+<tr><td>GPUs and drivers</td><td>Provider</td><td>Team, on existing hardware. No new GPU spend.</td></tr>
+<tr><td>Serving software and patches</td><td>Provider</td><td>Team</td></tr>
+<tr><td>Scaling and capacity</td><td>Provider. The platform keeps 3 active incidents and a queue of 20.</td><td>Team. 3 active incidents, queue of 20.</td></tr>
+<tr><td>High availability</td><td>Provider, under an SLA</td><td>Team. More than one copy of each model server.</td></tr>
+<tr><td>Monitoring and uptime</td><td>Provider; the team watches errors and latency at the gateway</td><td>Team</td></tr>
 <tr><td>Gateway, budget, and output checks</td><td>Team</td><td>Team</td></tr>
-<tr><td>Choice of model and version</td><td>Team</td><td>Team</td></tr>
-<tr><td>Where incident data goes</td><td>Stays inside the organization</td><td>Leaves, to the approved provider only</td></tr>
+<tr><td>Choice of model and version</td><td>Team, from the versions the provider offers</td><td>Team</td></tr>
+<tr><td>Where incident data goes</td><td>Leaves, redacted, to the approved provider only</td><td>Stays inside the organization</td></tr>
+<tr><td>Cost</td><td>Money for each call: USD 10 limit for each incident</td><td>GPU time: 20 GPU-minutes limit for each incident</td></tr>
 </table>
-<p><b>Own GPUs at small volume (Q10.7).</b> A small volume does not justify an own GPU cluster by cost. Only control needs justify it. There are five such needs. Data must not leave the organization. A custom model needs a host that no provider offers. The team needs strict control of model versions. The latency or the network has special needs. A firm plan exists for a large, steady volume. V1 meets the first need. Artifact 2 also uses GPUs that the organization already owns.</p>
+<p><b>Own GPUs at small volume (Q10.7).</b> A small volume does not justify an own GPU cluster by cost. Only control needs justify it. There are five such needs. Data must not leave the organization. A custom model needs a host that no provider offers. The team needs strict control of model versions. The latency or the network has special needs. A firm plan exists for a large, steady volume. V1 does not meet these needs by default, so the default is a cloud provider. An organization that must keep data inside enables the self-hosted option on GPUs that it already owns.</p>
 
 <h3>Serving engine candidates (Q10.8)</h3>
-<p>V1 needs a serving engine that runs two models on the existing GPUs. The engine must manage GPU memory and batch requests. It must offer an OpenAI-compatible HTTP interface, because the gateway adapter uses it (L6-A2). The KV cache saves compute time. It uses GPU memory. It does not save memory.</p>
+<p>The self-hosted option needs a serving engine that runs two models on the existing GPUs. The engine must manage GPU memory and batch requests. It must offer an OpenAI-compatible HTTP interface, because the gateway adapter uses it (L6-A2). The KV cache saves compute time. It uses GPU memory. It does not save memory.</p>
 <table>
 <tr><th>Engine</th><th>Key features</th><th>Note</th></tr>
 <tr><td>vLLM</td><td>Paged KV cache memory (PagedAttention). Continuous batching. Prefix caching. An OpenAI-compatible HTTP server with tool-call parsers for many model families.</td><td>Main candidate.</td></tr>
@@ -217,7 +218,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p>The team must choose the engine by a benchmark on its own traffic. Published speed claims are not enough.</p>
 
 <h3>Capability matrix for the candidate models (Q10.22, Q10.24)</h3>
-<p>Artifact 2 sets the hard constraints. The models must be open-weight. They must run on the existing GPUs with room for 2 models, 2 copies, and 3 concurrent incidents (L2-A10). They must support multi-step tool use (L2-A8). If a cloud provider is enabled, the matrix compares it on the same dimensions.</p>
+<p>Artifact 2 sets the hard constraints. Every model must support multi-step tool use (L2-A8). The cloud models of the default provider and the open-weight models of the self-hosted option use the same matrix. Open-weight models must also run on the existing GPUs with room for 2 models, 2 copies, and 3 concurrent incidents (L2-A10).</p>
 <table>
 <tr><th>Dimension</th><th>Why it matters</th><th>Main model candidate</th><th>Reviewer model candidate</th></tr>
 <tr><td>Quality on our tasks</td><td>From the evaluation results (Layer 12)</td><td>Open</td><td>Open</td></tr>
@@ -226,8 +227,8 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Separate reasoning tokens</td><td>A model without them gets an optional reasoning field (Artifact 9, 9.1)</td><td>Open</td><td>Open</td></tr>
 <tr><td>Streaming</td><td>Time to first token</td><td>Open</td><td>Open</td></tr>
 <tr><td>Context window and maximum output</td><td>Limits for context assembly (10.11) and token caps (10.5)</td><td>Open</td><td>Open</td></tr>
-<tr><td>GPU memory and GPU time per call</td><td>Capacity for 3 concurrent incidents</td><td>Open</td><td>Open</td></tr>
-<tr><td>Version pinning</td><td>We hold the weights, so we pin the exact version</td><td>Open</td><td>Open</td></tr>
+<tr><td>Price per call (cloud), or GPU memory and GPU time per call (self-hosted)</td><td>The cost limit and capacity for 3 concurrent incidents</td><td>Open</td><td>Open</td></tr>
+<tr><td>Version pinning</td><td>Cloud: pin a dated model version. Self-hosted: we hold the weights, so we pin the exact version</td><td>Open</td><td>Open</td></tr>
 <tr><td>License</td><td>The license must allow our use</td><td>Open</td><td>Open</td></tr>
 </table>
 
@@ -249,22 +250,22 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="235" y="265" width="210" height="46" rx="6" class="box"/><text x="340" y="285">Timeout and deadline</text><text x="340" y="301" class="lbl">retries: Temporal (10.7)</text>
 <rect x="235" y="330" width="210" height="46" rx="6" class="zo"/><text x="340" y="350">Tinker adapter</text><text x="340" y="366" class="lbl">not in V1 (10.4)</text>
 <rect x="475" y="70" width="210" height="46" rx="6" class="box"/><text x="580" y="90">Validator</text><text x="580" y="106" class="lbl">schema, tool requests</text>
-<rect x="475" y="135" width="210" height="46" rx="6" class="uc"/><text x="580" y="155">OpenAI-compatible adapter</text><text x="580" y="171" class="lbl">self-hosted default</text>
-<rect x="475" y="200" width="210" height="46" rx="6" class="zo"/><text x="580" y="220">Anthropic adapter</text><text x="580" y="236" class="lbl">off by default (10.3)</text>
+<rect x="475" y="135" width="210" height="46" rx="6" class="uc"/><text x="580" y="155">Anthropic adapter</text><text x="580" y="171" class="lbl">cloud default (10.3)</text>
+<rect x="475" y="200" width="210" height="46" rx="6" class="zo"/><text x="580" y="220">OpenAI-compatible adapter</text><text x="580" y="236" class="lbl">by config: self-hosted</text>
 <rect x="475" y="265" width="210" height="46" rx="6" class="box"/><text x="580" y="285">Capability matrix</text><text x="580" y="301" class="lbl">checks the required features</text>
 <rect x="475" y="330" width="210" height="46" rx="6" class="box"/><text x="580" y="350">model_call record</text><text x="580" y="366" class="lbl">provenance of every call</text>
-<rect x="765" y="110" width="215" height="150" rx="8" class="uc"/><text x="872" y="136" font-weight="600">Inference service</text><text x="872" y="152" class="lbl">serving engine, existing GPUs</text>
+<rect x="765" y="110" width="215" height="150" rx="8" class="uc"/><text x="872" y="136" font-weight="600">Cloud model provider</text><text x="872" y="152" class="lbl">default; approved (10.3)</text>
 <rect x="780" y="170" width="90" height="50" rx="6" class="box"/><text x="825" y="200">Main model</text>
 <rect x="880" y="170" width="90" height="50" rx="6" class="box"/><text x="925" y="190">Reviewer</text><text x="925" y="206">model</text>
-<rect x="765" y="305" width="215" height="110" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="872" y="328" font-weight="600">Cloud model APIs: off</text><text x="872" y="346" class="lbl">any cloud host = cloud (10.3):</text><text x="872" y="360" class="lbl">admin + second admin enable it</text><text x="872" y="374" class="lbl">key in the secret store</text><text x="872" y="388" class="lbl">host on the allow list</text><text x="872" y="402" class="lbl">redaction before every call</text>
+<rect x="765" y="305" width="215" height="110" rx="8" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="872" y="328" font-weight="600">Self-hosted models: off</text><text x="872" y="346" class="lbl">serving engine, existing GPUs</text><text x="872" y="360" class="lbl">2 models &#215; 2 copies</text><text x="872" y="374" class="lbl">admin + second admin enable it</text><text x="872" y="388" class="lbl">20 GPU-minutes per incident</text><text x="872" y="402" class="lbl">redaction before every call</text>
 </g>
 <g class="ln"><path d="M170,205 H215" marker-end="url(#g1)"/><path d="M685,158 H765" marker-end="url(#g1)"/></g>
 <g class="dash"><path d="M215,230 H170" marker-end="url(#g1)"/><path d="M685,235 L765,360" marker-end="url(#g1)"/></g>
-<text x="780" y="282" class="lbl">High availability: more than one copy</text>
+<text x="770" y="275" class="lbl">key in secret store, host on allow list,</text><text x="770" y="289" class="lbl">USD 10 per incident</text>
 <text x="30" y="462" class="lbl">The agents have one path to a model. Redaction runs before every model call (Artifact 5, SC-09).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Component diagram of the inference gateway. The agents see one contract. The adapters hide the model server. Dashed parts are off by default or not in V1. Any cloud host follows the cloud rules.</p>
+<p class="cap">Figure 2. Component diagram of the inference gateway. The agents see one contract. The adapters hide the model server. Dashed parts are off by default or not in V1. Every cloud host follows the cloud rules (10.3).</p>
 
 <h3>Who owns what (Q10.9)</h3>
 <table>
@@ -278,7 +279,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 
 <h3>Adapter rules (Q10.10, Q10.11, Q10.12)</h3>
 <ul>
-<li>The gateway has two thin adapters, on the official OpenAI and Anthropic SDKs (Artifact 6, Q6.28). Each implements the contract. The OpenAI-compatible adapter also serves the self-hosted engine.</li>
+<li>The gateway has two thin adapters, on the official OpenAI and Anthropic SDKs (Artifact 6, Q6.28). Each implements the contract. The Anthropic adapter serves the default cloud provider. The OpenAI-compatible adapter serves the self-hosted engine or an OpenAI-compatible cloud host.</li>
 <li>All server-specific code stays in the adapter. This includes client calls, authentication, formats, error types, and model IDs.</li>
 <li>The agent must not import server-specific code.</li>
 <li>The adapter converts every response to the internal structure. A tool request has an id, a tool name, and parsed arguments.</li>
@@ -326,7 +327,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>incident_id, step, role, attempt</td><td>incident_id, step, role, attempt</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>provenance: provider, model name and version</td><td>integration_id, model_name, model_version</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>prompt version, input hash</td><td>prompt_version, input_hash</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
-<tr><td>usage</td><td>input_tokens, output_tokens (GPU seconds go to the budget ledger)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>usage</td><td>input_tokens, output_tokens (money or GPU seconds go to the budget ledger)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>timing</td><td>latency_ms</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>content, stop reason, raw response</td><td>output_artifact_id, output_hash</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>raw request (redacted)</td><td>request_artifact_id (new column, A7 change)</td><td><span class="L D">Decision</span> <span class="qs">Appendix C</span></td></tr>
@@ -349,7 +350,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Arguments</td><td>They must match the input model. The window must end before now and last at most 2 hours. Limits and query length stay under their maximums.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 <tr><td>Service scope</td><td>Only the incident's service and its declared dependencies.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4), Artifact 5 (SC-05)</span></td></tr>
 <tr><td>Duplicates</td><td>A duplicate returns the recorded result with no outside call. Three duplicates in one run stop the agent.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4, 9.10)</span></td></tr>
-<tr><td>Result</td><td>A rejected call gets status <code>rejected</code>, a reason, and the event tool.rejected. It counts toward the 30 tool calls. A valid result is redacted, marked untrusted, and returned as a short summary.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>Result</td><td>A rejected call gets status <code>rejected</code>, a reason, and the event tool.rejected. It counts toward the 100 tool calls. A valid result is redacted, marked untrusted, and returned as a short summary.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 </table>
 <p>Agents have read tools only. A proposed action is not a tool call. It becomes an action record, and the policy gate checks it (Layer 11).</p>
 
@@ -420,20 +421,20 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <!-- ============ 10.3 ============ -->
 <h2><span class="sec">10.3</span>Claude adapter</h2>
 <p class="qs">Answers: Q10.5, Q10.11, Q10.12</p>
-<div class="note"><b>Status: present, off by default.</b> This is the Anthropic adapter. It lets the gateway call the Claude models through the Anthropic API. Artifact 2 (2.5) allows it by configuration only. The platform makes no cloud connection in the default configuration.</div>
+<div class="note"><b>Status: the V1 default (revised 2026-11-21).</b> This is the Anthropic adapter. It lets the gateway call the Claude models through the Anthropic API. Artifact 2 (2.5) makes a cloud provider the default. The organization approves the provider at setup.</div>
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Scope</td><td>The rules below apply to every integration with <code>hosting = cloud</code>. This includes an OpenAI-compatible cloud host, not only the Anthropic API.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24)</span></td></tr>
 <tr><td>Role</td><td>The adapter implements the gateway contract (10.2) on the official Anthropic SDK. It converts the request and the response, maps stop reasons and tool requests, and returns usage.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6 (Q6.28)</span></td></tr>
-<tr><td>Configuration</td><td>Enable or disable, endpoint, key name, model names. No code change.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
-<tr><td>Rule 1</td><td>Only a platform admin enables it, through a reviewed configuration change, with an audit entry. A second admin approves the change. This is the organization approval of that provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24), Artifact 7 (API checks)</span></td></tr>
+<tr><td>Configuration</td><td>Provider, endpoint, key name, model names. No code change.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
+<tr><td>Rule 1</td><td>Only a platform admin sets or changes the provider, through a reviewed configuration change, with an audit entry. A second admin approves the change. This is the organization approval of that provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24), Artifact 7 (API checks)</span></td></tr>
 <tr><td>Rule 2</td><td>The API key is in the secret store. The configuration holds only its name.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24)</span></td></tr>
 <tr><td>Rule 3</td><td>The provider host is on the outbound allow list.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-08, SC-24)</span></td></tr>
 <tr><td>Rule 4</td><td>Redaction runs before every model call.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-09)</span></td></tr>
-<tr><td>Rule 5</td><td>No automatic fallback to the cloud. If a cloud provider is enabled, it is a chosen model. It is not a backup.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
+<tr><td>Rule 5</td><td>No automatic fallback from one provider to another. The configured provider is a chosen model. Another provider is not a backup.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
 <tr><td>Rule 6</td><td>The critic model must differ from the diagnoser model and from the fixer model. If not, the platform does not start.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24), Artifact 9 (9.2)</span></td></tr>
-<tr><td>Budget</td><td>Token caps apply to every model (Artifact 4, QR-06). A cloud call uses no GPU. The ledger records its cost as kind <code>money</code> (Artifact 7, budget_entry).</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Tests</td><td>The default configuration makes no connection to a cloud host. Stopping the self-hosted models escalates the incident. Equal models stop the start.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (ST-17)</span></td></tr>
+<tr><td>Budget</td><td>Token caps apply to every model (Artifact 4, QR-06). A cloud call uses no GPU. The ledger records its cost as kind <code>money</code> (Artifact 7, budget_entry). Limit: USD 10 for each incident (Artifact 2, 2.4).</td><td><span class="L D">Decision</span> <span class="qs">revised 2026-11-21</span></tr>
+<tr><td>Tests</td><td>The default configuration connects only to the configured provider host. Blocking that host escalates the incident. Equal models stop the start.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (ST-17)</span></td></tr>
 </table>
 
 <h3>Claude and Tinker compared (Q10.5)</h3>
@@ -441,16 +442,16 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><th>Criterion</th><th>Claude</th><th>Tinker</th></tr>
 <tr><td>Job</td><td>Inference: run a ready model and return tokens.</td><td>Training: fine-tune an open-weight model. It also offers sampling.</td></tr>
 <tr><td>Who runs what</td><td>The provider runs a closed model on its GPUs.</td><td>We write the training loop locally. Tinker runs the heavy training on its GPUs.</td></tr>
-<tr><td>Where data goes</td><td>To the provider, only if an admin enables it</td><td>To Tinker, for training data</td></tr>
+<tr><td>Where data goes</td><td>To the approved provider, redacted</td><td>To Tinker, for training data</td></tr>
 <tr><td>Cost model</td><td>Pay per token</td><td>Pay for training and storage</td></tr>
-<tr><td>V1 status</td><td>Adapter present, off by default</td><td>Not used (no custom model)</td></tr>
+<tr><td>V1 status</td><td>Default adapter</td><td>Not used (no custom model)</td></tr>
 </table>
 <p>The two services do different jobs. They are not substitutes. A future comparison must use the same criteria and the same test set. Check the current Tinker documents before any later use.</p>
 
 <!-- ============ 10.4 ============ -->
 <h2><span class="sec">10.4</span>Tinker adapter</h2>
 <p class="qs">Answers: Q10.5, Q10.11</p>
-<div class="no"><b>Status: not used in V1.</b> Tinker is a fine-tuning service. Artifact 2 says V1 has no custom or fine-tuned model (Q2.11). Artifact 6 replaces Tinker with self-hosted open-weight models behind an OpenAI-compatible server (Q6.27). The section keeps the worksheet name. It records this decision.</div>
+<div class="no"><b>Status: not used in V1.</b> Tinker is a fine-tuning service. Artifact 2 says V1 has no custom or fine-tuned model (Q2.11). Artifact 6 replaces Tinker with general models: a cloud provider by default, or self-hosted open-weight models by configuration (Q6.27). The section keeps the worksheet name. It records this decision.</div>
 <table>
 <tr><th>Item</th><th>Position</th><th>Label</th></tr>
 <tr><td>Revisit trigger</td><td>Artifact 2 says to revisit the custom model when enough learned incidents exist. Then compare a fine-tuned open-weight model with the general model on the same test set (Layer 12). The number of incidents is open (Appendix B).</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (Q2.11)</span></td></tr>
@@ -462,13 +463,13 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <!-- ============ 10.5 ============ -->
 <h2><span class="sec">10.5</span>Budget policy</h2>
 <p class="qs">Answers: Q10.27, Q10.28, Q10.29, Q10.34, Q10.35, Q10.36</p>
-<p>The hardware is fixed. So the budget uses GPU-minutes, tool calls, model requests, and tokens. It does not use money per token, except for a cloud call.</p>
+<p>The budget uses money (cloud provider, the default) or GPU-minutes (self-hosted models), plus tool calls, model requests, and tokens.</p>
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
-<tr><td>Cap for each incident</td><td>10 GPU-minutes, 30 tool calls, and 30 model requests. Starting values. The experiments tune them.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.4), Artifact 4 (NFR-06), Artifact 9 (L9-A5)</span></td></tr>
+<tr><td>Cap for each incident</td><td>USD 10 (cloud provider) or 20 GPU-minutes (self-hosted models), 100 tool calls, and 30 model requests. Starting values. The experiments tune them.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.4), Artifact 4 (NFR-06), Artifact 9 (L9-A5)</span></td></tr>
 <tr><td>Token caps</td><td>200k input tokens and 64k output tokens for each incident. 32k tokens of context for each call. Final value = measured baseline &times; 1.5.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-06)</span></td></tr>
 <tr><td>Per-call limit</td><td>Every call has a maximum output size.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>How the values are set</td><td>The team runs the synthetic fixtures. It measures calls, tokens, and GPU time. It sets the cap at the baseline plus a buffer. A provisional hard cap applies during the experiments.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16)</span></td></tr>
+<tr><td>How the values are set</td><td>The team runs the simulated failures in the dummy application. It measures calls, tokens, money, and GPU time. It sets the cap at the baseline plus a buffer. A provisional hard cap applies during the experiments.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16)</span></td></tr>
 <tr><td>Final values</td><td><b>Open:</b> the buffer size and the final caps come from the experiments (Appendix B).</td><td><span class="L A">Assumption</span> L4-A3</td></tr>
 <tr><td>Budget ledger</td><td>The ledger is the table <code>budget_entry</code>: kind (tokens_in, tokens_out, gpu_seconds, tool_calls, money), phase (reserve, commit, release), and amount. It is append-only. A reserve must fit the remaining limit. A new column <code>estimated</code> is true when the usage was estimated, not reported (A7 change, Appendix C).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (Q7.15)</span></td></tr>
 <tr><td>Estimate rule</td><td>Before a call, the gateway estimates the worst case. Input tokens are counted with the tokenizer of the model. Output tokens are the maximum output of the role. GPU seconds = input tokens &divide; the prefill rate + output tokens &divide; the decode rate. The benchmark measures both rates for each model (10.1). A cloud call uses the price in the configuration.</td><td><span class="L D">Decision</span> <span class="qs">closes an open item of Artifact 7</span></td></tr>
@@ -538,7 +539,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Full queue</td><td>When the queue is full, the platform hands the incident to humans. Incidents wait. They do not fail because of load.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-07)</span></td></tr>
 <tr><td>Recovery first</td><td>Recovery work (phase 1) pre-empts fix-phase work. A new SEV1 takes the slot of a running fix-phase job. That job pauses and returns to the queue.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.4)</span></td></tr>
 <tr><td>Admission and slots</td><td>Incident admission (3 active, queue of 20) and model-request slots are two separate limits. Admission decides which incidents run. A slot decides which model request runs on a model server.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 6, Artifact 8</span></td></tr>
-<tr><td>Central limiter</td><td>One limiter allows at most N model requests in flight for each model server. The GPU capacity sets N. The limiter state lives in PostgreSQL, so 1 to n workers share it.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6</span></td></tr>
+<tr><td>Central limiter</td><td>One limiter allows at most N model requests in flight for each model server. The rate limit of the cloud provider, or the GPU capacity of the self-hosted models, sets N. The limiter state lives in PostgreSQL, so 1 to n workers share it.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6</span></td></tr>
 <tr><td>Slot wait</td><td>The wait for a slot is a separate workflow step. It ends before the model activity starts. The 60 s timeout of the activity (10.7) does not include the wait.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Per-incident limit</td><td>An incident sends one model request at a time. The coordinator runs one agent at a time. Each agent waits for a model response before it sends the next request.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.1)</span></td></tr>
 <tr><td>Fairness</td><td>One incident must not take the capacity of the others. Incidents take turns in the queue.</td><td><span class="L D">Decision</span></td></tr>
@@ -603,7 +604,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>If no worker takes the task (schedule-to-start timeout), the workflow escalates the incident and raises a platform alert.</td><td>The model request cannot start (Artifact 8, 8.5).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
 </table>
 <h3>No automatic fallback (Q10.39)</h3>
-<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic cloud fallback. A model server counts as down after the last attempt fails: 60 s timeout and 1 retry (Artifact 4, QR-03, NFR-12). Then the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model.</p>
+<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic fallback from one provider to another. A model server counts as down after the last attempt fails: 60 s timeout and 1 retry (Artifact 4, QR-03, NFR-12). Then the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model.</p>
 <p>An automatic fallback has these risks:</p>
 <ul>
 <li>A different model behaves differently. Prompts for one model may fail on another.</li>
@@ -651,14 +652,14 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p class="qs">Answers: Q10.25, Q10.26, Q10.34, Q10.35, Q10.36</p>
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
-<tr><td>Unit</td><td>The platform counts tokens as two separate numbers: input tokens and output tokens. It also counts model requests, tool calls, and GPU seconds for each incident.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16), Artifact 4 (NFR-11)</span></td></tr>
+<tr><td>Unit</td><td>The platform counts tokens as two separate numbers: input tokens and output tokens. It also counts model requests, tool calls, and money or GPU seconds for each incident.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16), Artifact 4 (NFR-11)</span></td></tr>
 <tr><td>Source of counts</td><td>Counts come from the usage report of the model server. Estimates use the tokenizer of the specific model. The platform does not build its own tokenizer.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Recorded fields</td><td>For each call: incident id, step, role, attempt, input tokens, output tokens, latency, result, and gateway_status. GPU seconds go to the ledger. The ledger column <code>budget_entry.estimated</code> is true when the usage was estimated, not reported.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call, budget_entry)</span> <span class="qs">plus A7 changes (Appendix C)</span></td></tr>
-<tr><td>Why two numbers</td><td>Input and output load the GPU in different ways. The GPU reads the input in parallel. It writes the output one token at a time.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Price</td><td>No price table. The hardware is fixed. Cost is tokens and GPU seconds for each request. Only a cloud call has a price (kind money).</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (Q2.16)</span></td></tr>
-<tr><td>Metrics</td><td>The platform exposes the duration of each model call, tokens, GPU-minutes, tool calls, and retries, for each incident and as p50 and p95.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-11)</span></td></tr>
+<tr><td>Recorded fields</td><td>For each call: incident id, step, role, attempt, input tokens, output tokens, latency, result, and gateway_status. Money or GPU seconds go to the ledger. The ledger column <code>budget_entry.estimated</code> is true when the usage was estimated, not reported.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call, budget_entry)</span> <span class="qs">plus A7 changes (Appendix C)</span></td></tr>
+<tr><td>Why two numbers</td><td>Input and output cost different amounts. A cloud provider charges a different price for each. A GPU reads the input in parallel, and writes the output one token at a time.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Price</td><td>The configuration holds the price per input token and per output token of each cloud model. A cloud call costs money (kind money). A self-hosted call costs GPU seconds.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (Q2.16), revised 2026-11-21</span></td></tr>
+<tr><td>Metrics</td><td>The platform exposes the duration of each model call, tokens, money or GPU-minutes, tool calls, and retries, for each incident and as p50 and p95.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-11)</span></td></tr>
 <tr><td>Cumulative total</td><td>The incident total is the sum of all calls. The ledger splits it by role. Retries count in the same ledger.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Missing usage</td><td>The platform never records zero. It records an estimate with <code>estimated = true</code>. The estimate uses the counted input, the output text received, or the maximum output limit if the response is lost. The estimate stays charged to the budget. The platform reconciles its own usage log with the logs and GPU metrics of the model server. The ledger is append-only (A7). A correction is a new commit or release row.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Missing usage</td><td>The platform never records zero. It records an estimate with <code>estimated = true</code>. The estimate uses the counted input, the output text received, or the maximum output limit if the response is lost. The estimate stays charged to the budget. The platform reconciles its own usage log with the usage report of the provider, or with the logs and GPU metrics of a self-hosted model server. The ledger is append-only (A7). A correction is a new commit or release row.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Why the reservation stays</td><td>The tokens are used, but the amount is unknown. If the platform released the reservation, the ledger would show spent budget as free. New calls could then take it, and the total would exceed the cap. So the reservation stays at the worst case until the real usage is known, or an estimate replaces it.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Usage in every response</td><td>The model server reports usage in every response, including streamed and failed ones.</td><td><span class="L A">Assumption</span> L10-A4</td></tr>
 </table>
@@ -672,7 +673,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <polygon points="470,100 560,145 470,190 380,145" class="uc"/><text x="470" y="142">Usage</text><text x="470" y="158">reported?</text>
 <rect x="620" y="40" width="360" height="56" rx="6" class="okb"/><text x="800" y="64">Commit the real usage</text><text x="800" y="82" class="lbl">release the unused rest</text>
 <rect x="620" y="125" width="360" height="56" rx="6" class="hum"/><text x="800" y="149">Keep the reservation at the worst case</text><text x="800" y="167" class="lbl">commit an estimate, estimated = true</text>
-<rect x="620" y="210" width="360" height="56" rx="6" class="box"/><text x="800" y="234">Reconcile with server logs and GPU metrics</text><text x="800" y="252" class="lbl">write a new commit or release row</text>
+<rect x="620" y="210" width="360" height="56" rx="6" class="box"/><text x="800" y="234">Reconcile with provider or server usage</text><text x="800" y="252" class="lbl">write a new commit or release row</text>
 <rect x="20" y="230" width="335" height="56" rx="6" class="bad"/><text x="187" y="254">Budget cannot cover the call</text><text x="187" y="272" class="lbl">refuse the call, end or escalate</text>
 </g>
 <g class="ln"><path d="M170,145 H215" marker-end="url(#s1)"/><path d="M355,145 H380" marker-end="url(#s1)"/><path d="M470,100 V68 H620" marker-end="url(#s1)"/><path d="M560,145 H620" marker-end="url(#s1)"/><path d="M800,181 V210" marker-end="url(#s1)"/></g>
@@ -727,7 +728,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <li>Check the result with counts and sample searches.</li>
 <li>Run again when a commit changes a document. A removed document gets the status removed.</li>
 </ol>
-<p>Past incidents hold only redacted evidence (Artifact 5, SC-09). V1 uses synthetic runbooks, because Artifact 2 allows only synthetic fixtures. The documents are text with headings (L10-A6). <b>Open:</b> the team writes the synthetic runbook set (Appendix B).</p>
+<p>Past incidents hold only redacted evidence (Artifact 5, SC-09). V1 uses runbooks that the team writes for the dummy application, because Artifact 2 allows no real incident data. The documents are text with headings (L10-A6). <b>Open:</b> the team writes the runbook set (Appendix B).</p>
 
 <h3>Retrieval tools (Q10.40, Q10.41)</h3>
 <table>
@@ -875,7 +876,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p class="qs">Answers: Q10.50, Q10.51</p>
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
-<tr><td>Test set</td><td>A labeled set of questions. Each question has the correct documents or chunks. V1 builds the set from the synthetic incidents A, B, and C (Artifact 3) and the synthetic runbooks. Artifact 4 expects at least 20 incidents in the fixture set.</td><td><span class="L A">Assumption</span> L10-A8, L4-A1</td></tr>
+<tr><td>Test set</td><td>A labeled set of questions. Each question has the correct documents or chunks. V1 builds the set from the simulated incidents A, B, and C (Artifact 3) and the runbooks for the dummy application. Artifact 4 expects at least 20 simulated incidents.</td><td><span class="L A">Assumption</span> L10-A8, L4-A1</td></tr>
 <tr><td>Recall@10</td><td>Is the correct document in the top 10 results?</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Precision@10</td><td>How many of the top 10 results are relevant?</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>MRR</td><td>Mean reciprocal rank. For each question, take 1 divided by the rank of the first correct result. Then take the mean.</td><td><span class="L D">Decision</span></td></tr>
@@ -906,7 +907,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <!-- ============ acceptance ============ -->
 <h2>Acceptance checks before submission</h2>
 <ul class="checks">
-<li>&#9744; Every required section above is present and complete. <span class="qs">Open: model choice (10.1), final budget values (10.5), fix-phase limit (10.7), synthetic runbook set (10.9), token split (10.11), retrieval targets (10.13). See Appendix B.</span></li>
+<li>&#9744; Every required section above is present and complete. <span class="qs">Open: model choice (10.1), final budget values (10.5), fix-phase limit (10.7), runbook set (10.9), token split (10.11), retrieval targets (10.13). See Appendix B.</span></li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
 <li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. (See Appendix A.)</li>
 <li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <span class="qs">Open: the ChatGPT pass is not done yet.</span></li>
@@ -925,18 +926,18 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
 <tr><td>L10-A1</td><td>Every model is a decoder-only transformer LLM.</td><td>Irfan</td><td>The team chooses the models.</td></tr>
 <tr><td>L10-A2</td><td>The serving engine lets us pin an exact model version, because we hold the weights.</td><td>Irfan</td><td>The team chooses the engine.</td></tr>
-<tr><td>L10-A3</td><td>The organization has people who can run the GPU serving software.</td><td>Team</td><td>Before the V1 build. Related to L2-A9.</td></tr>
+<tr><td>L10-A3</td><td>If the self-hosted option is enabled, the organization has people who can run the GPU serving software.</td><td>Team</td><td>Before the option is enabled. Related to L2-A9.</td></tr>
 <tr><td>L10-A4</td><td>The model server reports usage in every response, including streamed and failed ones.</td><td>Irfan</td><td>Serving engine documents and test calls.</td></tr>
-<tr><td>L10-A6</td><td>The documents are text with headings (Markdown, HTML, or wiki pages), not scanned images.</td><td>Irfan</td><td>The team writes the synthetic runbook set.</td></tr>
+<tr><td>L10-A6</td><td>The documents are text with headings (Markdown, HTML, or wiki pages), not scanned images.</td><td>Irfan</td><td>The team writes the runbook set.</td></tr>
 <tr><td>L10-A7</td><td>BM25 alone misses few documents because of wording in V1.</td><td>Irfan</td><td>Retrieval evaluation results (10.13).</td></tr>
-<tr><td>L10-A8</td><td>A labeled test set can be built from the synthetic incidents A, B, and C and the synthetic runbooks.</td><td>Irfan</td><td>Artifact 3 fixtures, Layer 12.</td></tr>
+<tr><td>L10-A8</td><td>A labeled test set can be built from the simulated incidents A, B, and C and the runbooks for the dummy application.</td><td>Irfan</td><td>Artifact 3 incidents, Layer 12.</td></tr>
 <tr><td>L10-A9</td><td>CPU capacity is enough for the embedding model, if the team adds it.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
 <tr><td>L10-A10</td><td>A fine-tuned model that Tinker trains can be downloaded, and the base model license allows self-hosting it.</td><td>Irfan</td><td>Only if the custom model is revisited. Check the Tinker documents and the license.</td></tr>
-<tr><td>L2-A8</td><td>Inherited. The self-hosted open-weight models are good enough for the task.</td><td>Irfan</td><td>Model benchmark on fixtures A, B, and C.</td></tr>
-<tr><td>L2-A10</td><td>Inherited. The GPUs hold 2 models &times; 2 copies for 3 concurrent incidents.</td><td>Irfan</td><td>GPU inventory and the benchmark.</td></tr>
+<tr><td>L2-A8</td><td>Inherited. The cloud models are good enough for the task. Self-hosted models must match them before they are enabled.</td><td>Irfan</td><td>Model benchmark on incidents A, B, and C.</td></tr>
+<tr><td>L2-A10</td><td>Inherited. With the self-hosted option, the GPUs hold 2 models &times; 2 copies for 3 concurrent incidents.</td><td>Irfan</td><td>GPU inventory and the benchmark.</td></tr>
 <tr><td>L6-A2</td><td>Inherited. An OpenAI-compatible server serves the chosen models.</td><td>Irfan</td><td>Test of the chosen serving engine.</td></tr>
-<tr><td>L4-A1</td><td>Inherited. The fixture set has at least 20 incidents.</td><td>Irfan</td><td>Count of fixtures (Layer 12).</td></tr>
-<tr><td>L4-A3</td><td>Inherited. Every provisional value can be measured on the fixtures.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
+<tr><td>L4-A1</td><td>Inherited. The simulation set has at least 20 incidents.</td><td>Irfan</td><td>Count of simulated incidents (Layer 12).</td></tr>
+<tr><td>L4-A3</td><td>Inherited. Every provisional value can be measured on the dummy application.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
 <tr><td>L9-A1</td><td>Inherited. The main model gives valid JSON tool requests.</td><td>Irfan</td><td>Model benchmark (10.1).</td></tr>
 <tr><td>L9-A7</td><td>Inherited. The stated confidence is calibrated.</td><td>Irfan</td><td>Layer 12 evaluation.</td></tr>
 </table>
@@ -944,11 +945,11 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <h3>B. Unresolved dependencies</h3>
 <table>
 <tr><th>Dependency</th><th>Owner</th><th>Resolve in</th></tr>
-<tr><td>Which open-weight models (main and reviewer), and the GPU sizing for 2 models &times; 2 copies (10.1)</td><td>Irfan, with the team</td><td>Team session</td></tr>
+<tr><td>Which cloud models (main and reviewer) for the default; which open-weight models and GPU sizing for 2 models &times; 2 copies for the self-hosted option (10.1)</td><td>Irfan, with the team</td><td>Team session</td></tr>
 <tr><td>High-availability design of the model servers (10.1)</td><td>Irfan, with the team</td><td>Team session</td></tr>
-<tr><td>Which serving engine (10.1)</td><td>Irfan, with the team</td><td>Benchmark after the GPU inventory</td></tr>
-<tr><td>People to run the GPU serving software, and CPU capacity for an embedding model (10.1, L10-A3, L10-A9)</td><td>Team</td><td>Before the V1 build</td></tr>
-<tr><td>The synthetic runbook set for V1 (10.9)</td><td>Team</td><td>Fixtures (Layer 12)</td></tr>
+<tr><td>Which serving engine for the self-hosted option (10.1)</td><td>Irfan, with the team</td><td>Benchmark after the GPU inventory</td></tr>
+<tr><td>People to run the GPU serving software (self-hosted option), and CPU capacity for an embedding model (10.1, L10-A3, L10-A9)</td><td>Team</td><td>Before the V1 build</td></tr>
+<tr><td>The runbook set for the dummy application (10.9)</td><td>Team</td><td>Layer 12</td></tr>
 <tr><td>Native tool calling and the reasoning field of the main model (10.1, L9-A1)</td><td>Irfan</td><td>Model benchmark</td></tr>
 <tr><td>Prefill and decode rates of each model, for the GPU-seconds estimate (10.5)</td><td>Irfan</td><td>Benchmark</td></tr>
 <tr><td>Final budget values, buffer size, and the hard cap during experiments (10.5)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
@@ -958,14 +959,14 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Retrieval target values (10.13)</td><td>Irfan, with the team</td><td>After the first measurement</td></tr>
 <tr><td>Number of learned incidents that triggers a review of the custom model (10.4)</td><td>Irfan</td><td>After the first measurements</td></tr>
 <tr><td>Detector for injected instructions: a method better than the first rules (10.11)</td><td>Irfan</td><td>Layer 12</td></tr>
-<tr><td>Validation of L10-A4, L10-A7, L10-A8, and L10-A10 (10.4, 10.8, 10.9, 10.13)</td><td>Irfan</td><td>Test calls, retrieval evaluation, fixtures</td></tr>
+<tr><td>Validation of L10-A4, L10-A7, L10-A8, and L10-A10 (10.4, 10.8, 10.9, 10.13)</td><td>Irfan</td><td>Test calls, retrieval evaluation, simulated incidents</td></tr>
 </table>
 
 <h3>C. Consistency with the earlier artifacts</h3>
 <table>
 <tr><th>Earlier artifact says</th><th>Artifact 10 does</th><th>Status</th></tr>
-<tr><td>A2 2.1, Q2.12: no incident data to an unapproved external party. Default: no cloud model provider.</td><td>The default configuration uses only self-hosted models.</td><td>Consistent.</td></tr>
-<tr><td>A2 2.5 (revised 2026-11-14): self-hosted open-weight models. Cloud providers by configuration only, off by default.</td><td>Section 10.3 describes the Anthropic adapter, off by default, with the six rules and the second admin of Artifact 7. The rules apply to every cloud integration. The gateway sends a request only to the model set for the role.</td><td>Consistent. The worksheet name "Claude adapter" stays.</td></tr>
+<tr><td>A2 2.1, Q2.12 (revised 2026-11-21): no incident data to an unapproved external party. Default: one approved cloud model provider.</td><td>The default configuration sends redacted calls only to the approved provider.</td><td>Consistent.</td></tr>
+<tr><td>A2 2.5 (revised 2026-11-21): a cloud provider by default. Self-hosted open-weight models by configuration only.</td><td>Section 10.3 describes the Anthropic adapter as the default, with the six rules and the second admin of Artifact 7. The rules apply to every cloud integration. The gateway sends a request only to the model set for the role.</td><td>Consistent. The worksheet name "Claude adapter" stays.</td></tr>
 <tr><td>A2 Q2.11: no custom model. A6 Q6.27: Tinker replaced.</td><td>Section 10.4 (Tinker adapter) is not used in V1.</td><td>Explicit decision. The section keeps the worksheet name and records the decision.</td></tr>
 <tr><td>A6 Q6.12 lists retry among the duties of the gateway.</td><td>Temporal is the only retry owner. The gateway reserves budget, writes model_call, and enforces the timeout (A8 8.5, A9 9.1).</td><td>Explicit decision. Artifact 8 is later and decides.</td></tr>
 <tr><td>A9 9.10: no separate decision model in V1. It stays a candidate for Layer 10.</td><td>Layer 10 does not host a decision model in V1. A2 2.5 names one on CPU, so the candidate stays open.</td><td>Explicit decision. Consistent with A9.</td></tr>
@@ -978,12 +979,12 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>A7: budget_entry with kinds and phases. A7 open item: budget estimate rule for each model.</td><td>Section 10.5 uses the ledger and defines the estimate rule.</td><td>Closes the open item.</td></tr>
 <tr><td>A7: knowledge_document with service_id. Evidence cites its hash. A9: search_runbooks and search_past_incidents belong to Layer 10.</td><td>Section 10.9 defines the two tools, the scope by service_id, and the citation.</td><td>Consistent. Closes a document-level permission question for V1.</td></tr>
 <tr><td>A7 L7-A3: raw evidence content is kept for 90 days.</td><td>Decision D3: raw evidence content is kept for 1 year, as long as the incident. An exact re-run works while the incident exists. Section 10.12 states this limit.</td><td>Explicit A7 change D3. Approved by Dhanush, 2026-11-17.</td></tr>
-<tr><td>A2 2.4, A4 NFR-06, QR-06, A9 L9-A5: 10 GPU-minutes, 30 tool calls, 30 model requests, token caps. Values come from experiments.</td><td>Sections 10.5 and 10.8 use these values.</td><td>Consistent.</td></tr>
+<tr><td>A2 2.4, A4 NFR-06, QR-06, A9 L9-A5 (revised 2026-11-21): USD 10 (cloud) or 20 GPU-minutes (self-hosted), 100 tool calls, 30 model requests, token caps. Values come from experiments.</td><td>Sections 10.5 and 10.8 use these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 Q2.18, A4 NFR-05, QR-03, QR-04, A8 8.5: 20 minutes, 5 minutes for phase 1, 60 minutes for the incident, 60 s call timeout, 2 attempts, 3 attempts for bad output.</td><td>Section 10.7 uses these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 2.4, A4 QR-07: 3 active incidents, queue of 20, severity then age. A SEV1 pre-empts fix-phase work.</td><td>Section 10.6 uses these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 2.5, A6 ADR-09: BM25 first, embedding model on CPU later. Layer 10 confirms the method.</td><td>Section 10.9 confirms BM25 and adds embeddings when evaluation shows misses.</td><td>Consistent.</td></tr>
-<tr><td>A5 SC-09, SC-10, SC-24: redaction before every model call. Instructions only in the system role, and evidence in untrusted-data blocks with random boundary markers. Admin enables a cloud provider. The critic differs from the diagnoser and the fixer.</td><td>Sections 10.2, 10.3, and 10.11 apply these rules.</td><td>Consistent.</td></tr>
-<tr><td>A2 Q2.7: synthetic fixtures only.</td><td>Sections 10.9 and 10.13 use synthetic runbooks and the synthetic incidents A, B, and C.</td><td>Consistent.</td></tr>
+<tr><td>A5 SC-09, SC-10, SC-24: redaction before every model call. Instructions only in the system role, and evidence in untrusted-data blocks with random boundary markers. An admin and a second admin change the provider. The critic differs from the diagnoser and the fixer.</td><td>Sections 10.2, 10.3, and 10.11 apply these rules.</td><td>Consistent.</td></tr>
+<tr><td>A2 Q2.7 (revised 2026-11-21): a dummy application with simulated failures.</td><td>Sections 10.9 and 10.13 use runbooks for the dummy application and the simulated incidents A, B, and C.</td><td>Consistent.</td></tr>
 </table>
 
 <h3>D. Where Claude and ChatGPT disagreed</h3>

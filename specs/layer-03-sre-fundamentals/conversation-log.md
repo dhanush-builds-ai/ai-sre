@@ -44,6 +44,7 @@ Focus: understand the domain before designing the automation. Describe how softw
 | Q3.35 | C | (this session) | *(Team accepted:)* evidence that contradicts it: the database fails for other services too; errors started before the deploy; the deploy did not touch database code or config; the database's own metrics show a problem. | None | 3.9 Contradicting evidence |
 | Q3.36 | C | (this session) | *(Team accepted:)* if the monitoring provider is unavailable, continue with the sources that still work, mark the evidence as incomplete, lower the confidence, and escalate if a critical source is missing. (Same idea as the Layer 2 inference-outage rule: never guess.) | None | 3.10 Expected escalation |
 | Q3.37 | C | (this session) | *(Team accepted:)* stop and escalate when every source is checked and no hypothesis passes the rubric, when evidence conflicts, or when the time limit is reached (Layer 2: 20 minutes). Links to Artifact 1's System 1 / System 2 gate. | Exact rubric — Dhanush, Layer 9 | 3.10 |
+| Review 2026-11-21: data source (from A2) | C | (this session) | Incidents A, B and C are failures simulated in the dummy application (`shop-api`, `orders`), not synthetic fixtures. The loop limit shows 100 tool calls. (Dhanush, 2026-11-21) | — | Figures 1, 4, 5; Appendix |
 
 ## Findings forwarded as constraints while building Artifact 3 (confirmed by team; Layer 3 does not design the platform — review M9)
 

@@ -591,11 +591,11 @@ svg .ac{fill:var(--muted)}
 <tr><td>Wrong-change rate</td><td>How often an approved revert or fix did not help, or caused new errors</td><td>Not applicable</td><td>Not set (C2)</td></tr>
 <tr><td>Escalation rate</td><td>How often the platform handed the incident to a human</td><td>Not applicable</td><td>Not set (C2)</td></tr>
 </table>
-<p class="qs">Plan: measure the baseline from past incidents. If there are no past incidents, an engineer handles the reference scenario by hand, and we measure the time. Then we set the targets.</p>
+<p class="qs">Plan: measure the baseline from past incidents. If there are no past incidents, an engineer handles the reference scenario by hand on the dummy application, and we measure the time. Then we set the targets.</p>
 
 <h3>Demonstration</h3>
-<p>Use the reference scenario. Show these steps in order: alert, alerts grouped, owner found, evidence shown, hypothesis with confidence, revert proposed, review by a different model, human approval, revert applied, signals watched until healthy. Then: root cause found, permanent fix proposed and proven in a non-production copy, fix reviewed, fix approved, fix applied, signals watched again, report and audit trail.</p>
-<p>Then do a second, short run with missing evidence. Stakeholders must see the platform say "not enough information" and escalate.</p>
+<p>Use the reference scenario on a dummy application. The dummy application is a small web application that the team builds for the demonstration and for tests. The team simulates each failure in it, for example a deployment with a bad configuration value. No real incident data is used. Show these steps in order: alert, alerts grouped, owner found, evidence shown, hypothesis with confidence, revert proposed, review by a different model, human approval, revert applied, signals watched until healthy. Then: root cause found, permanent fix proposed and proven in a non-production copy, fix reviewed, fix approved, fix applied, signals watched again, report and audit trail.</p>
+<p>Then do a second, short run with missing evidence, also simulated in the dummy application. Stakeholders must see the platform say "not enough information" and escalate.</p>
 
 <!-- ============ 1.7 ============ -->
 <h2><span class="sec">1.7</span>Explicit non-goals</h2>
@@ -691,6 +691,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>No allow list in V1. Every production change needs human approval.</td><td>1.5, 1.7</td></tr>
 <tr><td>Recovery is verified with the original alert signals against the normal level.</td><td>1.6</td></tr>
 <tr><td>A failure with no change to revert (for example, out of memory or a network fault) gets a diagnosis, a recommended action, and an escalation. V1 has no restart, scale, or resize action. A resource increase goes through the permanent-fix path. (Dhanush, 2026-11-21)</td><td>1.3, 1.5, 1.7</td></tr>
+<tr><td>The demonstration, the tests, and the baseline run use a dummy application with simulated failures. They use no real incident data. (Dhanush, 2026-11-21)</td><td>1.6</td></tr>
 <tr><td>If there are no past incidents, the baseline comes from a timed manual run.</td><td>1.6</td></tr>
 </table>
 

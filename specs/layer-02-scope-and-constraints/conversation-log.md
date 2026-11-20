@@ -30,6 +30,7 @@ Focus: constraints before technology. Every technology named here records the as
 | Q2.21 | C | (this session) | Team chose PostgreSQL from a literature review: industry standard, proven at large volume, supports many data types. *(Confirmed — separating the two:)* **Decision** "use PostgreSQL" (rationale: industry standard, proven at large volume, supports many data types — from a literature review) **depends on** **Assumption** "V1 data volume fits one PostgreSQL instance" (owner, validated by measuring data per incident in the Q2.16 experiments). If the assumption fails, the decision is reopened; the decision record links to the assumption. | Data volume per incident — Dhanush, Layer 7 | 2.7 |
 | Q2.22 | C | (this session) | Team view: no assumption forces an architecture change, because the model endpoint is configurable (own inference or a cloud API by config). *(Confirmed after Claude challenge:)* a cloud API is **not** a config option while the data rule holds. Architecture-breaking assumptions are: the data rule; self-hosted models good enough for multi-step tool use (L2-A8); GPU capacity (L2-A10); pipeline can redeploy an earlier version (L2-A2); sandbox can reproduce the problem (B1); MCP servers exist (L2-A4); an approver is reachable at 2 AM. **Decision:** all model access goes through one model interface, so changing the model is a config change. | Each listed assumption keeps its owner | 2.5, 2.7 |
 | Q2.23 | C | (this session) | Record decisions now in each layer's **conversation log** and in the artifact's decisions table. Move to **ADR files** (one file per decision) later. The format must follow the worksheet's conversation-log and artifact templates. Each record has: decision, rationale, label (Fixed requirement / Decision / Assumption), owner, status, validation condition, revisit trigger. | When ADRs start and where they live — team, Layer 13 (repository design) | 2.7 |
+| Review 2026-11-21: hosting, budgets, data, UI (Q2.4, Q2.7, Q2.8, Q2.12, Q2.16) | C | (this session) | **Decisions (Dhanush):** (1) a cloud model provider is the default; self-hosted open-weight models are an option by configuration only (the six rules stay; a provider change needs an admin and a second admin; no automatic fallback between providers). (2) Cost limit: USD 10 per incident with the cloud provider; 20 GPU-minutes per incident with self-hosted models (was 10). (3) Step limit: 100 tool calls (was 30). (4) Build and test data: a dummy Python web application with simulated failures, replacing synthetic fixtures. (5) The user interface adds a web dashboard, a client of the same HTTP API. All values provisional. This reverses the Q2.12 outcome (self-hosted only) and the Layer 6 revision (cloud off by default). | New L2-A14 (USD 10 is enough) — Irfan, Q2.16 experiments. Dashboard pages — Dhanush, Layer 13 | 2.1 to 2.7, Figures 1, 2, 4, Appendix |
 
 ## Assumptions (all provisional)
 
@@ -41,12 +42,13 @@ Focus: constraints before technology. Every technology named here records the as
 | L2-A4 | MCP servers exist (or can be written) for the chosen monitoring, Git and CI/CD tools | Dhanush | Layer 9 (tool architecture) |
 | L2-A6 | Services emit trace context so a request can be followed across services | Dhanush | Layer 3 (observability) |
 | L2-A7 | The config store has an API or MCP server with read access to change history, keeps every version, and can restore a previous version | Dhanush | Layer 6 |
-| L2-A8 | Open-weight models we can self-host are good enough for the agent and the reviewer (A1 requires a different model for review) | Irfan | Layer 10 |
-| L2-A10 | Existing GPUs can hold 2 models × 2 copies (HA) and serve 3 concurrent incidents | Irfan | Q2.16 experiments |
+| L2-A8 | The cloud models are good enough for the agent and the reviewer (A1 requires a different model for review). Self-hosted open-weight models must match them before they are enabled (revised 2026-11-21) | Irfan | Layer 10 |
+| L2-A10 | With the self-hosted option, existing GPUs can hold 2 models × 2 copies (HA) and serve 3 concurrent incidents | Irfan | Q2.16 experiments |
 | L2-A11 | 20 minutes is enough for a typical investigation | Dhanush | Q2.16 experiments |
-| L2-A12 | The existing GPUs are reserved for the platform, not shared | Dhanush | Before V1 build (Layer 13) |
+| L2-A12 | With the self-hosted option, the existing GPUs are reserved for the platform, not shared | Dhanush | Before V1 build (Layer 13) |
 | L2-A13 | V1 data volume fits one PostgreSQL instance | Dhanush | Q2.16 experiments, Layer 7 |
-| L2-A5 | Synthetic fixtures are realistic enough to evaluate diagnosis | Irfan | Layer 12 |
+| L2-A5 | The simulated failures in the dummy application are realistic enough to evaluate diagnosis (revised 2026-11-21) | Irfan | Layer 12 |
+| L2-A14 | USD 10 for each incident is enough for incidents A and B with the cloud models (2026-11-21) | Irfan | Q2.16 experiments, Layer 10 |
 
 ## Where Claude and ChatGPT disagreed
 _Pending: ChatGPT pass not done yet (review finding H2)._

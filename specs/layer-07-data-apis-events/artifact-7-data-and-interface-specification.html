@@ -267,7 +267,7 @@ pre code{border:0;padding:0;background:none}
 <tr><td>Concurrency</td><td>One writer per incident: its Temporal workflow. The API sends signals and does not write incident state (Q7.24). <code>incident.version</code> is a compare-and-set guard (Q7.25).</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Retention</td><td>Incidents, events and raw evidence content: 1 year (raw evidence raised from 90 days for re-runs, A10 10.12, Dhanush 2026-11-17). Tables are not partitioned. A retention job runs as the maintenance role. It deletes each resolved or cancelled incident past the limit with all its rows, in foreign-key order, in one transaction. When it deletes an incident, it also deletes the content files of its evidence artifacts. The job writes a <code>retention.purged</code> event on the platform stream with the incident's chain head hash (F9). Partitioning is added only when a delete run is measured as too slow (Layer 12).</td><td><span class="L D">Decision</span> closes A1 D3 for V1</td></tr>
 <tr><td>Configuration at start</td><td>The workflow reads the platform settings once at start and carries them as workflow input. <code>incident.config_versions</code> records the version of each setting, so a running incident keeps the configuration it started with (F5).</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Migrations</td><td>Alembic, expand then contract, batched backfills, reviewed PR, backup first, tested on fixtures. Immutable tables are never rewritten (Q7.27, A6 ADR-04).</td><td><span class="L F">Fixed</span> A6 ADR-04</td></tr>
+<tr><td>Migrations</td><td>Alembic, expand then contract, batched backfills, reviewed PR, backup first, tested on test data. Immutable tables are never rewritten (Q7.27, A6 ADR-04).</td><td><span class="L F">Fixed</span> A6 ADR-04</td></tr>
 </table>
 <h3>Columns and constraints of every table</h3>
 <div class="tw"><table class="reg">
@@ -311,9 +311,9 @@ pre code{border:0;padding:0;background:none}
 <tr><td>notification</td><td>id, incident_id, recipient_user_id, channel (chat / pager / ticket), kind, sent_at, delivery_status, external_ref, acked_at, acked_by_user_id</td><td>&mdash;</td><td>F8</td></tr>
 <tr><td>oncall_shift</td><td>id, team_id, user_id, level (primary / backup), starts_at, ends_at, source (manual / integration), source_ref, synced_at</td><td>ends_at &gt; starts_at (CHECK)</td><td>F4</td></tr>
 <tr class="grp"><td colspan="4">Configuration</td></tr>
-<tr><td>integration</td><td>id, kind (monitoring / logs / metrics / traces / error_tracker / git / cicd / config_store / chat / pager / oncall / model), name, transport (http_api / mcp_http / webhook_in), endpoint, auth_secret_ref, next_secret_ref, next_valid_from, allowed_tools (JSONB, MCP only), adapter and hosting (model only: openai_compatible / anthropic; self_hosted / cloud), timeout_ms, settings (JSONB), enabled, version</td><td>unique name; a cloud model integration starts disabled and is enabled only through a <code>config_change</code> (A5 SC-24)</td><td>F5</td></tr>
+<tr><td>integration</td><td>id, kind (monitoring / logs / metrics / traces / error_tracker / git / cicd / config_store / chat / pager / oncall / model), name, transport (http_api / mcp_http / webhook_in), endpoint, auth_secret_ref, next_secret_ref, next_valid_from, allowed_tools (JSONB, MCP only), adapter and hosting (model only: openai_compatible / anthropic; self_hosted / cloud), timeout_ms, settings (JSONB), enabled, version</td><td>unique name; setup creates one approved cloud model integration (the default). A later change of the model provider (a new model integration, or self-hosted models enabled) goes only through a <code>config_change</code> (A5 SC-24)</td><td>F5</td></tr>
 <tr><td>platform_setting</td><td>key, value (JSONB, one Pydantic schema per key), version. Keys: <code>models</code> (investigator, diagnoser, critic, fixer, embedding: integration and model name; critic &ne; diagnoser and critic &ne; fixer, else 409, A9 9.2), <code>login_mode</code>, <code>sso</code>, <code>limits</code>, <code>approval</code>, <code>retention</code>, <code>grouping_window</code>, <code>fallback_team_id</code>, <code>source_timeouts</code></td><td>PK key</td><td>F5</td></tr>
-<tr><td>config_change</td><td>id, target_type, target_id, before, after (secret references only), status (proposed / approved / applied / rejected), proposed_by_user_id, reviewed_by_user_id, reason, applied_at</td><td>immutable after applied or rejected; reviewer &ne; proposer (CHECK). Written only for a change that needs a second admin: enable a cloud model provider, change the login mode (S6).</td><td>F5</td></tr>
+<tr><td>config_change</td><td>id, target_type, target_id, before, after (secret references only), status (proposed / approved / applied / rejected), proposed_by_user_id, reviewed_by_user_id, reason, applied_at</td><td>immutable after applied or rejected; reviewer &ne; proposer (CHECK). Written only for a change that needs a second admin: change the model provider, change the login mode (S6).</td><td>F5</td></tr>
 </table></div>
 <p>Every other configuration change writes only a <code>config.changed</code> event on the platform stream, with before and after values (A5 AST-11).</p>
 <h3>Key constraints in SQL</h3>
@@ -411,7 +411,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 </g>
 <g text-anchor="middle" class="md">
 <rect x="200" y="62" width="160" height="40" rx="6" class="box"/><text x="280" y="80">Source adapter</text><text x="280" y="95" class="sm">one per source</text>
-<rect x="200" y="110" width="160" height="36" rx="6" class="hum"/><text x="280" y="133">Engineer (CLI)</text>
+<rect x="200" y="110" width="160" height="36" rx="6" class="hum"/><text x="280" y="133">Engineer (CLI, UI)</text>
 <rect x="200" y="156" width="160" height="36" rx="6" class="hum"/><text x="280" y="179">Approver</text>
 <rect x="200" y="202" width="160" height="36" rx="6" class="box"/><text x="280" y="225">Workflow workers</text>
 <rect x="200" y="248" width="160" height="36" rx="6" class="box"/><text x="280" y="271">Model gateway</text>
@@ -450,7 +450,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <table>
 <tr><th>Rule</th><th>Detail</th></tr>
 <tr><td>Versioning</td><td>The URL holds the version (<code>/v1</code>). Changes in a version only add. A breaking change gets <code>/v2</code> and a deprecation period. CI compares the generated OpenAPI document and flags a breaking change (Q7.40).</td></tr>
-<tr><td>Authentication</td><td>A session or bearer token gives the user. One login mode for each deployment: own login (default) or SSO (A5 SC-25). Webhooks use the auth method of their source (Q7.39).</td></tr>
+<tr><td>Authentication</td><td>A session or bearer token gives the user. The dashboard keeps the same session in an HttpOnly cookie and sends a CSRF token with every write (A5 SC-26). One login mode for each deployment: own login (default) or SSO (A5 SC-25). Webhooks use the auth method of their source (Q7.39).</td></tr>
 <tr><td>Authorization</td><td>Each endpoint states its role. The server checks it on every request from team membership and on-call at that time (A5 SC-03). Admin endpoints are under <code>/v1/admin</code> and need the separate admin account (F3).</td></tr>
 <tr><td>Actor</td><td>The server fills the actor block from the caller. A request body cannot set it (F1).</td></tr>
 <tr><td>Errors</td><td>RFC 9457 <code>application/problem+json</code>. 401 = not logged in. 403 = no right, with an audit event. 409 = state or hash conflict. 422 = invalid body, or an idempotency key reused with a different request (Q7.38, Q7.62).</td></tr>
@@ -482,7 +482,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr class="grp"><td colspan="4">Configuration and audit</td></tr>
 <tr><td>/v1/admin/integrations (GET, POST, PATCH, /test, /rotate-secret, /finish-rotation)</td><td>Monitoring, logs, metrics, traces, error tracker, Git, CI/CD, config store, chat, pager, ticketing, MCP servers, model providers (kind = model)</td><td>Admin</td><td>F5</td></tr>
 <tr><td>/v1/admin/settings/{key}</td><td>Model assignment (critic &ne; diagnoser and critic &ne; fixer, else 409), limits, timeouts, retention, login mode, SSO</td><td>Admin</td><td>F5</td></tr>
-<tr><td>GET /v1/admin/config-changes; POST /{id}/approve, /reject</td><td>Second-admin approval for a cloud provider or a login-mode change</td><td>A different admin</td><td>F5</td></tr>
+<tr><td>GET /v1/admin/config-changes; POST /{id}/approve, /reject</td><td>Second-admin approval for a model-provider change or a login-mode change</td><td>A different admin</td><td>F5</td></tr>
 <tr><td>GET /v1/admin/audit/events, /v1/admin/audit/verify</td><td>Audit query across streams; hash-chain check. Each query is logged.</td><td>Admin</td><td>F2</td></tr>
 <tr class="grp"><td colspan="4">Operations</td></tr>
 <tr><td>GET /livez</td><td>Process is up. No dependency checks.</td><td>Docker</td><td>Q7.35</td></tr>
@@ -506,7 +506,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <rect x="20" y="488" width="1060" height="38" rx="6" class="hum"/><text x="32" y="512" class="sm">Immutable tables: INSERT and SELECT only; a trigger blocks UPDATE; DELETE only by the maintenance role.</text>
 </svg>
 </div>
-<p class="cap">Figure 3. API checks and roles. Top: each failed check returns one RFC 9457 error. Bottom: each caller and the endpoint group it may call. Admin endpoints need the separate admin account. A config change for a cloud model or the login mode needs a second admin.</p>
+<p class="cap">Figure 3. API checks and roles. Top: each failed check returns one RFC 9457 error. Bottom: each caller and the endpoint group it may call. Admin endpoints need the separate admin account. A change of the model provider or the login mode needs a second admin.</p>
 <h3>Alert source adapters (Q7.28)</h3>
 <table>
 <tr><th>Source</th><th>How it pushes</th><th>How intake checks it</th></tr>
@@ -693,7 +693,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <svg viewBox="0 0 1100 420" role="img" aria-label="Sequence diagram of an SSE timeline stream that drops and resumes">
 <defs><marker id="s7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
-<rect x="60" y="20" width="180" height="40" rx="6" class="hum"/><text x="150" y="45">CLI: incident watch</text>
+<rect x="60" y="20" width="180" height="40" rx="6" class="hum"/><text x="150" y="45">CLI or dashboard: watch</text>
 <rect x="460" y="20" width="180" height="40" rx="6" class="uc"/><text x="550" y="45">API (SSE)</text>
 <rect x="860" y="20" width="180" height="40" rx="6" class="fx"/><text x="950" y="45">PostgreSQL</text>
 </g>
@@ -727,7 +727,7 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <p class="cap">Figure 7. SSE resume. The event ID holds the stream and the sequence. On reconnect the server replays from the next sequence, so the client loses nothing.</p>
 <table>
 <tr><th>Topic</th><th>Design</th><th>Q</th></tr>
-<tr><td>Mechanism</td><td>Server-Sent Events: one-way, plain HTTP, simple for the CLI (<code>ai-sre incident watch INC-0042</code>). No WebSocket, because the client sends nothing on the stream.</td><td>Q7.52</td></tr>
+<tr><td>Mechanism</td><td>Server-Sent Events: one-way, plain HTTP, simple for the CLI (<code>ai-sre incident watch INC-0042</code>) and for the dashboard (browser <code>EventSource</code>). No WebSocket, because the client sends nothing on the stream.</td><td>Q7.52</td></tr>
 <tr><td>Event ID</td><td><code>incident:&lt;key&gt;:&lt;sequence&gt;</code></td><td>Q7.51</td></tr>
 <tr><td>Resume</td><td>The client sends <code>Last-Event-ID</code>. The server sends every event after it, then live events.</td><td>Q7.51</td></tr>
 <tr><td>Live updates</td><td>Each open stream polls every 1 s for rows after its last sequence. A heartbeat comment every 15 s keeps the connection open. <code>LISTEN/NOTIFY</code> is added only if 1 s of delay is measured as a problem (S10).</td><td>Q7.52</td></tr>
@@ -765,13 +765,14 @@ class Problem(BaseModel):                    # RFC 9457, Q7.38
 <tr><th>Earlier artifact says</th><th>Artifact 7 decides</th><th>Status</th></tr>
 <tr><td>A1 D3: retention is unknown.</td><td>1 year for incidents, events and raw evidence (raw evidence was 90 days until A10, 2026-11-17); row delete by a maintenance role (S1).</td><td>Closed for V1 (L7-A3).</td></tr>
 <tr><td>A5 SC-01: SSO with MFA only.</td><td>One login mode per deployment; own login by default; no MFA in V1 (A5 SC-25).</td><td><b>Explicit decision.</b> A5 updated; Chirag confirms.</td></tr>
-<tr><td>A5 SC-24 and the L7 log Q7.18 first draft: configuration in the repository.</td><td>Hybrid: prompts, policies and the allow list stay in the repository; integrations, models, limits and SSO move to the database through the admin API; a cloud provider or a login-mode change needs a second admin (F5).</td><td><b>Explicit decision.</b> A5 updated; Chirag confirms.</td></tr>
+<tr><td>A5 SC-24 and the L7 log Q7.18 first draft: configuration in the repository.</td><td>Hybrid: prompts, policies and the allow list stay in the repository; integrations, models, limits and SSO move to the database through the admin API; a model-provider change or a login-mode change needs a second admin (F5).</td><td><b>Explicit decision.</b> A5 updated; Chirag confirms.</td></tr>
 <tr><td>A2 2.3: "the merge is the approval" for a fix.</td><td>The signed approval is the record; the merge must match it (F7).</td><td><b>Open conflict.</b> Rinisha decides in Layer 11.</td></tr>
 <tr><td>A4 FR-02, FR-14, FR-15; NFR-01, NFR-03.</td><td>Grouping index, cancel signal, event timeline, idempotent intake, audit before execution.</td><td>Consistent.</td></tr>
 <tr><td>A5 SC-14 to SC-16, SC-19.</td><td>Action hash, single-use approval, idempotency key + precondition, hash-chained event table.</td><td>Consistent. Adds the database rules.</td></tr>
 <tr><td>L7 gap review F9 and log Q7.43, Q7.49, Q7.58, Q7.61 (first version of this artifact): monthly partitions, <code>consumer_checkpoint</code>, an <code>idempotency_key</code> table, <code>LISTEN/NOTIFY</code>, 45 tables.</td><td>Schema review S1&ndash;S11: plain tables with row delete, Temporal activities for outside messages, a key column on <code>incident</code>, polling, 35 tables. Every security control and F1&ndash;F9 feature is kept.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-14.</td></tr>
 <tr><td>A7 used an incident status 'closed'</td><td>Replaced by the A8 end states resolved and cancelled</td><td><b>Explicit decision</b> (diagram review, 2026-11-16)</td></tr>
 <tr><td>A1 1.5 (2026-11-21): a failure with no change to revert gets a diagnosis, a recommended action and an escalation.</td><td>Add <code>diagnosis.cause_kind</code> (change / not_change) and <code>diagnosis.recommended_action</code> (JSONB, advisory). No action row, approval or executor path reads it.</td><td><b>Explicit decision</b> (Dhanush, 2026-11-21)</td></tr>
+<tr><td>A2 2.3, 2.4, 2.5 (revised 2026-11-21): cloud provider by default, self-hosted by configuration; USD 10 or 20 GPU-minutes; 100 tool calls; a web dashboard.</td><td>No new table. <code>budget_entry.kind</code> already has <code>money</code> and <code>gpu_seconds</code>; the values live in <code>platform_setting.limits</code>. The dashboard uses the same endpoints and sessions.</td><td>Consistent.</td></tr>
 <tr><td>A7: <code>model_call.result</code> valid / malformed / timeout; raw evidence kept 90 days.</td><td>Layer 10 adds <code>result</code> refused and error, <code>model_call.gateway_status</code>, <code>request_artifact_id</code>, <code>budget_entry.estimated</code>, <code>evidence.index_revision</code>, <code>chunk_id</code>, <code>cited_incident_id</code>. Raw evidence is kept 1 year, so a model call can be re-run while the incident exists.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-17 (A10).</td></tr>
 <tr><td>A6 ADR-03: Temporal plus a PostgreSQL waiting queue.</td><td>The queued incident row is the workflow outbox. Outside messages are Temporal activities (S2).</td><td>Consistent.</td></tr>
 </table>

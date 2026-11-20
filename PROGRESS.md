@@ -35,6 +35,7 @@ _Last updated: 2026-11-21_
 | 2026-11-15 | Diagrams of A1–A8: do they explain the artifact; layout | Claude subagents (one per artifact) | No artifact was explained by its diagrams alone. Added an "at a glance" Figure 1 to each of A1–A6 and A8 and 3 new figures to A7 (contracts, API checks and roles, event order); improved and renumbered the rest; fixed overlaps and overflow. A1 swimlane step numbers now match the journey list (list step 17 split into apply and watch, so 19 steps) |
 | 2026-11-16 | Diagrams of A1–A9: layout, correctness, completeness, consistency ([note](specs/reviews/2026-11-16-diagram-review.md)) | 9 layout + 27 review + 9 fixer subagents (Sonnet); Claude check | All 59 figures checked. Fixed wrong facts (A1 failed-fix path, A3 config arrow, A5 AB-02 label and IDs, A6 reply target 200 ms vs 30 s) and gaps in every artifact. A7 incident status `closed` replaced by the A8 end states (index, retention, events). Open: Git write credential holder; fix-approval no-answer rule; F7 (all Layer 11) |
 | 2026-11-17 | PR #2 Layer 10: template, drift against A2/A4–A9, diagrams ([note](specs/reviews/2026-11-17-l10-pr2-review.md)) | Dhanush with Claude + 3 Sonnet reviewers | Request changes, then merged and fixed by Dhanush. Owner decisions D1–D4 (A7 result extended; no emergency reserve; raw evidence 1 year; dynamic call timeout). A7, A8, A9 updated; pending.md folded into Appendix B |
+| 2026-11-21 | A2 decisions by Dhanush, carried into A1–A10 and the logs | Dhanush with Claude | Cloud provider is the default, self-hosted by configuration; USD 10 (cloud) or 20 GPU-minutes (self-hosted) per incident; 100 tool calls; a dummy application with simulated failures replaces synthetic fixtures; a web dashboard (A6 ADR-11, A5 SC-26, AB-21, ST-20, RR-10). |
 | 2026-11-21 | A1 review by Dhanush: failures with no change to revert; Fig 3 step 1 | Dhanush with Claude | Decision: diagnose, recommend an action (restart, more memory), escalate; V1 keeps 2 write actions; a resource increase goes through the fix path. A1 1.3/1.5/1.7, Fig 1, Fig 3 updated. A7 and A9 add `diagnosis.cause_kind` and `recommended_action`; the A9 recovery map returns no action for `not_change`. |
 
 ## Open findings from the 2026-11-13 review
@@ -66,7 +67,10 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 |---|---|---|
 | Is every deployment and config change recorded with time and version, and where? | Dhanush | Layer 6/7 |
 | Exact escalation rubric and gate limits (A1 E3) | Dhanush | Closed in L9 log Q9.38 (2026-11-16) |
-| Self-hosted model choice, GPU sizing incl. HA copies; native JSON tool calling (L9-A1); need for a reasoning field; injection detector method | Irfan | Layer 10 |
+| Cloud model choice (main and reviewer) and price configuration for the default; open-weight models and GPU sizing incl. HA copies for the self-hosted option; native JSON tool calling (L9-A1); need for a reasoning field; injection detector method | Irfan | Layer 10 |
+| Confirm the 2026-11-21 A5 changes: SC-24 (cloud default), SC-26, AB-21, ST-20, RR-10 (provider keeps prompts) | Chirag | A5 walk-through |
+| Confirm the dashboard technology (A6 ADR-11: server-rendered pages, htmx, SSE) and list the dashboard pages | Dhanush | Layer 13 |
+| Build the dummy application (`shop-api`, `orders`) and the failure simulations for incidents A, B, C | Dhanush | Before the Q2.16 experiments |
 | Approval channel, timeouts, write-tool enforcement, sandbox design | Rinisha | Layer 11 |
 | Run the ChatGPT pass on A1–A3 decisions and record disagreements (H2) | Layer owners | Before submission |
 | Fill "Reviewed by" and "Date" on A1–A3 | Team | Before submission |
@@ -78,5 +82,5 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Fix approval record: signed approval vs "merge is the approval" (A2 2.3, L7 F7) | Rinisha | Layer 11 |
 | Git write credential for the fix branch and PR (holder, branch/PR rights only, no merge); fix-approval "no answer" rule in A1 text | Rinisha | Layer 11 |
 | PydanticAI version pin and Temporal spike on incident A (L9-A3) | Dhanush | Layer 13 |
-| Evaluation harness, fixture labels, seeded-fault fixtures, final agent targets (L9-A2, A4–A7) | Irfan, Dhanush | Layer 12 |
+| Evaluation harness, simulation labels, seeded-fault simulations, final agent targets (L9-A2, A4–A7) | Irfan, Dhanush | Layer 12 |
 | Rebalance load: Dhanush owns L3, L4, L6–L9 (311 Qs); Manish has no layer; Chirag owns L5 | Team | Before Layer 7 |
