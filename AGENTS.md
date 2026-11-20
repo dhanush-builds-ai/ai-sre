@@ -37,6 +37,7 @@ specs/layer-NN-<name>/
 - Writing style: ASD-STE100 Simplified Technical English (≥80%): sentences of ~20 words or fewer, one idea per sentence, active voice, "must" for rules, one term per meaning used consistently, no idioms/filler/marketing words. Prefer tables and lists for rules, steps and comparisons.
 - The artifact holds only content for its reader. Do not state the writing style, the review process, file paths of review notes, or screen-only hints (hover, scroll) in it; traceability stays in the log and the Appendix.
 - Print/PDF: the shared `<style>` has print rules. Scroll frames expand, wide tables and SVGs shrink to A4 width, and the ERD (`.fig.erd`) prints on its own A3 landscape page. Check a new artifact with Chrome print preview before calling it done.
+- Combined PDF: `python3 tools/build_reader_pdf.py` writes a compact "reader edition" of all artifacts to `build/` (git-ignored). It drops the header table, the required-sections table and the tail (acceptance checks, Reviewed by, Appendix), uses a compact print style and short label chips, and ends with the PROGRESS.md open items. It never changes the source HTML. Needs Google Chrome and `pypdf`.
 
 ## Standing decisions to respect (from A1/A2)
 
