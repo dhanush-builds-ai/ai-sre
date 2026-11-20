@@ -94,6 +94,7 @@ Focus: every object the platform and the agent produce must have a defined struc
 | A5 SC-01: SSO with MFA only | One login mode per deployment; own login default; no MFA in V1 (A5 SC-25) | Explicit decision; A5 updated; Chirag confirms |
 | A5 SC-24 and Q7.18 first draft: config in the repository | Hybrid config (F5): DB + admin API for integrations, models, limits, SSO; second admin for cloud provider and login mode | Explicit decision; A5 updated; Chirag confirms |
 | A2 2.3: "the merge is the approval" | Signed approval is the record; merge must match (F7) | Open — Rinisha, Layer 11 |
+| A1 1.5 (2026-11-21): a failure with no change to revert gets a diagnosis, a recommended action and an escalation | `diagnosis.cause_kind` and `diagnosis.recommended_action` (JSONB, advisory; no write path reads it). ERD diagnosis: + 9 more columns | Explicit decision — Dhanush, 2026-11-21 |
 
 ## Where Claude and ChatGPT disagreed
 

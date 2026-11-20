@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Artifact 10 - Inference and Retrieval Specification</title>
 <style>
-:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
-@media screen and (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+:root{color-scheme:light}
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8;--teal:#0e7490;--reg:rgba(29,29,27,.035);--hd:#f1f1ec}
+
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:1000px;margin:0 auto;padding:32px 16px 64px}
+main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
 h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
 .sub{color:var(--muted);margin:0 0 16px}
 .sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
@@ -17,6 +18,11 @@ h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top
 table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
 th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
 th{background:var(--card)}
+.tw{overflow-x:auto}
+.reg{min-width:1000px;font-size:13.5px}
+.reg td:first-child{white-space:nowrap;font-weight:600}
+.reg tr.grp td{background:var(--accent-bg);color:var(--accent);font-weight:600}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
 .fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
 .fig svg{display:block;min-width:720px;width:100%;height:auto}
 .cap{color:var(--muted);font-size:14px;margin:4px 0 0}
@@ -28,20 +34,57 @@ ul,ol{padding-left:22px}li{margin:2px 0}
 .F{background:var(--fix-bg);color:var(--fix);border:1px solid var(--fix)}
 .D{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent)}
 .A{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.R{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px;white-space:nowrap}
+.Rl{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.Rm{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.Rh{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
 svg text{fill:var(--fg);font-family:system-ui,sans-serif}
 svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
 svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
 svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
 svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
 svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
-svg .node{fill:none;stroke:var(--fg);stroke-width:1.5}
-svg .bound{fill:none;stroke:var(--fix);stroke-width:2;stroke-dasharray:8 5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
 svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
-svg .life{stroke:var(--line);stroke-width:1.2;stroke-dasharray:4 4}
-svg .dash{stroke:var(--muted);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
-svg .badln{stroke:var(--bad);stroke-width:1.5;fill:none;stroke-dasharray:5 4}
+svg .zb{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zt{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4}
+svg .zo{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
 svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
 svg .ac{fill:var(--muted)}
+svg .halo text{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+svg .tb{fill:var(--bad);stroke:none}svg .tbt{fill:var(--bg);font-size:10px;font-weight:700}
+.fig.erd{overflow:auto;max-height:92vh}
+.fig.erd svg{width:auto;min-width:0;max-width:none;height:auto}
+.erd svg text{fill:var(--fg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px}
+.erd svg .bgr{fill:var(--card)}
+.erd svg .reg{fill:var(--reg);stroke:var(--line);stroke-width:1.2;stroke-dasharray:6 4}
+.erd svg .rl{font-family:system-ui,sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;fill:var(--muted)}
+.erd svg .box{fill:var(--card);stroke:var(--muted);stroke-width:1.2}
+.erd svg .hd{fill:var(--hd)}
+.erd svg .hub .hd{fill:var(--accent-bg)}.erd svg .hub .box{stroke:var(--accent);stroke-width:1.8}
+.erd svg .t{font-size:12.5px;font-weight:700}
+.erd svg .im{font-size:9px;fill:var(--muted);font-style:italic}
+.erd svg .g{font-size:9.5px;font-weight:700}
+.erd svg .pk{fill:var(--fg)}.erd svg .fk{fill:var(--accent)}.erd svg .uk{fill:var(--fix)}.erd svg .pm{fill:var(--human)}
+.erd svg .c{fill:var(--muted)}.erd svg .c.k{fill:var(--fg)}
+.erd svg .m{font-size:10px;font-style:italic;fill:var(--muted)}
+.erd svg .nb{fill:var(--human-bg);stroke:var(--human);stroke-width:1.2;stroke-dasharray:5 3}
+.erd svg .nh{font-family:system-ui,sans-serif;font-size:11.5px;font-weight:700}
+.erd svg .nl{font-family:system-ui,sans-serif;font-size:10.5px}
+.erd svg .lg{font-family:system-ui,sans-serif;font-size:12px}
+.erd svg .sep{stroke:var(--line);stroke-width:1}
+.erd svg .net{color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.erd svg .net:hover{stroke-width:3}
+.erd svg .net .dash{stroke-dasharray:5 4}
+.erd svg .net .dot{fill:currentColor;stroke:none}
+.erd svg .net .opt{fill:var(--card)}
+.erd svg .net .sw{stroke-width:4}
+.erd svg .n-inc{color:var(--accent)}.erd svg .n-usr{color:var(--human)}.erd svg .n-svc{color:var(--ok)}.erd svg .n-int{color:var(--fix)}.erd svg .n-art{color:var(--bad)}.erd svg .n-act{color:var(--teal)}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-size:13px;line-height:1.45}
+pre code{border:0;padding:0;background:none}
+svg .bound{fill:none;stroke:var(--fix);stroke-width:2;stroke-dasharray:8 5}
+svg .life{stroke:var(--line);stroke-width:1.2;stroke-dasharray:4 4}
+svg .dash{stroke:var(--muted);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
 @page{size:A4;margin:14mm}
 @page erd{size:A3 landscape;margin:8mm}
 @media print{body{background:#fff;font-size:12px}main{max-width:none}.tw,.fig,pre{overflow:visible!important;max-height:none!important}.reg{min-width:0;font-size:9.5px}.reg td:first-child{white-space:normal}.fig svg{min-width:0!important;width:100%!important;max-width:100%!important;height:auto}.fig.erd,.fig.erd+.cap{page:erd}.fig.erd{break-before:page;border:0;padding:0}.fig.erd svg{max-height:262mm}code{font-size:.9em}pre{white-space:pre-wrap;word-break:break-word}.fig,tr{break-inside:avoid}.cap{break-before:avoid}h2,h3{break-after:avoid}}
@@ -55,7 +98,7 @@ svg .ac{fill:var(--muted)}
 <tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
 <tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Irfan (owner), Chirag, Manish, Dhanush, Rinisha</td></tr>
 </table>
-<p class="qs">Decisions come from <code>conversation-log.md</code>. Every item has one label:
+<p class="qs">Every item has one label:
 <span class="L F">Fixed requirement</span> comes from an earlier artifact (source given).
 <span class="L D">Decision</span> was made in this layer, with a rationale in the log.
 <span class="L A">Assumption</span> is provisional, with an owner and a validation condition (see Appendix A).
@@ -80,7 +123,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1000 560" role="img" aria-label="Layer 10 at a glance">
+<svg viewBox="0 0 1000 590" role="img" aria-label="Layer 10 at a glance">
 <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="20" y="70" width="160" height="50" rx="6" class="uc"/><text x="100" y="92">Investigator</text><text x="100" y="108" class="lbl">8 read tools</text>
@@ -95,35 +138,37 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <g text-anchor="middle" class="md">
 <rect x="225" y="80" width="400" height="40" rx="6" class="box"/><text x="425" y="105">1 Check the deadline and the capabilities</text>
 <rect x="225" y="130" width="400" height="40" rx="6" class="box"/><text x="425" y="155">2 Reserve the worst case in the budget ledger</text>
-<rect x="225" y="180" width="400" height="40" rx="6" class="box"/><text x="425" y="205">3 Wait for a slot: 3 active incidents, queue of 20</text>
-<rect x="225" y="230" width="400" height="40" rx="6" class="uc"/><text x="425" y="255">4 Call the model: 60 s, Temporal retries</text>
-<rect x="225" y="280" width="400" height="40" rx="6" class="box"/><text x="425" y="305">5 Check the output: schema, 3 attempts</text>
+<rect x="225" y="180" width="400" height="40" rx="6" class="box"/><text x="425" y="205">3 Wait for a model slot (limiter in PostgreSQL)</text>
+<rect x="225" y="230" width="400" height="40" rx="6" class="uc"/><text x="425" y="255">4 Call: min(60 s, time left), 1 retry by Temporal</text>
+<rect x="225" y="280" width="400" height="40" rx="6" class="box"/><text x="425" y="305">5 Check the output: schema, max 3 output attempts</text>
 <rect x="225" y="330" width="400" height="40" rx="6" class="box"/><text x="425" y="355">6 Record model_call and usage, release the rest</text>
 </g>
 <text x="425" y="396" text-anchor="middle" class="lbl">Redaction runs before every call. Model output is untrusted data.</text>
-<g class="ln"><path d="M180,95 H203"/><path d="M180,160 H203"/><path d="M180,225 H203"/><path d="M180,290 H203"/>
-<path d="M425,120 V128" marker-end="url(#a1)"/><path d="M425,170 V178" marker-end="url(#a1)"/><path d="M425,220 V228" marker-end="url(#a1)"/><path d="M425,270 V278" marker-end="url(#a1)"/><path d="M425,320 V328" marker-end="url(#a1)"/>
-<path d="M625,245 L698,185" marker-end="url(#a1)"/></g>
-<g class="dash"><path d="M625,262 L698,250" marker-end="url(#a1)"/></g>
+<g class="ln"><path d="M180,95 H205" marker-end="url(#a1)"/><path d="M180,160 H205" marker-end="url(#a1)"/><path d="M180,225 H205" marker-end="url(#a1)"/><path d="M180,290 H205" marker-end="url(#a1)"/>
+<path d="M20,370 H8 V95 H18" marker-end="url(#a1)"/>
+<path d="M425,120 V130" marker-end="url(#a1)"/><path d="M425,170 V180" marker-end="url(#a1)"/><path d="M425,220 V230" marker-end="url(#a1)"/><path d="M425,270 V280" marker-end="url(#a1)"/><path d="M425,320 V330" marker-end="url(#a1)"/>
+<path d="M625,245 L700,185" marker-end="url(#a1)"/></g>
+<g class="dash"><path d="M625,262 L700,250" marker-end="url(#a1)"/><path d="M645,350 H700" marker-end="url(#a1)"/></g>
 <g text-anchor="middle" class="md">
 <rect x="700" y="60" width="280" height="150" rx="8" class="uc"/><text x="840" y="86" font-weight="600">Inference service</text><text x="840" y="102" class="lbl">existing GPUs, 2 models &#215; 2 copies</text>
 <rect x="715" y="120" width="120" height="50" rx="6" class="box"/><text x="775" y="150">Main model</text>
 <rect x="845" y="120" width="120" height="50" rx="6" class="box"/><text x="905" y="150">Reviewer model</text>
 <text x="785" y="190" class="lbl">investigator, diagnoser, fixer</text><text x="915" y="190" class="lbl">critic</text>
-<rect x="700" y="225" width="280" height="62" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="840" y="248">Cloud model APIs: off by default</text><text x="840" y="266" class="lbl">Anthropic and OpenAI-compatible</text><text x="840" y="280" class="lbl">needs an admin and a second admin</text>
-<rect x="700" y="302" width="280" height="68" rx="8" class="bad"/><text x="840" y="324">Inference down</text><text x="840" y="342" class="lbl">Halt and escalate to a person.</text><text x="840" y="357" class="lbl">No CPU fallback. No cloud fallback.</text>
+<rect x="700" y="225" width="280" height="62" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="840" y="248">Cloud model APIs: off by default</text><text x="840" y="266" class="lbl">any cloud host (Anthropic, OpenAI-compatible)</text><text x="840" y="280" class="lbl">needs an admin and a second admin</text>
+<rect x="700" y="302" width="280" height="100" rx="8" class="bad"/><text x="840" y="323" font-weight="600">Escalates to a person when</text><text x="840" y="341" class="lbl">budget is short &#183; deadline has passed</text><text x="840" y="357" class="lbl">3 bad outputs &#183; the model refused</text><text x="840" y="373" class="lbl">inference is down</text><text x="840" y="389" class="lbl">(no CPU fallback, no cloud fallback)</text>
 </g>
-<rect x="20" y="430" width="960" height="118" rx="8" class="box"/>
+<rect x="20" y="430" width="960" height="146" rx="8" class="box"/>
 <text x="36" y="452" class="md" font-weight="600">Starting limits (the experiments tune them)</text>
 <g class="sm">
 <text x="36" y="474">For each incident: 30 model requests &#183; 30 tool calls &#183; 10 GPU-minutes &#183; 200k input and 64k output tokens &#183; 32k context for each call</text>
-<text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model request = 60 s, then 1 retry</text>
-<text x="36" y="510">Loop: up to 3 investigator rounds &#183; up to 2 revisions &#183; up to 3 attempts for bad output &#183; 3 duplicate calls stop an agent</text>
-<text x="36" y="532">Not in V1: custom model (Tinker) &#183; agent write tools &#183; vector database &#183; decision model &#183; document-level permissions</text>
+<text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model call = min(60 s, time left), then 1 retry</text>
+<text x="36" y="510">Loop: up to 3 investigator rounds &#183; up to 2 revisions &#183; up to 3 output attempts for bad output &#183; 3 duplicate calls stop an agent</text>
+<text x="36" y="528">Incident admission (a separate limit, before the gateway): 3 active incidents &#183; queue of 20</text>
+<text x="36" y="552">Not in V1: custom model (Tinker) &#183; agent write tools &#183; vector database &#183; decision model &#183; document-level permissions</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 1. Layer 10 at a glance. Four agent roles call one gateway. The gateway reserves budget, waits for a slot, calls the model, checks the output, and records the usage. The default model service is self-hosted. Cloud models are off. If inference is down, the platform halts and escalates.</p>
+<p class="cap">Figure 1. Layer 10 at a glance. Four agent roles call one gateway. The gateway reserves budget, waits for a model slot, calls the model, checks the output, and records the usage. The default model service is self-hosted. Cloud models are off. The platform escalates to a person when the budget is short, the deadline has passed, output is bad 3 times, the model refuses, or inference is down.</p>
 
 <!-- ============ 10.1 ============ -->
 <h2><span class="sec">10.1</span>Provider capability matrix</h2>
@@ -192,7 +237,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p>The agent never talks to a model server. Every agent model points at the inference gateway. The gateway is the only path to a model (Artifact 6, Q6.12). It gives one interface for all models. A change of model is a configuration change (Artifact 2, 2.5).</p>
 
 <div class="fig">
-<svg viewBox="0 0 1000 450" role="img" aria-label="Component diagram of the inference gateway">
+<svg viewBox="0 0 1000 480" role="img" aria-label="Component diagram of the inference gateway">
 <defs><marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <rect x="215" y="30" width="500" height="400" rx="12" class="bound"/>
 <text x="230" y="52" class="md" font-weight="600" fill="var(--fix)">Inference gateway (application code)</text>
@@ -200,26 +245,26 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="20" y="170" width="150" height="80" rx="6" class="uc"/><text x="95" y="204">Agents</text><text x="95" y="222" class="lbl">workflow (Layer 9)</text>
 <rect x="235" y="70" width="210" height="46" rx="6" class="box"/><text x="340" y="90">Contract</text><text x="340" y="106" class="lbl">ModelRequest, ModelResult</text>
 <rect x="235" y="135" width="210" height="46" rx="6" class="box"/><text x="340" y="155">Budget ledger</text><text x="340" y="171" class="lbl">budget_entry (10.5)</text>
-<rect x="235" y="200" width="210" height="46" rx="6" class="box"/><text x="340" y="220">Concurrency limiter</text><text x="340" y="236" class="lbl">and queue (10.6)</text>
+<rect x="235" y="200" width="210" height="46" rx="6" class="box"/><text x="340" y="220">Concurrency limiter</text><text x="340" y="236" class="lbl">slot wait, state in PostgreSQL (10.6)</text>
 <rect x="235" y="265" width="210" height="46" rx="6" class="box"/><text x="340" y="285">Timeout and deadline</text><text x="340" y="301" class="lbl">retries: Temporal (10.7)</text>
+<rect x="235" y="330" width="210" height="46" rx="6" class="zo"/><text x="340" y="350">Tinker adapter</text><text x="340" y="366" class="lbl">not in V1 (10.4)</text>
 <rect x="475" y="70" width="210" height="46" rx="6" class="box"/><text x="580" y="90">Validator</text><text x="580" y="106" class="lbl">schema, tool requests</text>
 <rect x="475" y="135" width="210" height="46" rx="6" class="uc"/><text x="580" y="155">OpenAI-compatible adapter</text><text x="580" y="171" class="lbl">self-hosted default</text>
-<rect x="475" y="200" width="210" height="46" rx="6" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="580" y="220">Anthropic adapter</text><text x="580" y="236" class="lbl">off by default (10.3)</text>
+<rect x="475" y="200" width="210" height="46" rx="6" class="zo"/><text x="580" y="220">Anthropic adapter</text><text x="580" y="236" class="lbl">off by default (10.3)</text>
 <rect x="475" y="265" width="210" height="46" rx="6" class="box"/><text x="580" y="285">Capability matrix</text><text x="580" y="301" class="lbl">checks the required features</text>
 <rect x="475" y="330" width="210" height="46" rx="6" class="box"/><text x="580" y="350">model_call record</text><text x="580" y="366" class="lbl">provenance of every call</text>
 <rect x="765" y="110" width="215" height="150" rx="8" class="uc"/><text x="872" y="136" font-weight="600">Inference service</text><text x="872" y="152" class="lbl">serving engine, existing GPUs</text>
 <rect x="780" y="170" width="90" height="50" rx="6" class="box"/><text x="825" y="200">Main model</text>
 <rect x="880" y="170" width="90" height="50" rx="6" class="box"/><text x="925" y="190">Reviewer</text><text x="925" y="206">model</text>
-<rect x="765" y="320" width="215" height="60" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="872" y="346">Cloud model APIs</text><text x="872" y="364" class="lbl">off by default</text>
+<rect x="765" y="305" width="215" height="110" rx="8" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="872" y="328" font-weight="600">Cloud model APIs: off</text><text x="872" y="346" class="lbl">any cloud host = cloud (10.3):</text><text x="872" y="360" class="lbl">admin + second admin enable it</text><text x="872" y="374" class="lbl">key in the secret store</text><text x="872" y="388" class="lbl">host on the allow list</text><text x="872" y="402" class="lbl">redaction before every call</text>
 </g>
-<g class="ln"><path d="M170,205 H213" marker-end="url(#g1)"/><path d="M685,158 H763" marker-end="url(#g1)"/></g>
-<g class="dash"><path d="M213,230 H172" marker-end="url(#g1)"/><path d="M685,235 L763,345" marker-end="url(#g1)"/></g>
-<text x="730" y="300" class="lbl">needs an admin to enable</text>
-<text x="780" y="278" class="lbl">High availability: more than one copy</text>
-<text x="30" y="440" class="lbl">The agents have one path to a model. Redaction runs before every model call (Artifact 5, SC-09).</text>
+<g class="ln"><path d="M170,205 H215" marker-end="url(#g1)"/><path d="M685,158 H765" marker-end="url(#g1)"/></g>
+<g class="dash"><path d="M215,230 H170" marker-end="url(#g1)"/><path d="M685,235 L765,360" marker-end="url(#g1)"/></g>
+<text x="780" y="282" class="lbl">High availability: more than one copy</text>
+<text x="30" y="462" class="lbl">The agents have one path to a model. Redaction runs before every model call (Artifact 5, SC-09).</text>
 </svg>
 </div>
-<p class="cap">Figure 2. Component diagram of the inference gateway. The agents see one contract. The adapters hide the model server. Dashed parts are off by default.</p>
+<p class="cap">Figure 2. Component diagram of the inference gateway. The agents see one contract. The adapters hide the model server. Dashed parts are off by default or not in V1. Any cloud host follows the cloud rules.</p>
 
 <h3>Who owns what (Q10.9)</h3>
 <table>
@@ -239,7 +284,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <li>The adapter converts every response to the internal structure. A tool request has an id, a tool name, and parsed arguments.</li>
 <li>The adapter flags malformed output. It must not pass it on silently.</li>
 <li>The model client does not retry (<code>max_retries = 0</code>). Temporal is the only retry owner (Artifact 8, 8.5).</li>
-<li>The gateway keeps the raw response as an artifact. The model_call record points to it.</li>
+<li>The gateway keeps the raw response and the redacted raw request as artifacts. The model_call record points to both (<code>output_artifact_id</code>, <code>request_artifact_id</code>).</li>
 <li>Only redacted content reaches a model (Artifact 5, SC-09). If the redactor fails, the evidence counts as missing. Nothing goes out raw.</li>
 <li>Contract tests check that every adapter behaves the same way.</li>
 </ul>
@@ -257,93 +302,120 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 
 <h3>ModelRequest (Q10.13)</h3>
 <table>
-<tr><th>Field</th><th>Meaning</th></tr>
-<tr><td>incident_id, step</td><td>Identity of the incident and of the step in its workflow</td></tr>
-<tr><td>role</td><td>investigator, diagnoser, critic, or fixer</td></tr>
-<tr><td>model</td><td>The internal model name for this role (from the settings)</td></tr>
-<tr><td>messages</td><td>Instructions and context (see 10.11)</td></tr>
-<tr><td>tools</td><td>The toolset of the role: name, description, schemas (Artifact 9, 9.4)</td></tr>
-<tr><td>parameters</td><td>Maximum output tokens, temperature, stop sequences</td></tr>
-<tr><td>output_schema</td><td>The output model of the role (Artifact 9, 9.3)</td></tr>
-<tr><td>required_capabilities</td><td>For example tool calling or structured output</td></tr>
-<tr><td>timeout, token_budget</td><td>60 seconds for one request. The remaining incident budget (10.5, 10.7).</td></tr>
-<tr><td>prompt_version, attempt</td><td>The version of the prompt (10.12). The attempt number, 1 to 3 for bad output.</td></tr>
+<tr><th>Field</th><th>Meaning</th><th>Label</th></tr>
+<tr><td>incident_id, step</td><td>Identity of the incident and of the step in its workflow</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>role</td><td>investigator, diagnoser, critic, or fixer</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.2)</span></td></tr>
+<tr><td>model</td><td>The internal model name for this role (from the settings)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (platform_setting)</span></td></tr>
+<tr><td>messages</td><td>Instructions and context (see 10.11)</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>tools</td><td>The toolset of the role: name, description, schemas</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>parameters</td><td>Maximum output tokens, temperature, stop sequences</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>output_schema</td><td>The output model of the role</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.3)</span></td></tr>
+<tr><td>required_capabilities</td><td>For example tool calling or structured output</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>timeout</td><td>The smaller of 60 seconds and the time left before the incident deadline (10.7)</td><td><span class="L D">Decision</span> <span class="qs">A8 8.5 updated</span></td></tr>
+<tr><td>token_budget</td><td>The remaining incident budget (10.5)</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>prompt_version</td><td>The version of the prompt (10.12)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>attempt</td><td>The Temporal activity attempt: 1 or 2 (10.7)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
+<tr><td>output_attempt</td><td>The count of asks after bad output: 1 to 3 (10.7)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-04)</span></td></tr>
 </table>
+<p>One step makes at most 2 &times; 3 = 6 calls: up to 3 output attempts, each with up to 2 activity attempts. Each call counts against the budget (10.5). The raw request artifact holds <code>output_attempt</code>.</p>
 
 <h3>ModelResult and content (Q10.14, Q10.15)</h3>
 <p>Artifact 7 stores every call in the table <code>model_call</code>. Each field of the ModelResult maps to a column.</p>
 <table>
-<tr><th>ModelResult field</th><th>model_call column (Artifact 7)</th></tr>
-<tr><td>incident_id, step, role, attempt</td><td>incident_id, step, role, attempt</td></tr>
-<tr><td>provenance: provider, model name and version</td><td>integration_id, model_name, model_version</td></tr>
-<tr><td>prompt version, input hash</td><td>prompt_version, input_hash</td></tr>
-<tr><td>usage</td><td>input_tokens, output_tokens (GPU seconds go to the budget ledger)</td></tr>
-<tr><td>timing</td><td>latency_ms</td></tr>
-<tr><td>content, stop reason, raw response</td><td>output_artifact_id, output_hash</td></tr>
-<tr><td>status</td><td>result (valid, malformed, timeout), parse_error</td></tr>
+<tr><th>ModelResult field</th><th>model_call column (Artifact 7)</th><th>Label</th></tr>
+<tr><td>incident_id, step, role, attempt</td><td>incident_id, step, role, attempt</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>provenance: provider, model name and version</td><td>integration_id, model_name, model_version</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>prompt version, input hash</td><td>prompt_version, input_hash</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>usage</td><td>input_tokens, output_tokens (GPU seconds go to the budget ledger)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>timing</td><td>latency_ms</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>content, stop reason, raw response</td><td>output_artifact_id, output_hash</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>raw request (redacted)</td><td>request_artifact_id (new column, A7 change)</td><td><span class="L D">Decision</span> <span class="qs">Appendix C</span></td></tr>
+<tr><td>status</td><td>result (valid, malformed, timeout, refused, error), gateway_status (new column, A7 change), parse_error</td><td><span class="L D">Decision</span> <span class="qs">Appendix C, D1</span></td></tr>
 </table>
 <table>
-<tr><th>Block type</th><th>Content</th></tr>
-<tr><td>text</td><td>Plain text</td></tr>
-<tr><td>tool_request</td><td>A request to run a read tool (see below)</td></tr>
-<tr><td>structured</td><td>Parsed JSON, and the result of the schema check</td></tr>
-<tr><td>refusal</td><td>A refusal, with the server message</td></tr>
+<tr><th>Block type</th><th>Content</th><th>Label</th></tr>
+<tr><td>text</td><td>Plain text</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>tool_request</td><td>A request to run a read tool (see below)</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>structured</td><td>Parsed JSON, and the result of the schema check</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>refusal</td><td>A refusal, with the server message</td><td><span class="L D">Decision</span></td></tr>
 </table>
 <p>The application reads blocks by type. It must not depend on the layout of one server. A model may return its reasoning. The platform stores it as part of the raw output, after redaction. Reasoning is never evidence, and no gate reads it (Artifact 9, 9.1).</p>
 
 <h3>Tool requests (Q10.16)</h3>
 <p>The model only requests a tool call. The tool layer checks the request, runs it, and writes a tool_call record (Artifact 9, 9.4). The gateway passes the request on. It does not run it.</p>
 <table>
-<tr><th>Check in the tool layer</th><th>Rule</th></tr>
-<tr><td>Tool and agent</td><td>The tool must be on the allow list of the agent. An unknown tool is rejected and logged.</td></tr>
-<tr><td>Arguments</td><td>They must match the input model. The window must end before now and last at most 2 hours. Limits and query length stay under their maximums.</td></tr>
-<tr><td>Service scope</td><td>Only the incident's service and its declared dependencies.</td></tr>
-<tr><td>Duplicates</td><td>A duplicate returns the recorded result with no outside call. Three duplicates in one run stop the agent.</td></tr>
-<tr><td>Result</td><td>A rejected call gets status <code>rejected</code>, a reason, and the event tool.rejected. It counts toward the 30 tool calls. A valid result is redacted, marked untrusted, and returned as a short summary.</td></tr>
+<tr><th>Check in the tool layer</th><th>Rule</th><th>Label</th></tr>
+<tr><td>Tool and agent</td><td>The tool must be on the allow list of the agent. An unknown tool is rejected and logged.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>Arguments</td><td>They must match the input model. The window must end before now and last at most 2 hours. Limits and query length stay under their maximums.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>Service scope</td><td>Only the incident's service and its declared dependencies.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4), Artifact 5 (SC-05)</span></td></tr>
+<tr><td>Duplicates</td><td>A duplicate returns the recorded result with no outside call. Three duplicates in one run stop the agent.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4, 9.10)</span></td></tr>
+<tr><td>Result</td><td>A rejected call gets status <code>rejected</code>, a reason, and the event tool.rejected. It counts toward the 30 tool calls. A valid result is redacted, marked untrusted, and returned as a short summary.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 </table>
 <p>Agents have read tools only. A proposed action is not a tool call. It becomes an action record, and the policy gate checks it (Layer 11).</p>
 
 <h3>Result status and handling (Q10.17 to Q10.21)</h3>
+<p>The gateway sets one of seven statuses. It stores the exact status in <code>model_call.gateway_status</code>. The A7 column <code>result</code> holds the outcome for the workflow. Handling stays inside the rules of Artifact 8 (8.5) and Artifact 4 (QR-03, QR-04).</p>
 <table>
-<tr><th>Status</th><th>Meaning</th><th>Handling</th></tr>
-<tr><td>completed</td><td>The model finished.</td><td>Parse and validate. Only this status is a finished answer.</td></tr>
-<tr><td>length_limit</td><td>The model hit the token limit.</td><td>The result is incomplete. Do not use it as final. The workflow asks again with a larger limit or a smaller task, within budget.</td></tr>
-<tr><td>interrupted</td><td>The stream ended without a completion signal.</td><td>Keep the partial text in the raw output. Flag it. Do not use it as final. Record the usage.</td></tr>
-<tr><td>refused</td><td>The model refused the task.</td><td>This is a normal result, not an error. Do not retry blindly. The workflow rewords the request or escalates.</td></tr>
-<tr><td>invalid_output</td><td>The JSON is truncated or breaks the schema.</td><td>Do not repair it by guessing. The workflow asks again with the parse error, up to 3 attempts in total (Artifact 4, QR-04; Artifact 8, 8.5). Then it escalates.</td></tr>
-<tr><td>error</td><td>The call failed.</td><td>Apply the retry rules (10.7).</td></tr>
+<tr><th>Gateway status</th><th>Meaning</th><th>Handling</th><th>A7 result</th><th>Label</th></tr>
+<tr><td>completed</td><td>The model finished.</td><td>Parse and validate. Only this status is a finished answer.</td><td>valid</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
+<tr><td>length_limit</td><td>The model hit the token limit.</td><td>The result is incomplete. Do not use it as final. The workflow asks again as for bad output, up to 3 output attempts. The cause goes to <code>parse_error</code>.</td><td>malformed</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
+<tr><td>interrupted</td><td>The stream ended without a completion signal.</td><td>Keep the partial text in the raw output. Flag it. Do not use it as final. Record the usage. The gateway does not retry. The workflow asks again as for bad output.</td><td>malformed</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
+<tr><td>invalid_output</td><td>The JSON is truncated or breaks the schema.</td><td>Do not repair it by guessing. The workflow asks again with the parse error, up to 3 output attempts in total. Then it escalates.</td><td>malformed</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-04), Artifact 8 (8.5)</span></td></tr>
+<tr><td>refused</td><td>The model refused the task.</td><td>This is a normal result, not an error. Do not retry. The workflow escalates to a person.</td><td>refused</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
+<tr><td>error</td><td>The call failed (for example a server error or HTTP 401).</td><td>Apply the retry rules (10.7).</td><td>error</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
+<tr><td>timeout</td><td>The call reached its time limit (10.7). The gateway sets this status, not the model server.</td><td>Apply the retry rules (10.7).</td><td>timeout</td><td><span class="L D">Decision</span> <span class="qs">D1</span></td></tr>
 </table>
-<p>The adapter maps the stop reasons of the model server to these statuses. Validation runs in this order: normalize, parse JSON, check the schema, check the cited evidence IDs (Artifact 9, 9.3). The gateway never passes invalid output to a tool or to the next step. It logs every refusal and every failure with provenance. Artifact 7 has three result values: valid, malformed, and timeout. Appendix B asks for the mapping of the six statuses.</p>
+<p>The adapter maps the stop reasons of the model server to these statuses. Validation runs in this order: normalize, parse JSON, check the schema, check the cited evidence IDs (Artifact 9, 9.3). The gateway never passes invalid output to a tool or to the next step. It logs every refusal and every failure with provenance. Artifact 7 had three result values. Decision D1 extends them (Appendix C).</p>
 
 <div class="fig">
-<svg viewBox="0 0 1000 330" role="img" aria-label="Flowchart of result handling">
+<svg viewBox="0 0 1000 470" role="img" aria-label="Flowchart of result handling">
 <defs><marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
-<polygon points="500,15 600,60 500,105 400,60" class="uc"/><text x="500" y="64">Result status?</text>
-<rect x="20" y="170" width="180" height="120" rx="6" class="okb"/><text x="110" y="192" font-weight="600">completed</text>
-<text x="110" y="214" class="sm">Parse JSON.</text><text x="110" y="228" class="sm">Check the schema.</text><text x="110" y="242" class="sm">Valid: pass on.</text><text x="110" y="256" class="sm">Invalid: ask again (max 3),</text><text x="110" y="270" class="sm">then escalate.</text>
-<rect x="210" y="170" width="180" height="120" rx="6" class="box"/><text x="300" y="192" font-weight="600">length_limit</text>
-<text x="300" y="214" class="sm">Result is incomplete.</text><text x="300" y="228" class="sm">Do not use as final.</text><text x="300" y="242" class="sm">Ask again: larger limit</text><text x="300" y="256" class="sm">or smaller task.</text>
-<rect x="400" y="170" width="180" height="120" rx="6" class="box"/><text x="490" y="192" font-weight="600">interrupted</text>
-<text x="490" y="214" class="sm">No end signal.</text><text x="490" y="228" class="sm">Keep partial text, flagged.</text><text x="490" y="242" class="sm">Not final.</text><text x="490" y="256" class="sm">Record usage. Retry.</text>
-<rect x="590" y="170" width="180" height="120" rx="6" class="hum"/><text x="680" y="192" font-weight="600">refused</text>
-<text x="680" y="214" class="sm">Normal result.</text><text x="680" y="228" class="sm">Do not retry blindly.</text><text x="680" y="242" class="sm">Log with provenance.</text><text x="680" y="256" class="sm">Reword or escalate.</text>
-<rect x="780" y="170" width="200" height="120" rx="6" class="bad"/><text x="880" y="192" font-weight="600">error</text>
-<text x="880" y="214" class="sm">Apply the retry rules (10.7).</text><text x="880" y="228" class="sm">Permanent: fail fast.</text><text x="880" y="242" class="sm">Temporary: Temporal retries.</text><text x="880" y="256" class="sm">Then escalate.</text>
+<rect x="30" y="20" width="200" height="40" rx="6" class="box"/><text x="130" y="44">Reply of the model server</text>
+<polygon points="130,111 240,221 130,331 20,221" class="uc"/><text x="130" y="217">Gateway</text><text x="130" y="233">status?</text>
 </g>
-<g class="ln"><path d="M430,80 L110,168" marker-end="url(#h1)"/><path d="M450,92 L300,168" marker-end="url(#h1)"/><path d="M500,105 V168" marker-end="url(#h1)"/><path d="M550,92 L680,168" marker-end="url(#h1)"/><path d="M570,80 L880,168" marker-end="url(#h1)"/></g>
+<g class="lbl"><text x="142" y="84">the adapter maps</text><text x="142" y="98">the stop reason</text></g>
+<g class="lbl"><text x="345" y="22">Status</text><text x="475" y="22">Handling</text><text x="870" y="22">A7 result</text></g>
+<g class="md">
+<rect x="330" y="30" width="650" height="46" rx="6" class="okb"/><text x="345" y="57" font-weight="600">completed</text>
+<rect x="330" y="86" width="650" height="46" rx="6" class="box"/><text x="345" y="113" font-weight="600">length_limit</text>
+<rect x="330" y="142" width="650" height="46" rx="6" class="box"/><text x="345" y="169" font-weight="600">interrupted</text>
+<rect x="330" y="198" width="650" height="46" rx="6" class="box"/><text x="345" y="225" font-weight="600">invalid_output</text>
+<rect x="330" y="254" width="650" height="46" rx="6" class="hum"/><text x="345" y="281" font-weight="600">refused</text>
+<rect x="330" y="310" width="650" height="46" rx="6" class="bad"/><text x="345" y="337" font-weight="600">error</text>
+<rect x="330" y="366" width="650" height="46" rx="6" class="bad"/><text x="345" y="393" font-weight="600">timeout</text>
+</g>
+<g class="sm">
+<text x="475" y="50">Parse and validate. Only this status can be a final answer.</text><text x="475" y="65">A schema or evidence ID failure becomes invalid_output.</text><text x="870" y="57">valid</text>
+<text x="475" y="106">Incomplete. Not final. Ask again as for bad output.</text><text x="475" y="121">The cause goes to parse_error.</text><text x="870" y="113">malformed</text>
+<text x="475" y="162">No end signal. Keep the partial text, flagged. Not final. Record usage.</text><text x="475" y="177">The gateway does not retry. Ask again as for bad output.</text><text x="870" y="169">malformed</text>
+<text x="475" y="218">Do not repair by guessing. Ask again with the parse error.</text><text x="475" y="233">Max 3 output attempts in total, then escalate.</text><text x="870" y="225">malformed</text>
+<text x="475" y="274">Normal result, not an error. Do not retry.</text><text x="475" y="289">The workflow escalates to a person.</text><text x="870" y="281">refused</text>
+<text x="475" y="330">Server error or HTTP 401. Apply the retry rules (10.7).</text><text x="475" y="345">Permanent: fail fast. Temporary: Temporal retries.</text><text x="870" y="337">error</text>
+<text x="475" y="386">The call reached its time limit. The gateway sets this status.</text><text x="475" y="401">Apply the retry rules (10.7).</text><text x="870" y="393">timeout</text>
+</g>
+<g class="ln">
+<path d="M130,60 V111" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,53 330,53" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,109 330,109" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,165 330,165" marker-end="url(#h1)"/>
+<path d="M240,221 H330" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,277 330,277" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,333 330,333" marker-end="url(#h1)"/>
+<path d="M240,221 C285,221 285,389 330,389" marker-end="url(#h1)"/>
+</g>
+<text x="20" y="440" class="lbl">Bad output = length_limit, interrupted, or invalid_output. A step makes at most 3 output attempts, each with at most 2 activity attempts.</text>
 </svg>
 </div>
-<p class="cap">Figure 3. Flowchart of result handling. The adapter maps server stop reasons to one status. Only a completed result that passes the schema check is final.</p>
+<p class="cap">Figure 3. Flowchart of result handling. The adapter maps the stop reason of the model server to one of seven gateway statuses. Each status has one handling and one A7 result value. Only a completed result that passes the schema check is final.</p>
 
 <h3>Capability incompatibility (Q10.22)</h3>
 <p>The gateway keeps the capability matrix (10.1). Before it sends a request, it checks the capabilities that the role needs. If a model lacks one, the gateway follows these rules in order.</p>
 <ol>
-<li>Route the request to a model that has the capability.</li>
 <li>Emulate the capability only where the configuration allows it. For example, ask for one structured output for each step (L9-A1), then apply the schema check.</li>
-<li>Otherwise reject the combination with a clear error. The platform does not start with it.</li>
+<li>Otherwise reject the configuration at start. The platform does not start with it.</li>
 </ol>
-<p>Emulation is explicit configuration. It is never silent.</p>
+<p>Emulation is explicit configuration. It is never silent. The gateway never sends a request to a model other than the one configured for the role. There is no automatic fallback (A2 2.5, A5 SC-24).</p>
 
 <!-- ============ 10.3 ============ -->
 <h2><span class="sec">10.3</span>Claude adapter</h2>
@@ -351,6 +423,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <div class="note"><b>Status: present, off by default.</b> This is the Anthropic adapter. It lets the gateway call the Claude models through the Anthropic API. Artifact 2 (2.5) allows it by configuration only. The platform makes no cloud connection in the default configuration.</div>
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
+<tr><td>Scope</td><td>The rules below apply to every integration with <code>hosting = cloud</code>. This includes an OpenAI-compatible cloud host, not only the Anthropic API.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24)</span></td></tr>
 <tr><td>Role</td><td>The adapter implements the gateway contract (10.2) on the official Anthropic SDK. It converts the request and the response, maps stop reasons and tool requests, and returns usage.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6 (Q6.28)</span></td></tr>
 <tr><td>Configuration</td><td>Enable or disable, endpoint, key name, model names. No code change.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.5)</span></td></tr>
 <tr><td>Rule 1</td><td>Only a platform admin enables it, through a reviewed configuration change, with an audit entry. A second admin approves the change. This is the organization approval of that provider.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-24), Artifact 7 (API checks)</span></td></tr>
@@ -397,17 +470,17 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Per-call limit</td><td>Every call has a maximum output size.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>How the values are set</td><td>The team runs the synthetic fixtures. It measures calls, tokens, and GPU time. It sets the cap at the baseline plus a buffer. A provisional hard cap applies during the experiments.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16)</span></td></tr>
 <tr><td>Final values</td><td><b>Open:</b> the buffer size and the final caps come from the experiments (Appendix B).</td><td><span class="L A">Assumption</span> L4-A3</td></tr>
-<tr><td>Budget ledger</td><td>The ledger is the table <code>budget_entry</code>: kind (tokens_in, tokens_out, gpu_seconds, tool_calls, money), phase (reserve, commit, release), and amount. It is append-only. A reserve must fit the remaining limit.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (Q7.15)</span></td></tr>
+<tr><td>Budget ledger</td><td>The ledger is the table <code>budget_entry</code>: kind (tokens_in, tokens_out, gpu_seconds, tool_calls, money), phase (reserve, commit, release), and amount. It is append-only. A reserve must fit the remaining limit. A new column <code>estimated</code> is true when the usage was estimated, not reported (A7 change, Appendix C).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (Q7.15)</span></td></tr>
 <tr><td>Estimate rule</td><td>Before a call, the gateway estimates the worst case. Input tokens are counted with the tokenizer of the model. Output tokens are the maximum output of the role. GPU seconds = input tokens &divide; the prefill rate + output tokens &divide; the decode rate. The benchmark measures both rates for each model (10.1). A cloud call uses the price in the configuration.</td><td><span class="L D">Decision</span> <span class="qs">closes an open item of Artifact 7</span></td></tr>
 <tr><td>Reservation</td><td>The gateway reserves the estimate in one atomic step. After the call, it commits the real usage and releases the rest. Parallel calls cannot exceed the budget together.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Short budget</td><td>If the budget cannot cover a call, the gateway refuses the call. The investigation ends with the best result so far, or it escalates to a person.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-06)</span></td></tr>
+<tr><td>Short budget</td><td>If the budget cannot cover a call, the gateway refuses the call. The investigation ends with the best result so far, or it escalates to a person. A cap is a hard stop.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-06)</span></td></tr>
 <tr><td>Expected range</td><td>A table of measured usage for each role gives an expected range. The platform raises an alert when a call or an incident leaves its range.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Cumulative tracking</td><td>Every call carries its role: investigator, diagnoser, critic, or fixer. The ledger sums all calls of an incident, with the retries, and splits the total by role. The coordinator checks the limits after every step. The loop has at most 3 investigator rounds and 2 revisions.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.9, 9.10)</span></td></tr>
-<tr><td>Emergency reserve</td><td>A pool outside the incident budgets exists for emergencies. Stakeholders decide which cases qualify and who approves.</td><td><span class="L A">Assumption</span> L10-A5</td></tr>
+<tr><td>No emergency reserve</td><td>V1 has no budget pool outside the incident caps. Hard caps only. At a limit, the incident escalates.</td><td><span class="L D">Decision</span> <span class="qs">D2, approved by Dhanush, 2026-11-17</span></td></tr>
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1000 480" role="img" aria-label="Sequence diagram of one model call">
+<svg viewBox="0 0 1000 530" role="img" aria-label="Sequence diagram of one model call">
 <defs><marker id="q1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="10" y="12" width="120" height="34" rx="6" class="uc"/><text x="70" y="34">Agent</text>
@@ -417,40 +490,43 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="690" y="12" width="120" height="34" rx="6" class="uc"/><text x="750" y="34">Adapter</text>
 <rect x="860" y="12" width="120" height="34" rx="6" class="okb"/><text x="920" y="34">Inference service</text>
 </g>
-<g class="life"><path d="M70,46 V460"/><path d="M240,46 V460"/><path d="M410,46 V460"/><path d="M580,46 V460"/><path d="M750,46 V460"/><path d="M920,46 V460"/></g>
+<g class="life"><path d="M70,46 V510"/><path d="M240,46 V510"/><path d="M410,46 V510"/><path d="M580,46 V510"/><path d="M750,46 V510"/><path d="M920,46 V510"/></g>
+<rect x="30" y="208" width="420" height="56" rx="6" class="zb"/><text x="40" y="224" class="lbl" font-weight="600">alt: budget short</text>
 <g class="ln">
-<path d="M70,80 H238" marker-end="url(#q1)"/>
-<path d="M240,112 C290,112 290,134 242,134" marker-end="url(#q1)"/>
-<path d="M240,170 H408" marker-end="url(#q1)"/>
-<path d="M240,240 H578" marker-end="url(#q1)"/>
-<path d="M240,312 H748" marker-end="url(#q1)"/>
-<path d="M750,340 H918" marker-end="url(#q1)"/>
-<path d="M240,420 H408" marker-end="url(#q1)"/>
+<path d="M70,80 H240" marker-end="url(#q1)"/>
+<path d="M240,106 H290 V128 H240" marker-end="url(#q1)"/>
+<path d="M240,164 H410" marker-end="url(#q1)"/>
+<path d="M240,286 H580" marker-end="url(#q1)"/>
+<path d="M240,356 H750" marker-end="url(#q1)"/>
+<path d="M750,384 H920" marker-end="url(#q1)"/>
+<path d="M240,470 H410" marker-end="url(#q1)"/>
 </g>
 <g class="dash">
-<path d="M410,204 H242" marker-end="url(#q1)"/>
-<path d="M580,274 H242" marker-end="url(#q1)"/>
-<path d="M920,366 H752" marker-end="url(#q1)"/>
-<path d="M750,392 H242" marker-end="url(#q1)"/>
-<path d="M240,446 H72" marker-end="url(#q1)"/>
+<path d="M410,194 H240" marker-end="url(#q1)"/>
+<path d="M240,254 H70" marker-end="url(#q1)"/>
+<path d="M580,316 H240" marker-end="url(#q1)"/>
+<path d="M920,410 H750" marker-end="url(#q1)"/>
+<path d="M750,436 H240" marker-end="url(#q1)"/>
+<path d="M240,498 H70" marker-end="url(#q1)"/>
 </g>
-<g class="lbl">
+<g class="lbl halo">
 <text x="84" y="74">1 ModelRequest</text>
-<text x="296" y="126">2 check deadline and capabilities</text>
-<text x="254" y="164">3 reserve the worst case</text>
-<text x="256" y="198">4 reserved, or refused</text>
-<text x="254" y="234">5 ask for a slot (wait if full)</text>
-<text x="300" y="268">6 slot granted</text>
-<text x="254" y="306">7 call (60 s timeout)</text>
-<text x="770" y="334">8 model call</text>
-<text x="770" y="360">9 tokens and usage</text>
-<text x="500" y="386">10 ModelResult</text>
-<text x="254" y="414">11 write model_call, commit usage, release the rest</text>
-<text x="84" y="440">12 ModelResult</text>
+<text x="300" y="121">2 check deadline and capabilities</text>
+<text x="254" y="158">3 reserve the worst case</text>
+<text x="254" y="188">4 reserved, or refused</text>
+<text x="84" y="248">4b refused: the agent stops and escalates</text>
+<text x="254" y="280">5 ask for a slot: wait here if full</text>
+<text x="254" y="310">6 slot granted. The 60 s timer starts after this.</text>
+<text x="254" y="350">7 call, timeout = min(60 s, time left)</text>
+<text x="764" y="378">8 model call</text>
+<text x="764" y="404">9 tokens and usage</text>
+<text x="500" y="430">10 ModelResult</text>
+<text x="254" y="464">11 write model_call, commit usage, release the rest</text>
+<text x="84" y="492">12 ModelResult</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 4. Sequence diagram of one model call. The gateway reserves budget and gets a slot before it calls the model. Dashed arrows are replies.</p>
+<p class="cap">Figure 4. Sequence diagram of one model call. The gateway reserves budget and waits for a slot before it calls the model. The call timeout is the smaller of 60 s and the time left. A refusal for short budget goes back to the agent, which stops and escalates. Dashed arrows are replies.</p>
 
 <!-- ============ 10.6 ============ -->
 <h2><span class="sec">10.6</span>Concurrency policy</h2>
@@ -461,14 +537,17 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Queue</td><td>Extra incidents wait in a queue of at most 20. The order is: highest severity first, then the oldest.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.17), Artifact 4 (QR-07)</span></td></tr>
 <tr><td>Full queue</td><td>When the queue is full, the platform hands the incident to humans. Incidents wait. They do not fail because of load.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-07)</span></td></tr>
 <tr><td>Recovery first</td><td>Recovery work (phase 1) pre-empts fix-phase work. A new SEV1 takes the slot of a running fix-phase job. That job pauses and returns to the queue.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.4)</span></td></tr>
-<tr><td>Central limiter</td><td>One limiter in the gateway allows at most N requests in flight for each model server. The GPU capacity sets N.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Per-incident limit</td><td>An incident sends one model request at a time. The coordinator calls the agents in a fixed order, and each model request is one activity.</td><td><span class="L A">Assumption</span> L10-A11</td></tr>
+<tr><td>Admission and slots</td><td>Incident admission (3 active, queue of 20) and model-request slots are two separate limits. Admission decides which incidents run. A slot decides which model request runs on a model server.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 6, Artifact 8</span></td></tr>
+<tr><td>Central limiter</td><td>One limiter allows at most N model requests in flight for each model server. The GPU capacity sets N. The limiter state lives in PostgreSQL, so 1 to n workers share it.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6</span></td></tr>
+<tr><td>Slot wait</td><td>The wait for a slot is a separate workflow step. It ends before the model activity starts. The 60 s timeout of the activity (10.7) does not include the wait.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Per-incident limit</td><td>An incident sends one model request at a time. The coordinator runs one agent at a time. Each agent waits for a model response before it sends the next request.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.1)</span></td></tr>
 <tr><td>Fairness</td><td>One incident must not take the capacity of the others. Incidents take turns in the queue.</td><td><span class="L D">Decision</span></td></tr>
 </table>
 
 <div class="fig">
-<svg viewBox="0 0 1000 310" role="img" aria-label="Queue and active slots">
+<svg viewBox="0 0 1000 420" role="img" aria-label="Queue and active slots">
 <defs><marker id="k1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<text x="20" y="22" class="md" font-weight="600">Incident admission</text>
 <g text-anchor="middle" class="md">
 <rect x="20" y="105" width="140" height="60" rx="6" class="uc"/><text x="90" y="132">Incident arrives</text><text x="90" y="150" class="lbl">with a severity</text>
 <rect x="210" y="40" width="300" height="190" rx="8" class="box"/><text x="360" y="64" font-weight="600">Queue: at most 20</text><text x="360" y="80" class="lbl">highest severity first, then the oldest</text>
@@ -476,19 +555,28 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="230" y="133" width="260" height="30" rx="5" class="hum"/><text x="360" y="153">SEV2, arrived 09:58</text>
 <rect x="230" y="171" width="260" height="30" rx="5" class="box"/><text x="360" y="191">SEV2, arrived 10:01</text>
 <rect x="580" y="40" width="200" height="190" rx="8" class="okb"/><text x="680" y="64" font-weight="600">Active: 3 incidents</text><text x="680" y="80" class="lbl">one model request at a time each</text>
-<rect x="600" y="95" width="160" height="30" rx="5" class="box"/><text x="680" y="115">slot 1</text>
-<rect x="600" y="133" width="160" height="30" rx="5" class="box"/><text x="680" y="153">slot 2</text>
-<rect x="600" y="171" width="160" height="30" rx="5" class="box"/><text x="680" y="191">slot 3: fix phase</text>
-<rect x="830" y="105" width="150" height="60" rx="6" class="box"/><text x="905" y="132">Inference service</text><text x="905" y="150" class="lbl">limit N for each server</text>
-<rect x="210" y="250" width="300" height="46" rx="6" class="bad"/><text x="360" y="271">Queue full: hand to humans</text><text x="360" y="287" class="lbl">no incident is lost or dropped</text>
+<rect x="600" y="95" width="160" height="30" rx="5" class="box"/><text x="680" y="115">incident 1</text>
+<rect x="600" y="133" width="160" height="30" rx="5" class="box"/><text x="680" y="153">incident 2</text>
+<rect x="600" y="171" width="160" height="30" rx="5" class="box"/><text x="680" y="191">incident 3: fix phase</text>
+<rect x="20" y="245" width="170" height="54" rx="6" class="bad"/><text x="105" y="268">Queue full: hand to humans</text><text x="105" y="286" class="lbl">no incident is lost or dropped</text>
 </g>
-<g class="ln"><path d="M160,135 H208" marker-end="url(#k1)"/><path d="M510,135 H578" marker-end="url(#k1)"/><path d="M780,135 H828" marker-end="url(#k1)"/></g>
-<g class="dash"><path d="M360,230 V248" marker-end="url(#k1)"/><path d="M680,230 V262 H512" marker-end="url(#k1)"/></g>
-<text x="530" y="278" class="lbl">a new SEV1 takes slot 3</text>
-<text x="530" y="292" class="lbl">that job returns to the queue</text>
+<g class="ln"><path d="M160,135 H210" marker-end="url(#k1)"/><path d="M510,135 H580" marker-end="url(#k1)"/><path d="M90,165 V245" marker-end="url(#k1)"/>
+<path d="M740,230 V300 H500 V335" marker-end="url(#k1)"/></g>
+<g class="dash"><path d="M620,230 V275 H360 V230" marker-end="url(#k1)"/></g>
+<g class="lbl"><text x="100" y="200">queue already</text><text x="100" y="213">holds 20</text>
+<text x="372" y="254">a new SEV1 takes the slot of</text><text x="372" y="268">the fix-phase job. It returns to the queue.</text>
+<text x="750" y="270">a model call starts</text></g>
+<text x="20" y="325" class="md" font-weight="600">Model request slot</text>
+<text x="20" y="343" class="lbl">a separate limit, a step before each call</text>
+<g text-anchor="middle" class="md">
+<rect x="400" y="335" width="200" height="64" rx="6" class="uc"/><text x="500" y="358">Wait for a slot</text><text x="500" y="375" class="lbl">limiter state in PostgreSQL</text><text x="500" y="389" class="lbl">ends before the 60 s timer</text>
+<rect x="640" y="335" width="170" height="64" rx="6" class="box"/><text x="725" y="358">Model call</text><text x="725" y="375" class="lbl">timeout: min(60 s,</text><text x="725" y="389" class="lbl">time left)</text>
+<rect x="840" y="335" width="140" height="64" rx="6" class="box"/><text x="910" y="358">Inference service</text><text x="910" y="375" class="lbl">at most N in flight</text><text x="910" y="389" class="lbl">for each server</text>
+</g>
+<g class="ln"><path d="M600,367 H640" marker-end="url(#k1)"/><path d="M810,367 H840" marker-end="url(#k1)"/></g>
 </svg>
 </div>
-<p class="cap">Figure 5. Queue and active slots. Three incidents run. The rest wait by severity, then age. A new SEV1 pre-empts a fix-phase job. A full queue hands the incident to humans.</p>
+<p class="cap">Figure 5. Queue and active slots. Incident admission and the model slot are two separate limits. Three incidents run. The rest wait in the queue by severity, then age. A new SEV1 pre-empts a fix-phase job, which returns to the queue. A full queue hands the incident to humans. Each model call then waits for a slot before its 60 s timer starts.</p>
 
 <!-- ============ 10.7 ============ -->
 <h2><span class="sec">10.7</span>Retry and timeout policy</h2>
@@ -498,23 +586,24 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><th>Limit</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Full investigation</td><td>20 minutes (provisional). Human approval waits, sandbox tests, and applying a fix are not counted.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.18)</span></td></tr>
 <tr><td>Phase 1 (propose the revert)</td><td>5 minutes (provisional). Shorter than the full limit, because recovery comes first.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.18)</span></td></tr>
-<tr><td>Whole incident</td><td>60 minutes.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-05)</span></td></tr>
+<tr><td>Whole incident</td><td>60 minutes (provisional).</td><td><span class="L A">Assumption</span> L4-A3 <span class="qs">source: Artifact 4 (NFR-05)</span></td></tr>
 <tr><td>Fix phase</td><td><b>Open:</b> not set yet. The experiments set it.</td><td><span class="L A">Assumption</span> L4-A3</td></tr>
 <tr><td>Deadline</td><td>The coordinator checks the limits after every step. The gateway refuses a call after the deadline. Then new calls stop, running calls end, reservations are released, and the incident escalates.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Model request timeout</td><td>60 seconds for one attempt (start-to-close). Schedule-to-close: 3 minutes. Schedule-to-start: 5 minutes. A call timeout is the smaller of the request timeout and the time left before the deadline.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5), Artifact 4 (QR-03), provisional</span></td></tr>
+<tr><td>Model request timeout</td><td>60 seconds for one attempt (start-to-close). Schedule-to-close: 3 minutes. Schedule-to-start: 5 minutes. The timer starts when the activity starts, after the slot wait (10.6).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5), Artifact 4 (QR-03), provisional</span></td></tr>
+<tr><td>Call timeout</td><td>The timeout of each model call is the smaller of 60 seconds and the time left before the incident deadline.</td><td><span class="L D">Decision</span> <span class="qs">D4, approved by Dhanush, 2026-11-17. A8 8.5 updated.</span></td></tr>
 </table>
 <h3>Retry rules</h3>
 <table>
-<tr><th>Rule</th><th>Reason</th></tr>
-<tr><td>Only the Temporal activity retry policy retries a model request. The model client has <code>max_retries = 0</code>. Transport retries are off. The gateway does not retry.</td><td>Three layers with three attempts each can turn one request into 27 calls (Artifact 8, 8.5).</td></tr>
-<tr><td>A model request has at most 2 attempts: 1 retry. The first retry waits 1 s. The wait doubles each time and never passes 60 s.</td><td>Artifact 4 (QR-03) and Artifact 8 (8.5) set these values.</td></tr>
-<tr><td>Malformed output: the workflow asks again and sends the parse error. At most 3 attempts in total. Then it escalates. Each attempt counts toward the budget.</td><td>Artifact 4 (QR-04). More attempts waste the budget.</td></tr>
-<tr><td>Validation errors, policy rejections, and the HTTP codes 401 and 403 are not retried.</td><td>They do not change on a second try (Artifact 8, 8.5).</td></tr>
-<tr><td>A permanent authentication error fails fast. The platform marks the server as misconfigured and alerts the operators.</td><td>A wrong credential fails every time. Repeated tries waste time and can lock the account.</td></tr>
-<tr><td>If no worker takes the task (schedule-to-start timeout), the workflow escalates the incident and raises a platform alert.</td><td>The model request cannot start (Artifact 8, 8.5).</td></tr>
+<tr><th>Rule</th><th>Reason</th><th>Label</th></tr>
+<tr><td>Only the Temporal activity retry policy retries a model request. The model client has <code>max_retries = 0</code>. Transport retries are off. The gateway does not retry.</td><td>Three layers with three attempts each can turn one request into 27 calls (Artifact 8, 8.5).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
+<tr><td>A model request has at most 2 activity attempts (<code>attempt</code>): 1 retry. The first retry waits 1 s. The wait doubles each time and never passes 60 s.</td><td>Artifact 4 (QR-03) and Artifact 8 (8.5) set these values.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-03), Artifact 8 (8.5)</span></td></tr>
+<tr><td>Malformed output: the workflow asks again and sends the parse error. At most 3 output attempts (<code>output_attempt</code>) in total. Then it escalates. Each call counts toward the budget. One step makes at most 2 &times; 3 = 6 calls.</td><td>Artifact 4 (QR-04). More attempts waste the budget.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (QR-04)</span></td></tr>
+<tr><td>Validation errors, policy rejections, and the HTTP codes 401 and 403 are not retried.</td><td>They do not change on a second try (Artifact 8, 8.5).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
+<tr><td>A permanent authentication error fails fast. The platform marks the server as misconfigured and alerts the operators.</td><td>A wrong credential fails every time. Repeated tries waste time and can lock the account.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>If no worker takes the task (schedule-to-start timeout), the workflow escalates the incident and raises a platform alert.</td><td>The model request cannot start (Artifact 8, 8.5).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
 </table>
 <h3>No automatic fallback (Q10.39)</h3>
-<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic cloud fallback. If the main model or the reviewer model is down, the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model. A slow model service escalates after the timeout (Artifact 4, NFR-12).</p>
+<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic cloud fallback. A model server counts as down after the last attempt fails: 60 s timeout and 1 retry (Artifact 4, QR-03, NFR-12). Then the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model.</p>
 <p>An automatic fallback has these risks:</p>
 <ul>
 <li>A different model behaves differently. Prompts for one model may fail on another.</li>
@@ -527,35 +616,35 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p>High availability reduces the need for a fallback.</p>
 
 <div class="fig">
-<svg viewBox="0 0 1000 340" role="img" aria-label="Decision tree for a failed call">
+<svg viewBox="0 0 1000 350" role="img" aria-label="Decision tree for a failed call">
 <defs><marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="20" y="130" width="130" height="50" rx="6" class="bad"/><text x="85" y="160">Call fails</text>
 <polygon points="250,105 330,155 250,205 170,155" class="uc"/><text x="250" y="152">Error</text><text x="250" y="168">type?</text>
-<rect x="430" y="30" width="250" height="60" rx="6" class="box"/><text x="555" y="54">Not retried (401, 403, bad input).</text><text x="555" y="72">Mark misconfigured. Alert operators.</text>
-<polygon points="560,115 640,155 560,195 480,155" class="uc"/><text x="560" y="152">Attempts and</text><text x="560" y="168">time left?</text>
-<rect x="430" y="250" width="250" height="60" rx="6" class="bad"/><text x="555" y="274">Inference down. Halt.</text><text x="555" y="292">Escalate to a person (A2 2.5).</text>
-<rect x="720" y="100" width="260" height="56" rx="6" class="okb"/><text x="850" y="122">Temporal retries: wait 1 s, double,</text><text x="850" y="140">at most 60 s. Count it in the budget.</text>
-<rect x="720" y="190" width="260" height="56" rx="6" class="hum"/><text x="850" y="212">Stop. Escalate to a person</text><text x="850" y="230">with the evidence so far.</text>
+<rect x="430" y="20" width="270" height="60" rx="6" class="box"/><text x="565" y="44">Not retried (401, 403, bad input).</text><text x="565" y="62">Auth error: mark misconfigured, alert.</text>
+<polygon points="560,105 640,155 560,205 480,155" class="uc"/><text x="560" y="152">Attempts and</text><text x="560" y="168">time left?</text>
+<rect x="130" y="262" width="240" height="70" rx="6" class="box"/><text x="250" y="284">Malformed output: ask again</text><text x="250" y="302">with the parse error. Max 3</text><text x="250" y="320">output attempts, then escalate.</text>
+<rect x="700" y="125" width="280" height="60" rx="6" class="okb"/><text x="840" y="147">Temporal retries once (2 attempts):</text><text x="840" y="165">wait 1 s, double, at most 60 s.</text><text x="840" y="179" class="lbl">Count each call in the budget.</text>
+<rect x="700" y="214" width="280" height="66" rx="6" class="hum"/><text x="840" y="236">Server down: last attempt failed</text><text x="840" y="254">(60 s timeout, 1 retry). Halt.</text><text x="840" y="270">Escalate to a person (A2 2.5).</text>
 </g>
 <g class="ln">
-<path d="M150,155 H168" marker-end="url(#r1)"/>
-<path d="M330,155 C380,155 380,60 428,60" marker-end="url(#r1)"/>
-<path d="M330,155 H478" marker-end="url(#r1)"/>
-<path d="M330,155 C380,155 380,280 428,280" marker-end="url(#r1)"/>
-<path d="M640,155 C680,155 680,128 718,128" marker-end="url(#r1)"/>
-<path d="M610,185 C640,218 680,218 718,218" marker-end="url(#r1)"/>
+<path d="M150,155 H170" marker-end="url(#r1)"/>
+<path d="M250,105 V50 H430" marker-end="url(#r1)"/>
+<path d="M330,155 H480" marker-end="url(#r1)"/>
+<path d="M250,205 V262" marker-end="url(#r1)"/>
+<path d="M640,155 H700" marker-end="url(#r1)"/>
+<path d="M560,205 V247 H700" marker-end="url(#r1)"/>
 </g>
 <g class="lbl">
-<text x="355" y="100">permanent</text>
-<text x="360" y="148">temporary</text>
-<text x="352" y="240">server down</text>
-<text x="660" y="120">yes</text>
-<text x="640" y="214">no</text>
+<text x="300" y="42">permanent</text>
+<text x="372" y="146">temporary</text>
+<text x="264" y="240">malformed output</text>
+<text x="660" y="146">yes</text>
+<text x="580" y="240">no</text>
 </g>
 </svg>
 </div>
-<p class="cap">Figure 6. Decision tree for a failed model call. Only temporary errors are retried, only by Temporal, and only while attempts and time remain.</p>
+<p class="cap">Figure 6. Decision tree for a failed model call. Only temporary errors are retried, only by Temporal, and only while attempts and time remain. After the last attempt the server counts as down, and the platform halts and escalates. Malformed output is asked again, at most 3 times.</p>
 
 <!-- ============ 10.8 ============ -->
 <h2><span class="sec">10.8</span>Token accounting</h2>
@@ -564,12 +653,12 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Unit</td><td>The platform counts tokens as two separate numbers: input tokens and output tokens. It also counts model requests, tool calls, and GPU seconds for each incident.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (Q2.16), Artifact 4 (NFR-11)</span></td></tr>
 <tr><td>Source of counts</td><td>Counts come from the usage report of the model server. Estimates use the tokenizer of the specific model. The platform does not build its own tokenizer.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Recorded fields</td><td>For each call: incident id, step, role, attempt, input tokens, output tokens, latency, and result. GPU seconds go to the ledger. A flag marks an estimate.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call, budget_entry)</span></td></tr>
+<tr><td>Recorded fields</td><td>For each call: incident id, step, role, attempt, input tokens, output tokens, latency, result, and gateway_status. GPU seconds go to the ledger. The ledger column <code>budget_entry.estimated</code> is true when the usage was estimated, not reported.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call, budget_entry)</span> <span class="qs">plus A7 changes (Appendix C)</span></td></tr>
 <tr><td>Why two numbers</td><td>Input and output load the GPU in different ways. The GPU reads the input in parallel. It writes the output one token at a time.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Price</td><td>No price table. The hardware is fixed. Cost is tokens and GPU seconds for each request. Only a cloud call has a price (kind money).</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 2 (Q2.16)</span></td></tr>
 <tr><td>Metrics</td><td>The platform exposes the duration of each model call, tokens, GPU-minutes, tool calls, and retries, for each incident and as p50 and p95.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-11)</span></td></tr>
 <tr><td>Cumulative total</td><td>The incident total is the sum of all calls. The ledger splits it by role. Retries count in the same ledger.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Missing usage</td><td>The platform never records zero. It records an estimate with the flag "estimated". The estimate uses the counted input, the output text received, or the maximum output limit if the response is lost. The estimate stays charged to the budget. The platform reconciles its own usage log with the logs and GPU metrics of the model server.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Missing usage</td><td>The platform never records zero. It records an estimate with <code>estimated = true</code>. The estimate uses the counted input, the output text received, or the maximum output limit if the response is lost. The estimate stays charged to the budget. The platform reconciles its own usage log with the logs and GPU metrics of the model server. The ledger is append-only (A7). A correction is a new commit or release row.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Why the reservation stays</td><td>The tokens are used, but the amount is unknown. If the platform released the reservation, the ledger would show spent budget as free. New calls could then take it, and the total would exceed the cap. So the reservation stays at the worst case until the real usage is known, or an estimate replaces it.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Usage in every response</td><td>The model server reports usage in every response, including streamed and failed ones.</td><td><span class="L A">Assumption</span> L10-A4</td></tr>
 </table>
@@ -579,16 +668,16 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <defs><marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="20" y="115" width="150" height="60" rx="6" class="uc"/><text x="95" y="140">Reserve</text><text x="95" y="158" class="lbl">worst case, atomic</text>
-<rect x="215" y="115" width="140" height="60" rx="6" class="box"/><text x="285" y="140">Call runs</text><text x="285" y="158" class="lbl">60 s timeout</text>
+<rect x="215" y="115" width="140" height="60" rx="6" class="box"/><text x="285" y="140">Call runs</text><text x="285" y="158" class="lbl">min(60 s, time left)</text>
 <polygon points="470,100 560,145 470,190 380,145" class="uc"/><text x="470" y="142">Usage</text><text x="470" y="158">reported?</text>
 <rect x="620" y="40" width="360" height="56" rx="6" class="okb"/><text x="800" y="64">Commit the real usage</text><text x="800" y="82" class="lbl">release the unused rest</text>
-<rect x="620" y="125" width="360" height="56" rx="6" class="hum"/><text x="800" y="149">Keep the reservation at the worst case</text><text x="800" y="167" class="lbl">commit an estimate, flag "estimated"</text>
-<rect x="620" y="210" width="360" height="56" rx="6" class="box"/><text x="800" y="234">Reconcile with server logs and GPU metrics</text><text x="800" y="252" class="lbl">correct the ledger, improve the estimate</text>
+<rect x="620" y="125" width="360" height="56" rx="6" class="hum"/><text x="800" y="149">Keep the reservation at the worst case</text><text x="800" y="167" class="lbl">commit an estimate, estimated = true</text>
+<rect x="620" y="210" width="360" height="56" rx="6" class="box"/><text x="800" y="234">Reconcile with server logs and GPU metrics</text><text x="800" y="252" class="lbl">write a new commit or release row</text>
 <rect x="20" y="230" width="335" height="56" rx="6" class="bad"/><text x="187" y="254">Budget cannot cover the call</text><text x="187" y="272" class="lbl">refuse the call, end or escalate</text>
 </g>
-<g class="ln"><path d="M170,145 H213" marker-end="url(#s1)"/><path d="M355,145 H378" marker-end="url(#s1)"/><path d="M540,125 C580,100 580,70 618,68" marker-end="url(#s1)"/><path d="M560,145 H618" marker-end="url(#s1)"/><path d="M800,181 V208" marker-end="url(#s1)"/></g>
-<g class="dash"><path d="M95,175 V228" marker-end="url(#s1)"/></g>
-<g class="lbl"><text x="575" y="92">yes</text><text x="578" y="138">no</text><text x="105" y="205">short budget</text></g>
+<g class="ln"><path d="M170,145 H215" marker-end="url(#s1)"/><path d="M355,145 H380" marker-end="url(#s1)"/><path d="M470,100 V68 H620" marker-end="url(#s1)"/><path d="M560,145 H620" marker-end="url(#s1)"/><path d="M800,181 V210" marker-end="url(#s1)"/></g>
+<g class="dash"><path d="M95,175 V230" marker-end="url(#s1)"/></g>
+<g class="lbl"><text x="500" y="60">yes</text><text x="582" y="137">no</text><text x="107" y="205">short budget</text></g>
 </svg>
 </div>
 <p class="cap">Figure 7. Life cycle of a budget reservation. The platform reserves before the call. It commits real usage when the server reports it. If usage is missing, the reservation stays at the worst case until an estimate or a reconciliation replaces it.</p>
@@ -642,9 +731,9 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 
 <h3>Retrieval tools (Q10.40, Q10.41)</h3>
 <table>
-<tr><th>Tool</th><th>Input</th><th>Output</th><th>Source</th></tr>
-<tr><td>search_runbooks</td><td>query, k</td><td>Up to k chunks: chunk id, knowledge_document_id, source_ref, heading path, text, content_hash, score</td><td>Knowledge repository (Artifact 7, F6)</td></tr>
-<tr><td>search_past_incidents</td><td>query, k</td><td>Up to k records: incident id, diagnosis claims, cited evidence summaries, score</td><td>Platform database</td></tr>
+<tr><th>Tool</th><th>Input</th><th>Output</th><th>Source</th><th>Label</th></tr>
+<tr><td>search_runbooks</td><td>query, k</td><td>Up to k chunks: chunk id, knowledge_document_id, source_ref, heading path, text, content_hash, score</td><td>Knowledge repository (Artifact 7, F6)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>search_past_incidents</td><td>query, k</td><td>Up to k records: incident id, diagnosis claims, cited evidence summaries, score</td><td>Platform database</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 </table>
 <p>The default k is 5. The maximum k is 10 (provisional). A result is at most 200 lines or 32 KB, like every tool result (Artifact 9, 9.4). The result is marked trust = untrusted. A runbook is reference information. It is not a command. Tool validation still applies to every action.</p>
 
@@ -670,8 +759,8 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <h3>Revisions, citations, deletion, stale documents, access (Q10.52 to Q10.56)</h3>
 <table>
 <tr><th>Topic</th><th>Rule</th><th>Label</th></tr>
-<tr><td>Index revisions</td><td>Every ingestion run creates a new revision with its own id. The platform never edits a revision. A revision records the documents, their commit SHAs, their content hashes, and the chunking and tokenizer settings. Each investigation records the revision it used. Documents live in Git, so the platform can rebuild any old revision from the commit SHAs.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Citations</td><td>A retrieved item is evidence. It cites the knowledge_document_id and the content_hash (Artifact 7, F6). The platform also keeps the chunk text span. The hash proves that the cited text did not change.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (Q7.3, F6)</span></td></tr>
+<tr><td>Index revisions</td><td>Every ingestion run creates a new revision with its own id. The platform never edits a revision. A revision records the documents, their commit SHAs, their content hashes, and the chunking and tokenizer settings. Every retrieval hit becomes an evidence row. The row holds <code>evidence.index_revision</code> and <code>evidence.chunk_id</code> (A7 changes). The runbook part of an old revision can be rebuilt from the commit SHAs in Git. The past-incident part is kept as long as the incidents (1 year, D3).</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Citations</td><td>A retrieved item is evidence. It cites the knowledge_document_id and the content_hash (Artifact 7, F6). The platform also keeps the chunk text span. The hash proves that the cited text did not change. A past-incident hit cites the past incident in <code>evidence.cited_incident_id</code> (A7 change).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (Q7.3, F6)</span></td></tr>
 <tr><td>Deleted documents</td><td>A removed document gets the status removed. The next revision does not contain it. Older revisions stay unchanged. If a document is removed for security or legal reasons, the platform also removes it from older revisions, with approval. A search for text from a removed document must return nothing.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Stale documents</td><td>No single test exists. The platform combines four signals. The age is beyond a review date in the metadata. The text names a service or version that no longer exists. A newer document conflicts with it. An engineer reports that the procedure failed. The platform flags a suspect document, ranks it lower, and sends it to its owner. It does not delete it silently.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Scope and access</td><td>Results are limited to documents with the incident's service_id, or with an empty service_id (all services). The tool layer takes the service from the incident record, not from the model (Artifact 9, 9.4). V1 has no permission for each document. V1 has one tenant. The default is deny: a document without a valid scope is not returned. Citations, snippets, and counts must not leak other services.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 5 (SC-03, SC-05), Artifact 7 (knowledge_document)</span></td></tr>
@@ -689,9 +778,9 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Pointer</td><td>Each chunk keeps a pointer to its document and its position.</td><td><span class="L D">Decision</span></td></tr>
 </table>
 <table>
-<tr><th>Method</th><th>Chunk text</th><th>Problem or benefit</th></tr>
-<tr><td>Fixed size</td><td>"Run promote on the replica."</td><td>The reader does not know which system or which situation this step belongs to.</td></tr>
-<tr><td>Heading-aware</td><td>"PostgreSQL &gt; Failover &gt; Step 3: Run promote on the replica."</td><td>The path keeps the meaning of the step.</td></tr>
+<tr><th>Method</th><th>Chunk text</th><th>Problem or benefit</th><th>Label</th></tr>
+<tr><td>Fixed size</td><td>"Run promote on the replica."</td><td>The reader does not know which system or which situation this step belongs to.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Heading-aware</td><td>"PostgreSQL &gt; Failover &gt; Step 3: Run promote on the replica."</td><td>The path keeps the meaning of the step.</td><td><span class="L D">Decision</span></td></tr>
 </table>
 
 <!-- ============ 10.11 ============ -->
@@ -714,8 +803,8 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="240" y="250" width="180" height="50" rx="6" class="bad"/><text x="330" y="272">Conflicts stay visible</text><text x="330" y="288" class="lbl">marked, not removed</text>
 <rect x="540" y="250" width="200" height="50" rx="6" class="box"/><text x="640" y="272">Left-out list</text><text x="640" y="288" class="lbl">with pointers to full records</text>
 </g>
-<g class="ln"><path d="M190,68 L238,150" marker-end="url(#c1)"/><path d="M190,158 H238" marker-end="url(#c1)"/><path d="M190,248 L238,172" marker-end="url(#c1)"/>
-<path d="M370,158 H388" marker-end="url(#c1)"/><path d="M520,158 H538" marker-end="url(#c1)"/><path d="M670,158 H688" marker-end="url(#c1)"/><path d="M820,158 H848" marker-end="url(#c1)"/></g>
+<g class="ln"><path d="M190,68 L240,137" marker-end="url(#c1)"/><path d="M190,158 H240" marker-end="url(#c1)"/><path d="M190,248 L240,179" marker-end="url(#c1)"/>
+<path d="M370,158 H390" marker-end="url(#c1)"/><path d="M520,158 H540" marker-end="url(#c1)"/><path d="M670,158 H690" marker-end="url(#c1)"/><path d="M820,158 H850" marker-end="url(#c1)"/></g>
 <g class="dash"><path d="M305,191 V248" marker-end="url(#c1)"/><path d="M605,191 V248" marker-end="url(#c1)"/></g>
 <text x="20" y="340" class="lbl">The full records stay in the database. Each call holds at most 32k tokens. A tool result adds at most 200 lines or 32 KB.</text>
 </svg>
@@ -724,16 +813,17 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 
 <h3>What each role sees (Q10.57, Q10.58)</h3>
 <table>
-<tr><th>Role</th><th>Context parts</th><th>It must not see</th></tr>
-<tr><td>investigator</td><td>The baseline context (alert, golden-signal metrics, recent log errors, deploys and config changes, dependency health). The hypotheses so far. Short summaries of its tool results.</td><td>Any write tool or credential</td></tr>
-<tr><td>diagnoser</td><td>The hypotheses, the evidence summaries by ID, and the missing sources.</td><td>The raw tool output</td></tr>
-<tr><td>critic</td><td>The diagnosis claims, the cited evidence summaries, and the ruled-out hypotheses.</td><td>The reasoning of the diagnoser</td></tr>
-<tr><td>fixer</td><td>The diagnosis, and files of the service repository at the deployed commit.</td><td>Other repositories</td></tr>
+<tr><th>Role</th><th>Context parts</th><th>It must not see</th><th>Label</th></tr>
+<tr><td>investigator</td><td>The baseline context (alert, golden-signal metrics, recent log errors, deploys and config changes, dependency health). The hypotheses so far. Short summaries of its tool results.</td><td>Any write tool or credential</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (9.2)</span></td></tr>
+<tr><td>diagnoser</td><td>The hypotheses, the evidence summaries by ID, and the missing sources.</td><td>The raw tool output</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (9.2)</span></td></tr>
+<tr><td>critic</td><td>The diagnosis claims, the cited evidence summaries, and the ruled-out hypotheses.</td><td>The reasoning of the diagnoser</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (9.2)</span></td></tr>
+<tr><td>fixer</td><td>The diagnosis, and files of the service repository at the deployed commit.</td><td>Other repositories</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (9.2)</span></td></tr>
 </table>
 
 <table>
 <tr><th>Topic</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Two sources (Q10.58)</td><td>Telemetry is recent and numeric. Documents are older text. The context holds them as separate labeled parts: "current observations" and "reference documents". Each part has its source, time, and version. Documents are guidance, not proof. The agent checks their statements against telemetry. The tool layer fetches telemetry fresh and marks its age. Documents come from one fixed index revision.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Instructions and data</td><td>Instructions go only in the system role. Evidence goes only in untrusted-data blocks. Each block has random boundary markers.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 5 (SC-10)</span></td></tr>
 <tr><td>Untrusted content</td><td>Every tool result sits in a marked block with its source and trust = untrusted. The system prompt says that this content is never an instruction. A detector flags text that looks like an instruction (event injection.flagged). The first detector is rules-based: known phrases and role markers. It only flags. Code checks every tool request, and no write tool exists.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 9 (Q9.46)</span></td></tr>
 <tr><td>Contradictions (Q10.59)</td><td>The context keeps both items, with source and time. A contradiction is explained (with a reason and evidence) or unexplained. The platform does not pick a winner silently. An unexplained contradiction blocks cause_found and leads to escalation.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.6, 9.7), Artifact 4 (FR-07)</span></td></tr>
 <tr><td>Compression (Q10.60)</td><td>Steps in order: drop irrelevant and repeated material; group repeated log lines; reduce long logs to their key lines (errors, counts, time ranges); summarize old turns. Keep identifiers, numbers, timestamps, and error messages word for word. Never compress cited evidence. Each compressed part keeps a pointer to the full record. Evaluation checks that compression keeps the important facts.</td><td><span class="L D">Decision</span></td></tr>
@@ -748,19 +838,19 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <p class="qs">Answers: Q10.23, Q10.64</p>
 <p>An engineer must be able to reproduce a diagnosis later. The platform stores these items for every investigation.</p>
 <table>
-<tr><th>Item</th><th>What the platform keeps</th><th>Where</th></tr>
-<tr><td>Prompt and skill</td><td>The prompt version and the skill name and version. Prompts, schemas, and tool allow lists live in the repository and change only by reviewed pull request.</td><td>model_call.prompt_version; repository</td></tr>
-<tr><td>Model identity</td><td>Internal name, provider, model name, the exact pinned model version (never "latest"), and the model identifier that the server returned.</td><td>model_call</td></tr>
-<tr><td>Parameters</td><td>Temperature, maximum output tokens, and the other request parameters.</td><td>Raw request artifact</td></tr>
-<tr><td>Tools</td><td>The tool registry entry: name, version, schemas, allowed agents. Each call: tool, arguments, duplicate key, status.</td><td>Repository; tool_call</td></tr>
-<tr><td>Context</td><td>The version of the assembly rules, and the input hash of the assembled context. The platform keeps the inputs to rebuild it.</td><td>model_call.input_hash; evidence</td></tr>
-<tr><td>Retrieval</td><td>The index revision, and the chunk ids, document IDs, commit SHAs, and content hashes that the search returned.</td><td>evidence; knowledge_document</td></tr>
-<tr><td>Evidence</td><td>The evidence records with adapter version, redaction version, content hash, and times.</td><td>evidence</td></tr>
-<tr><td>Configuration</td><td>The configuration versions that the incident read at its start.</td><td>Workflow input</td></tr>
-<tr><td>Time</td><td>The request date and time.</td><td>model_call</td></tr>
+<tr><th>Item</th><th>What the platform keeps</th><th>Where</th><th>Label</th></tr>
+<tr><td>Prompt and skill</td><td>The prompt version and the skill name and version. Prompts, schemas, and tool allow lists live in the repository and change only by reviewed pull request.</td><td>model_call.prompt_version; repository</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Model identity</td><td>Internal name, provider, model name, the exact pinned model version (never "latest"), and the model identifier that the server returned.</td><td>model_call</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
+<tr><td>Parameters</td><td>Temperature, maximum output tokens, and the other request parameters.</td><td>model_call.request_artifact_id (redacted raw request)</td><td><span class="L D">Decision</span> <span class="qs">A7 change, Appendix C</span></td></tr>
+<tr><td>Tools</td><td>The tool registry entry: name, version, schemas, allowed agents. Each call: tool, arguments, duplicate key, status.</td><td>Repository; tool_call</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
+<tr><td>Context</td><td>The version of the assembly rules, and the input hash of the assembled context. The platform keeps the inputs to rebuild it.</td><td>model_call.input_hash; evidence</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Retrieval</td><td>The index revision, and the chunk ids, document IDs, commit SHAs, and content hashes that the search returned.</td><td>evidence.index_revision, evidence.chunk_id, evidence.cited_incident_id; knowledge_document</td><td><span class="L D">Decision</span> <span class="qs">A7 changes, Appendix C</span></td></tr>
+<tr><td>Evidence</td><td>The evidence records with adapter version, redaction version, content hash, and times.</td><td>evidence</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (evidence)</span></td></tr>
+<tr><td>Configuration</td><td>The configuration versions that the incident read at its start.</td><td>Workflow input</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Time</td><td>The request date and time.</td><td>model_call</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 </table>
 <p>The platform holds the model weights, so it can pin the exact version. If a version is removed later, exact re-running may be impossible. Then the stored inputs and outputs are the record. Every prompt version is immutable and has an id.</p>
-<div class="note"><b>Limit.</b> Artifact 7 keeps raw evidence content for 90 days. After that, the evidence row and its hash stay, but the content is gone (L7-A3). A reproduction after 90 days can check the hashes and the records. It cannot re-read the raw content. Documents in Git and the index revisions stay rebuildable.</div>
+<div class="note"><b>Limit.</b> Artifact 7 keeps raw evidence content for 1 year, as long as the incident (D3, A7 change). An exact re-run works while the incident exists. After the incident expires, the content is gone. The runbook part of an index revision stays rebuildable, from the Git commit SHAs. The past-incident part is kept as long as the incidents (1 year).</div>
 
 <div class="fig">
 <svg viewBox="0 0 1000 340" role="img" aria-label="Records that allow a reproduction">
@@ -772,13 +862,13 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="20" y="230" width="270" height="70" rx="6" class="box"/><text x="155" y="255">Configuration versions</text><text x="155" y="273" class="lbl">read at the start,</text><text x="155" y="288" class="lbl">kept in the workflow input</text>
 <rect x="710" y="30" width="270" height="70" rx="6" class="box"/><text x="845" y="55">evidence</text><text x="845" y="73" class="lbl">content hash, adapter version,</text><text x="845" y="88" class="lbl">redaction version, times</text>
 <rect x="710" y="130" width="270" height="70" rx="6" class="box"/><text x="845" y="155">Index revision</text><text x="845" y="173" class="lbl">document IDs, commit SHAs,</text><text x="845" y="188" class="lbl">content hashes, settings</text>
-<rect x="710" y="230" width="270" height="70" rx="6" class="hum"/><text x="845" y="255">Raw evidence content</text><text x="845" y="273" class="lbl">kept 90 days, then deleted;</text><text x="845" y="288" class="lbl">row and hash stay</text>
+<rect x="710" y="230" width="270" height="70" rx="6" class="hum"/><text x="845" y="255">Raw evidence content</text><text x="845" y="273" class="lbl">kept 1 year, then deleted;</text><text x="845" y="288" class="lbl">row and hash stay</text>
 </g>
 <g class="ln"><path d="M290,65 L398,150" marker-end="url(#v1)"/><path d="M290,165 H398" marker-end="url(#v1)"/><path d="M290,265 L398,185" marker-end="url(#v1)"/><path d="M710,65 L602,150" marker-end="url(#v1)"/><path d="M710,165 H602" marker-end="url(#v1)"/></g>
 <g class="dash"><path d="M710,265 L602,185" marker-end="url(#v1)"/></g>
 </svg>
 </div>
-<p class="cap">Figure 10. Records that allow a reproduction. Every record carries the incident ID. Raw evidence content is the one part that expires after 90 days.</p>
+<p class="cap">Figure 10. Records that allow a reproduction. Every record carries the incident ID. Raw evidence content expires after 1 year, with the incident.</p>
 
 <!-- ============ 10.13 ============ -->
 <h2><span class="sec">10.13</span>Retrieval evaluation</h2>
@@ -801,14 +891,14 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <g text-anchor="middle" class="md">
 <rect x="20" y="90" width="190" height="70" rx="6" class="uc"/><text x="115" y="118">Labeled set</text><text x="115" y="136" class="lbl">incidents A, B, C and runbooks</text>
 <rect x="250" y="90" width="170" height="70" rx="6" class="box"/><text x="335" y="118">Run the search</text><text x="335" y="136" class="lbl">one fixed revision</text>
-<rect x="460" y="90" width="170" height="70" rx="6" class="box"/><text x="545" y="118">Score</text><text x="545" y="136" class="lbl">Recall@10, Precision@10, MRR</text>
+<rect x="460" y="90" width="170" height="70" rx="6" class="box"/><text x="545" y="118">Score</text><text x="545" y="136" class="lbl">Recall@10, Precision@10,</text><text x="545" y="150" class="lbl">MRR</text>
 <polygon points="740,75 830,125 740,175 650,125" class="uc"/><text x="740" y="121">Misses from</text><text x="740" y="137">wording?</text>
 <rect x="880" y="40" width="100" height="60" rx="6" class="okb"/><text x="930" y="66">Add</text><text x="930" y="82">embeddings</text>
 <rect x="880" y="150" width="100" height="60" rx="6" class="box"/><text x="930" y="176">Keep</text><text x="930" y="192">BM25 only</text>
 </g>
-<g class="ln"><path d="M210,125 H248" marker-end="url(#e1)"/><path d="M420,125 H458" marker-end="url(#e1)"/><path d="M630,125 H648" marker-end="url(#e1)"/><path d="M810,105 L878,75" marker-end="url(#e1)"/><path d="M810,145 L878,175" marker-end="url(#e1)"/></g>
-<g class="dash"><path d="M930,210 V240 H335 V162" marker-end="url(#e1)"/></g>
-<g class="lbl"><text x="840" y="82">yes</text><text x="842" y="170">no</text><text x="560" y="256">Run the same set again after every change to chunking or search.</text></g>
+<g class="ln"><path d="M210,125 H250" marker-end="url(#e1)"/><path d="M420,125 H460" marker-end="url(#e1)"/><path d="M630,125 H650" marker-end="url(#e1)"/><path d="M830,125 H855 V70 H880" marker-end="url(#e1)"/><path d="M855,125 V180 H880" marker-end="url(#e1)"/></g>
+<g class="dash"><path d="M930,210 V240 H335 V160" marker-end="url(#e1)"/><path d="M930,40 V22 H335 V90" marker-end="url(#e1)"/></g>
+<g class="lbl"><text x="830" y="100">yes</text><text x="830" y="160">no</text><text x="560" y="16">after adding embeddings: run the same set again</text><text x="560" y="256">Run the same set again after every change to chunking or search.</text></g>
 </svg>
 </div>
 <p class="cap">Figure 11. Retrieval evaluation loop. The team scores a fixed test set. Misses that come from wording lead to an embedding model. Every change runs the same set again.</p>
@@ -816,12 +906,12 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <!-- ============ acceptance ============ -->
 <h2>Acceptance checks before submission</h2>
 <ul class="checks">
-<li>&#9744; Every required section above is present and complete. <span class="qs">Open: see Appendix B.</span></li>
+<li>&#9744; Every required section above is present and complete. <span class="qs">Open: model choice (10.1), final budget values (10.5), fix-phase limit (10.7), synthetic runbook set (10.9), token split (10.11), retrieval targets (10.13). See Appendix B.</span></li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
 <li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. (See Appendix A.)</li>
-<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <span class="qs">Open: the ChatGPT pass is not done yet. Review finding H2.</span></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <span class="qs">Open: the ChatGPT pass is not done yet.</span></li>
 <li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <span class="qs">See Appendix C.</span></li>
-<li>&#9744; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository. <span class="qs">Open: the pull request is not merged yet.</span></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
 </ul>
 <table>
 <tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr>
@@ -830,8 +920,6 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 
 <!-- ============ appendix ============ -->
 <h2>Appendix: supporting records from the conversation log</h2>
-<p class="qs">These records are not template sections. They hold the evidence for the acceptance checks above.</p>
-
 <h3>A. Assumptions (all provisional)</h3>
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
@@ -839,14 +927,18 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>L10-A2</td><td>The serving engine lets us pin an exact model version, because we hold the weights.</td><td>Irfan</td><td>The team chooses the engine.</td></tr>
 <tr><td>L10-A3</td><td>The organization has people who can run the GPU serving software.</td><td>Team</td><td>Before the V1 build. Related to L2-A9.</td></tr>
 <tr><td>L10-A4</td><td>The model server reports usage in every response, including streamed and failed ones.</td><td>Irfan</td><td>Serving engine documents and test calls.</td></tr>
-<tr><td>L10-A5</td><td>An emergency budget reserve exists, and the stakeholders decide who may use it.</td><td>Team (stakeholders)</td><td>Stakeholder agreement.</td></tr>
 <tr><td>L10-A6</td><td>The documents are text with headings (Markdown, HTML, or wiki pages), not scanned images.</td><td>Irfan</td><td>The team writes the synthetic runbook set.</td></tr>
 <tr><td>L10-A7</td><td>BM25 alone misses few documents because of wording in V1.</td><td>Irfan</td><td>Retrieval evaluation results (10.13).</td></tr>
 <tr><td>L10-A8</td><td>A labeled test set can be built from the synthetic incidents A, B, and C and the synthetic runbooks.</td><td>Irfan</td><td>Artifact 3 fixtures, Layer 12.</td></tr>
 <tr><td>L10-A9</td><td>CPU capacity is enough for the embedding model, if the team adds it.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
 <tr><td>L10-A10</td><td>A fine-tuned model that Tinker trains can be downloaded, and the base model license allows self-hosting it.</td><td>Irfan</td><td>Only if the custom model is revisited. Check the Tinker documents and the license.</td></tr>
-<tr><td>L10-A11</td><td>An incident sends one model request at a time.</td><td>Dhanush</td><td>Layer 13 spike on incident A (L9-A3).</td></tr>
-<tr><td>L2-A8, L2-A10, L6-A2, L4-A1, L4-A3, L9-A1, L9-A7</td><td>Inherited. The self-hosted models are good enough. The GPUs hold 2 models &times; 2 copies for 3 concurrent incidents. An OpenAI-compatible server serves the chosen models. The fixture set has at least 20 incidents. Every provisional value can be measured on the fixtures. The main model gives valid JSON tool requests. The stated confidence is calibrated.</td><td>Irfan</td><td>Layer 10, Layer 12, and the Q2.16 experiments.</td></tr>
+<tr><td>L2-A8</td><td>Inherited. The self-hosted open-weight models are good enough for the task.</td><td>Irfan</td><td>Model benchmark on fixtures A, B, and C.</td></tr>
+<tr><td>L2-A10</td><td>Inherited. The GPUs hold 2 models &times; 2 copies for 3 concurrent incidents.</td><td>Irfan</td><td>GPU inventory and the benchmark.</td></tr>
+<tr><td>L6-A2</td><td>Inherited. An OpenAI-compatible server serves the chosen models.</td><td>Irfan</td><td>Test of the chosen serving engine.</td></tr>
+<tr><td>L4-A1</td><td>Inherited. The fixture set has at least 20 incidents.</td><td>Irfan</td><td>Count of fixtures (Layer 12).</td></tr>
+<tr><td>L4-A3</td><td>Inherited. Every provisional value can be measured on the fixtures.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
+<tr><td>L9-A1</td><td>Inherited. The main model gives valid JSON tool requests.</td><td>Irfan</td><td>Model benchmark (10.1).</td></tr>
+<tr><td>L9-A7</td><td>Inherited. The stated confidence is calibrated.</td><td>Irfan</td><td>Layer 12 evaluation.</td></tr>
 </table>
 
 <h3>B. Unresolved dependencies</h3>
@@ -854,43 +946,48 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><th>Dependency</th><th>Owner</th><th>Resolve in</th></tr>
 <tr><td>Which open-weight models (main and reviewer), and the GPU sizing for 2 models &times; 2 copies (10.1)</td><td>Irfan, with the team</td><td>Team session</td></tr>
 <tr><td>High-availability design of the model servers (10.1)</td><td>Irfan, with the team</td><td>Team session</td></tr>
-<tr><td>Which serving engine, and the test of native tool calling and of the reasoning field (10.1, L9-A1)</td><td>Irfan, with the team</td><td>Benchmark after the GPU inventory</td></tr>
-<tr><td>Final budget and token values, share of the 32k tokens for each context part, fix-phase limit, buffer size (10.5, 10.7, 10.11)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
-<tr><td>Prefill and decode rates of each model, for the GPU-seconds estimate (10.5)</td><td>Irfan</td><td>Benchmark</td></tr>
-<tr><td>Number of learned incidents that triggers a review of the custom model (10.4)</td><td>Irfan</td><td>After the first measurements</td></tr>
-<tr><td>BM25 in the process, or PostgreSQL full-text search (10.9)</td><td>Irfan, Dhanush</td><td>Retrieval test (10.13)</td></tr>
+<tr><td>Which serving engine (10.1)</td><td>Irfan, with the team</td><td>Benchmark after the GPU inventory</td></tr>
+<tr><td>People to run the GPU serving software, and CPU capacity for an embedding model (10.1, L10-A3, L10-A9)</td><td>Team</td><td>Before the V1 build</td></tr>
 <tr><td>The synthetic runbook set for V1 (10.9)</td><td>Team</td><td>Fixtures (Layer 12)</td></tr>
+<tr><td>Native tool calling and the reasoning field of the main model (10.1, L9-A1)</td><td>Irfan</td><td>Model benchmark</td></tr>
+<tr><td>Prefill and decode rates of each model, for the GPU-seconds estimate (10.5)</td><td>Irfan</td><td>Benchmark</td></tr>
+<tr><td>Final budget values, buffer size, and the hard cap during experiments (10.5)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
+<tr><td>Fix-phase time limit (10.7)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
+<tr><td>Share of the 32k tokens for each context part (10.11)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
+<tr><td>BM25 in the process, or PostgreSQL full-text search (10.9)</td><td>Irfan, Dhanush</td><td>Retrieval test (10.13)</td></tr>
 <tr><td>Retrieval target values (10.13)</td><td>Irfan, with the team</td><td>After the first measurement</td></tr>
+<tr><td>Number of learned incidents that triggers a review of the custom model (10.4)</td><td>Irfan</td><td>After the first measurements</td></tr>
 <tr><td>Detector for injected instructions: a method better than the first rules (10.11)</td><td>Irfan</td><td>Layer 12</td></tr>
-<tr><td>Mapping of the six gateway statuses to the three model_call results (10.2)</td><td>Dhanush</td><td>Update of Artifact 7</td></tr>
-<tr><td>Confirm one model request at a time for each incident (10.6, L10-A11)</td><td>Dhanush</td><td>Layer 13 spike</td></tr>
-<tr><td>Reproduction after 90 days: raw evidence content is gone (10.12, L7-A3)</td><td>Dhanush</td><td>Before Layer 13</td></tr>
-<tr><td>Emergency reserve rules (10.5)</td><td>Stakeholders</td><td>Before the V1 build</td></tr>
+<tr><td>Validation of L10-A4, L10-A7, L10-A8, and L10-A10 (10.4, 10.8, 10.9, 10.13)</td><td>Irfan</td><td>Test calls, retrieval evaluation, fixtures</td></tr>
 </table>
 
 <h3>C. Consistency with the earlier artifacts</h3>
 <table>
 <tr><th>Earlier artifact says</th><th>Artifact 10 does</th><th>Status</th></tr>
 <tr><td>A2 2.1, Q2.12: no incident data to an unapproved external party. Default: no cloud model provider.</td><td>The default configuration uses only self-hosted models.</td><td>Consistent.</td></tr>
-<tr><td>A2 2.5 (revised 2026-11-14): self-hosted open-weight models. Cloud providers by configuration only, off by default.</td><td>Section 10.3 describes the Anthropic adapter, off by default, with the six rules and the second admin of Artifact 7.</td><td>Consistent. The worksheet name "Claude adapter" stays.</td></tr>
+<tr><td>A2 2.5 (revised 2026-11-14): self-hosted open-weight models. Cloud providers by configuration only, off by default.</td><td>Section 10.3 describes the Anthropic adapter, off by default, with the six rules and the second admin of Artifact 7. The rules apply to every cloud integration. The gateway sends a request only to the model set for the role.</td><td>Consistent. The worksheet name "Claude adapter" stays.</td></tr>
 <tr><td>A2 Q2.11: no custom model. A6 Q6.27: Tinker replaced.</td><td>Section 10.4 (Tinker adapter) is not used in V1.</td><td>Explicit decision. The section keeps the worksheet name and records the decision.</td></tr>
 <tr><td>A6 Q6.12 lists retry among the duties of the gateway.</td><td>Temporal is the only retry owner. The gateway reserves budget, writes model_call, and enforces the timeout (A8 8.5, A9 9.1).</td><td>Explicit decision. Artifact 8 is later and decides.</td></tr>
 <tr><td>A9 9.10: no separate decision model in V1. It stays a candidate for Layer 10.</td><td>Layer 10 does not host a decision model in V1. A2 2.5 names one on CPU, so the candidate stays open.</td><td>Explicit decision. Consistent with A9.</td></tr>
 <tr><td>A9 9.4: the tool layer validates and runs read tool requests. Agents have no write tool.</td><td>The gateway passes tool requests on. It does not run them.</td><td>Consistent.</td></tr>
-<tr><td>A7: model_call.result has three values: valid, malformed, timeout.</td><td>The gateway has six statuses (10.2).</td><td>Open. Appendix B asks for the mapping.</td></tr>
+<tr><td>A7: model_call.result has three values: valid, malformed, timeout.</td><td>Decision D1: result has five values: valid, malformed, timeout, refused, error. The new column gateway_status holds the exact gateway status. Mapping: completed to valid; length_limit, interrupted, and invalid_output to malformed (cause in parse_error); refused to refused; error to error; deadline reached to timeout.</td><td>Explicit decision D1. Approved by Dhanush, 2026-11-17.</td></tr>
+<tr><td>A7 tables: model_call, budget_entry, evidence.</td><td>A7 changes in this layer. New columns: model_call.gateway_status; model_call.request_artifact_id (the redacted raw request in the artifact store); budget_entry.estimated (true when usage was estimated, not reported); evidence.index_revision and evidence.chunk_id (for retrieval hits); evidence.cited_incident_id (a past-incident hit cites the past incident).</td><td>Explicit A7 changes. Approved by Dhanush, 2026-11-17. A7 updated.</td></tr>
+<tr><td>A4 NFR-06, A5 SC-21: a budget limit is a hard stop.</td><td>Decision D2: no emergency budget reserve in V1. Hard caps only. At a limit, the incident escalates. L10-A5 is closed.</td><td>Explicit decision D2. Approved by Dhanush, 2026-11-17.</td></tr>
+<tr><td>A8 8.5: 60 s start-to-close for a model request.</td><td>Decision D4: the timeout of each model call is the smaller of 60 s and the time left before the incident deadline.</td><td>Explicit decision D4. A8 8.5 updated. Approved by Dhanush, 2026-11-17.</td></tr>
+<tr><td>A9 9.1: the coordinator runs one agent at a time. Each agent waits for a model response before the next request.</td><td>Section 10.6 uses this as a Fixed requirement. L10-A11 is closed. A9 9.1 states the rule.</td><td>Consistent.</td></tr>
 <tr><td>A7: budget_entry with kinds and phases. A7 open item: budget estimate rule for each model.</td><td>Section 10.5 uses the ledger and defines the estimate rule.</td><td>Closes the open item.</td></tr>
 <tr><td>A7: knowledge_document with service_id. Evidence cites its hash. A9: search_runbooks and search_past_incidents belong to Layer 10.</td><td>Section 10.9 defines the two tools, the scope by service_id, and the citation.</td><td>Consistent. Closes a document-level permission question for V1.</td></tr>
-<tr><td>A7 L7-A3: raw evidence is kept for 90 days.</td><td>Section 10.12 states the limit on reproduction after 90 days.</td><td>Open. Appendix B.</td></tr>
+<tr><td>A7 L7-A3: raw evidence content is kept for 90 days.</td><td>Decision D3: raw evidence content is kept for 1 year, as long as the incident. An exact re-run works while the incident exists. Section 10.12 states this limit.</td><td>Explicit A7 change D3. Approved by Dhanush, 2026-11-17.</td></tr>
 <tr><td>A2 2.4, A4 NFR-06, QR-06, A9 L9-A5: 10 GPU-minutes, 30 tool calls, 30 model requests, token caps. Values come from experiments.</td><td>Sections 10.5 and 10.8 use these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 Q2.18, A4 NFR-05, QR-03, QR-04, A8 8.5: 20 minutes, 5 minutes for phase 1, 60 minutes for the incident, 60 s call timeout, 2 attempts, 3 attempts for bad output.</td><td>Section 10.7 uses these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 2.4, A4 QR-07: 3 active incidents, queue of 20, severity then age. A SEV1 pre-empts fix-phase work.</td><td>Section 10.6 uses these values.</td><td>Consistent.</td></tr>
 <tr><td>A2 2.5, A6 ADR-09: BM25 first, embedding model on CPU later. Layer 10 confirms the method.</td><td>Section 10.9 confirms BM25 and adds embeddings when evaluation shows misses.</td><td>Consistent.</td></tr>
-<tr><td>A5 SC-09, SC-24: redaction before every model call. Admin enables a cloud provider. The critic differs from the diagnoser and the fixer.</td><td>Sections 10.2, 10.3, and 10.11 apply these rules.</td><td>Consistent.</td></tr>
+<tr><td>A5 SC-09, SC-10, SC-24: redaction before every model call. Instructions only in the system role, and evidence in untrusted-data blocks with random boundary markers. Admin enables a cloud provider. The critic differs from the diagnoser and the fixer.</td><td>Sections 10.2, 10.3, and 10.11 apply these rules.</td><td>Consistent.</td></tr>
 <tr><td>A2 Q2.7: synthetic fixtures only.</td><td>Sections 10.9 and 10.13 use synthetic runbooks and the synthetic incidents A, B, and C.</td><td>Consistent.</td></tr>
 </table>
 
 <h3>D. Where Claude and ChatGPT disagreed</h3>
-<p>None recorded. The team used Claude only for this layer. The ChatGPT pass is not done yet (review finding H2). Like Layers 1 to 9, this layer needs that pass before submission.</p>
+<p>None recorded. The ChatGPT pass is not done yet.</p>
 </main>
 </body>
 </html>

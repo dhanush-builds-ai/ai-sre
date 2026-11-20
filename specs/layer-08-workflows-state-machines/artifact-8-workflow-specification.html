@@ -410,7 +410,7 @@ pre code{border:0;padding:0;background:none}
 <div class="tw"><table class="reg">
 <tr><th>Activity</th><th>Start-to-close (one attempt)</th><th>Max attempts</th><th>Schedule-to-close</th><th>Schedule-to-start</th><th>Heartbeat</th><th>After the last attempt</th></tr>
 <tr><td>collect_evidence</td><td>per source (<code>platform_setting.source_timeouts</code>, default 30 s)</td><td>3</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Evidence marked <code>missing</code>; the workflow continues</td></tr>
-<tr><td>investigate, diagnose, critic_review (each model request)</td><td>60 s (A4 QR-03)</td><td>2 (1 retry, A4 QR-03)</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Escalate. Malformed output: the workflow asks again with the parse error, at most 3 attempts (A4 QR-04). Inference down: halt and escalate (A2).</td></tr>
+<tr><td>investigate, diagnose, critic_review (each model request)</td><td>60 s (A4 QR-03), or the time left before the incident deadline if that is less (A10 10.7)</td><td>2 (1 retry, A4 QR-03)</td><td>3 min</td><td>5 min</td><td>&mdash;</td><td>Escalate. Malformed output: the workflow asks again with the parse error, at most 3 attempts (A4 QR-04). Inference down: halt and escalate (A2).</td></tr>
 <tr><td>sandbox_run</td><td>15 min</td><td>2</td><td>35 min</td><td>5 min</td><td>30 s</td><td>Action <code>blocked</code></td></tr>
 <tr><td>execute_action</td><td>2 min</td><td>3 (each rerun goes to reconciliation)</td><td>10 min</td><td>5 min</td><td>&mdash;</td><td><code>outcome_unknown</code></td></tr>
 <tr><td>reconcile_action</td><td>1 min</td><td>until the limit (L8-A2)</td><td>pipeline run timeout + 2 min</td><td>5 min</td><td>&mdash;</td><td>Stays <code>outcome_unknown</code>; escalate</td></tr>
@@ -639,6 +639,7 @@ pre code{border:0;padding:0;background:none}
 <h3>Consistency with Artifacts 4, 6 and 7</h3>
 <table>
 <tr><th>Earlier artifact says</th><th>Artifact 8 decides</th><th>Status</th></tr>
+<tr><td>A8 8.5: fixed 60 s start-to-close for each model request.</td><td>A10 10.7: the timeout is the smaller of 60 s and the time left before the incident deadline, so a call never runs past the deadline.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-17.</td></tr>
 <tr><td>A6 ADR-03: Temporal plus a PostgreSQL waiting queue; workflow ID = incident ID.</td><td>One incident workflow and one child workflow per action; task queues as in A6.</td><td>Consistent. Adds the child workflows.</td></tr>
 <tr><td>A7 7.7 and open items: "notifier spool when the database is down" is designed in Layer 8.</td><td>No spool. The API health loop posts one degraded-mode message after 5 min, then at most one per 15 min.</td><td><b>Explicit decision.</b> Approved by Dhanush, 2026-11-15. A7 updated.</td></tr>
 <tr><td>A7 7.7 outbox figure, step 8: status <code>running</code>.</td><td>The started state is <code>investigating</code>.</td><td><b>Explicit decision.</b> A7 updated.</td></tr>

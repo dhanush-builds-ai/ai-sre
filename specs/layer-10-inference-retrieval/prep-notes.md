@@ -1,6 +1,6 @@
 # Layer 10 prep notes (provisional — not a log, not an artifact)
 
-Owner: Irfan. Layer 10 started after A2 and A9 existed. Open items: [pending.md](pending.md).
+Owner: Irfan. Layer 10 started after A2 and A9 existed. Open items: Appendix B of Artifact 10.
 
 - Decision model candidate for the escalation gate (GLiNER2.5-Decide, runs on CPU): see [Layer 9 prep notes](../layer-09-agent-architecture/prep-notes.md). **Update 2026-11-17:** A9 (9.10) says no decision model in V1. It stays a candidate.
 - Size the GPUs for 2 self-hosted models (agent + a different reviewer model) × 2 HA copies (Artifact 2, L2-A10).
