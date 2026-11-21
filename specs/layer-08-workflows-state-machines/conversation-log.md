@@ -52,6 +52,7 @@ Focus: establish why ordinary application code is not enough for long-running, f
 | Q8.47 | C | (this session) | Confirms A7 Q7.54: the incident is saved `queued` (the row is the outbox); the admission loop retries with backoff; an alert fires when an incident stays queued too long. | Queued-age threshold (Layer 12-A) — Dhanush | 8.10 |
 | Q8.48 | C | (this session) | The unique index blocks the target while `outcome_unknown`. A lookup reads the target state and in-progress pipeline runs and compares them with the action target and precondition; only then: applied, re-dispatch, or humans (Q8.34). | None | 8.9 |
 | Review 2026-11-21: A2 changes | C | (this session) | Model cost is money (cloud) or GPU time (self-hosted). Replay tests and timeout measurements use simulation runs on the dummy application. (Dhanush, 2026-11-21) | — | 8.2, 8.5, 8.9, Appendix |
+| Review 2026-11-22: A7 table reduction | C | (this session) | Activity records renamed: request_approval writes an `approval` row (pending); execute_action writes only `execution_attempt` (attempt 1 = single use); verify writes `check_result` (verification); backup stage is `approval.stage`. No state change. | None | 8.3, 8.6, 8.8 |
 
 ## Assumptions (all provisional)
 

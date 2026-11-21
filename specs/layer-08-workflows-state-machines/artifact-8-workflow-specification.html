@@ -237,12 +237,12 @@ pre code{border:0;padding:0;background:none}
 <tr class="grp"><td colspan="5">Action workflow</td></tr>
 <tr><td>policy_check</td><td>incident (worker)</td><td>check_result (policy); event</td><td>none</td><td>Pure check; result is recorded once per run.</td></tr>
 <tr><td>sandbox_run</td><td>sandbox (sandbox runner)</td><td>check_result (sandbox), artifact; event</td><td>container in the sandbox network</td><td>The sandbox is thrown away; a rerun tests the same commit. Heartbeat.</td></tr>
-<tr><td>request_approval</td><td>incident (worker)</td><td>approval_request; event</td><td>none (notify sends the message)</td><td>One open request per action and stage.</td></tr>
+<tr><td>request_approval</td><td>incident (worker)</td><td>approval (status pending); event</td><td>none (notify sends the message)</td><td>One pending approval per action.</td></tr>
 <tr><td>read_decision</td><td>incident (worker)</td><td>none</td><td>none</td><td>Read only. Checks action hash and signature.</td></tr>
 <tr><td>detect_merge</td><td>incident (worker)</td><td>event</td><td>read the pull request</td><td>Read only. Fix only (Layer 11 final design).</td></tr>
-<tr><td>execute_action</td><td>executor (executor)</td><td>approval_use, execution_attempt; event</td><td><b>production write</b> through the pipeline or the config store</td><td>Writes <code>intent_at</code> before dispatch. A run that finds an intent without an outcome goes to reconciliation and never sends again (section 8.9).</td></tr>
+<tr><td>execute_action</td><td>executor (executor)</td><td>execution_attempt; event</td><td><b>production write</b> through the pipeline or the config store</td><td>Writes <code>intent_at</code> before dispatch. A run that finds an intent without an outcome goes to reconciliation and never sends again (section 8.9).</td></tr>
 <tr><td>reconcile_action</td><td>executor (executor)</td><td>execution_attempt; event</td><td>read the target and pipeline runs</td><td>Read, then at most one re-dispatch with the same idempotency key.</td></tr>
-<tr><td>verify</td><td>incident (worker)</td><td>verification; event</td><td>read the alert's signals</td><td>Read only. Heartbeat during the watch period.</td></tr>
+<tr><td>verify</td><td>incident (worker)</td><td>check_result (verification); event</td><td>read the alert's signals</td><td>Read only. Heartbeat during the watch period.</td></tr>
 </table></div>
 <p>The parsed model result goes to its own table; the redacted raw output goes to the artifact store (<code>model_call.output_artifact_id</code>, <code>output_hash</code>). The workflow receives only these IDs (Q8.11). <span class="L D">Decision</span></p>
 
@@ -453,16 +453,16 @@ pre code{border:0;padding:0;background:none}
 </g>
 <g class="lbl halo">
 <text x="95" y="88">1 request_approval</text>
-<text x="250" y="118">2 approval_request (stage primary) + event</text>
+<text x="250" y="118">2 approval (pending, stage primary) + event</text>
 <text x="250" y="148">3 notify: request with action hash</text>
 <text x="560" y="178">4 message</text>
 <text x="715" y="208">5 POST decision (re-auth)</text>
-<text x="405" y="238">6 INSERT approval (signed); second decision &#8594; 409</text>
+<text x="405" y="238">6 UPDATE approval: pending to decided (signed); second decision &#8594; 409</text>
 <text x="405" y="268">7 signal decision(approval_id)</text>
 <text x="95" y="298">8 read_decision</text>
 <text x="250" y="323">9 read approval; check hash, signature</text>
 <text x="95" y="358">10 execute_action (executor queue)</text>
-<text x="405" y="388">11 check guards; approval_use; intent_at; dispatch</text>
+<text x="405" y="388">11 check guards; attempt 1 = single use; intent_at; dispatch</text>
 <text x="405" y="412">guards: signature valid; approver eligible; action hash equal; approval valid and unused;</text><text x="405" y="426">precondition true; no cancel; target not locked</text>
 <text x="118" y="210">wait:</text>
 <text x="118" y="224">timers</text>
@@ -475,7 +475,7 @@ pre code{border:0;padding:0;background:none}
 <table>
 <tr><th>Item</th><th>Rule</th><th>Label</th></tr>
 <tr><td>Signal (Q8.19)</td><td>The API validates the decision and writes the signed <code>approval</code> row first. Then it sends <code>decision(approval_id)</code> to the child. A signal, not a Temporal Update: the API already validates and writes.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Backup approver</td><td>The request goes to the backup approver after 10 min (SEV1) or 15 min (others). <code>approval_request.stage</code> changes to <code>backup</code>.</td><td><span class="L F">Fixed requirement</span> A4 QR-05</td></tr>
+<tr><td>Backup approver</td><td>The request goes to the backup approver after 10 min (SEV1) or 15 min (others). <code>approval.stage</code> changes to <code>backup</code> while the approval is pending.</td><td><span class="L F">Fixed requirement</span> A4 QR-05</td></tr>
 <tr><td>Request expiry (Q8.21, Q8.31)</td><td>The request expires after 24 h. The action becomes <code>expired</code> and writes <code>approval.expired</code>. Nothing executes. The incident becomes <code>escalated</code>; the owner and the on-call engineer are notified.</td><td><span class="L F">Fixed requirement</span> A4 QR-05, A6 ADR-03</td></tr>
 <tr><td>Approval validity</td><td>A recovery approval is valid 30 min after the decision. If it is not used in time, the child re-checks the precondition and asks again with a new request. A fix approval is valid 24 h.</td><td><span class="L F">Fixed requirement</span> A4 QR-05</td></tr>
 <tr><td>Reject (Q8.30)</td><td>The action becomes <code>rejected</code>; the child ends; the incident becomes <code>escalated</code> with the reason. No automatic second proposal.</td><td><span class="L D">Decision</span></td></tr>
@@ -488,7 +488,7 @@ pre code{border:0;padding:0;background:none}
 <li>The approver is eligible: approver role; not the author of a fix (M11); not an admin account (A5 SC-04).</li>
 <li>The action hash in the approval equals the current action hash.</li>
 <li>The approval is still valid (section above).</li>
-<li>The approval is not used yet (<code>approval_use</code>, single use, A5 SC-14).</li>
+<li>The approval is not used yet: no attempt 1 references it (single use, A5 SC-14).</li>
 <li>The precondition still holds (for example, the current config is v42).</li>
 <li>The incident is not cancelled and no cancel is pending.</li>
 <li>No other action on the same target is in <code>applying</code> or <code>outcome_unknown</code>.</li>
@@ -559,7 +559,7 @@ pre code{border:0;padding:0;background:none}
 <polygon points="300,390 400,425 300,460 200,425" class="box"/><text x="300" y="422">Precondition</text><text x="300" y="436">still true?</text>
 <rect x="540" y="190" width="260" height="50" rx="6" class="okb"/><text x="670" y="212">applied (outcome_source = lookup)</text><text x="670" y="228" class="lbl">then verify</text>
 <rect x="540" y="289" width="260" height="62" rx="6" class="hum"/><text x="670" y="311">Wait 30 s, then look again</text><text x="670" y="327" class="lbl">limit: pipeline run timeout + 2 min</text><text x="670" y="342" class="lbl">(config restore 2 min); then stay, escalate</text>
-<rect x="540" y="394" width="260" height="62" rx="6" class="box"/><text x="670" y="416">Re-dispatch: same key, same approval</text><text x="670" y="432" class="lbl">attempt + 1, no new approval_use</text><text x="670" y="447" class="lbl">at most one re-dispatch</text>
+<rect x="540" y="394" width="260" height="62" rx="6" class="box"/><text x="670" y="416">Re-dispatch: same key, same approval</text><text x="670" y="432" class="lbl">attempt 2, no new approval</text><text x="670" y="447" class="lbl">at most one re-dispatch</text>
 <rect x="860" y="403" width="120" height="44" rx="22" class="box"/><text x="920" y="429">applying</text>
 <rect x="140" y="495" width="320" height="50" rx="6" class="bad"/><text x="300" y="517">failed</text><text x="300" y="533" class="lbl">target changed, or precondition false; escalate</text>
 </g>
