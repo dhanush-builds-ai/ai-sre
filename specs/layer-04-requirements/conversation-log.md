@@ -42,6 +42,7 @@ Focus: separate what the system does from how well it must do it. Every requirem
 | Q4.33 | C | (this session) | Token caps per incident, starting values: **200k input tokens, 64k output tokens** (team set output default to 64k); **32k context per call**. Final value = measured baseline × 1.5 (provisional). Must. | Depends on the chosen model's context size — Irfan, Layer 10 | Quantified |
 | Q4.34 | C | (this session) | **3 active** investigations (A2), **queue up to 20**; when full, new incidents go straight to humans ("not processed by the platform"), never dropped (provisional). Must. | None | Quantified |
 | Review 2026-11-21: A2 changes | C | (this session) | Validation method "Fixture test" renamed "Simulation test" (an incident simulated in the dummy application). NFR-06: USD 10 (cloud) or 20 GPU-minutes (self-hosted), 100 tool calls. FR-01 and FR-15 add the dashboard. QR-03 and QR-07 rationale no longer assume own GPUs. Still 34 requirements. (Dhanush, 2026-11-21) | — | 4.5, 4.6, register, Appendix |
+| Review 2026-11-22: model-call timeout | C | (this session) | QR-03 revised: each model call runs at most the `model_request` timeout (system setting, default 180 s; was 60 s), then 1 retry, then escalate. A large-context call can take 1 to 3 min. | None | QR-03, rationale |
 
 ## Assumptions (all provisional)
 

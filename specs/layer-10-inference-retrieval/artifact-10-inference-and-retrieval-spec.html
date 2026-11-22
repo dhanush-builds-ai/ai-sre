@@ -139,7 +139,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <rect x="225" y="80" width="400" height="40" rx="6" class="box"/><text x="425" y="105">1 Check the deadline and the capabilities</text>
 <rect x="225" y="130" width="400" height="40" rx="6" class="box"/><text x="425" y="155">2 Reserve the worst case in the budget ledger</text>
 <rect x="225" y="180" width="400" height="40" rx="6" class="box"/><text x="425" y="205">3 Wait for a model slot (limiter in PostgreSQL)</text>
-<rect x="225" y="230" width="400" height="40" rx="6" class="uc"/><text x="425" y="255">4 Call: min(60 s, time left), 1 retry by Temporal</text>
+<rect x="225" y="230" width="400" height="40" rx="6" class="uc"/><text x="425" y="255">4 Call: min(180 s, time left), 1 retry by Temporal</text>
 <rect x="225" y="280" width="400" height="40" rx="6" class="box"/><text x="425" y="305">5 Check the output: schema, max 3 output attempts</text>
 <rect x="225" y="330" width="400" height="40" rx="6" class="box"/><text x="425" y="355">6 Record model_call and usage, release the rest</text>
 </g>
@@ -161,7 +161,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <text x="36" y="452" class="md" font-weight="600">Starting limits (the experiments tune them)</text>
 <g class="sm">
 <text x="36" y="474">For each incident: 30 model requests &#183; 100 tool calls &#183; USD 10 (cloud) or 20 GPU-min (self-hosted) &#183; 200k in, 64k out tokens &#183; 32k context per call</text>
-<text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model call = min(60 s, time left), then 1 retry</text>
+<text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model call = min(180 s, time left), then 1 retry</text>
 <text x="36" y="510">Loop: up to 3 investigator rounds &#183; up to 2 revisions &#183; up to 3 output attempts for bad output &#183; 3 duplicate calls stop an agent</text>
 <text x="36" y="528">Incident admission (a separate limit, before the gateway): 3 active incidents &#183; queue of 20</text>
 <text x="36" y="552">Not in V1: custom model (Tinker) &#183; agent write tools &#183; vector database &#183; decision model &#183; document-level permissions</text>
@@ -312,7 +312,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>parameters</td><td>Maximum output tokens, temperature, stop sequences</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>output_schema</td><td>The output model of the role</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.3)</span></td></tr>
 <tr><td>required_capabilities</td><td>For example tool calling or structured output</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>timeout</td><td>The smaller of 60 seconds and the time left before the incident deadline (10.7)</td><td><span class="L D">Decision</span> <span class="qs">A8 8.5 updated</span></td></tr>
+<tr><td>timeout</td><td>The smaller of the <code>model_request</code> timeout (system setting, default 180 s) and the time left before the incident deadline (10.7)</td><td><span class="L D">Decision</span> <span class="qs">A8 8.5 updated</span></td></tr>
 <tr><td>token_budget</td><td>The remaining incident budget (10.5)</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>prompt_version</td><td>The version of the prompt (10.12)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 7 (model_call)</span></td></tr>
 <tr><td>attempt</td><td>The Temporal activity attempt: 1 or 2 (10.7)</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
@@ -517,8 +517,8 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <text x="254" y="188">4 reserved, or refused</text>
 <text x="84" y="248">4b refused: the agent stops and escalates</text>
 <text x="254" y="280">5 ask for a slot: wait here if full</text>
-<text x="254" y="310">6 slot granted. The 60 s timer starts after this.</text>
-<text x="254" y="350">7 call, timeout = min(60 s, time left)</text>
+<text x="254" y="310">6 slot granted. The call timer starts after this.</text>
+<text x="254" y="350">7 call, timeout = min(180 s, time left)</text>
 <text x="764" y="378">8 model call</text>
 <text x="764" y="404">9 tokens and usage</text>
 <text x="500" y="430">10 ModelResult</text>
@@ -527,7 +527,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 </g>
 </svg>
 </div>
-<p class="cap">Figure 4. Sequence diagram of one model call. The gateway reserves budget and waits for a slot before it calls the model. The call timeout is the smaller of 60 s and the time left. A refusal for short budget goes back to the agent, which stops and escalates. Dashed arrows are replies.</p>
+<p class="cap">Figure 4. Sequence diagram of one model call. The gateway reserves budget and waits for a slot before it calls the model. The call timeout is the smaller of the model_request setting (180 s) and the time left. A refusal for short budget goes back to the agent, which stops and escalates. Dashed arrows are replies.</p>
 
 <!-- ============ 10.6 ============ -->
 <h2><span class="sec">10.6</span>Concurrency policy</h2>
@@ -540,7 +540,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Recovery first</td><td>Recovery work (phase 1) pre-empts fix-phase work. A new SEV1 takes the slot of a running fix-phase job. That job pauses and returns to the queue.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 2 (2.4)</span></td></tr>
 <tr><td>Admission and slots</td><td>Incident admission (3 active, queue of 20) and model-request slots are two separate limits. Admission decides which incidents run. A slot decides which model request runs on a model server.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 6, Artifact 8</span></td></tr>
 <tr><td>Central limiter</td><td>One limiter allows at most N model requests in flight for each model server. The rate limit of the cloud provider, or the GPU capacity of the self-hosted models, sets N. The limiter state lives in PostgreSQL, so 1 to n workers share it.</td><td><span class="L D">Decision</span> <span class="qs">source: Artifact 6</span></td></tr>
-<tr><td>Slot wait</td><td>The wait for a slot is a separate workflow step. It ends before the model activity starts. The 60 s timeout of the activity (10.7) does not include the wait.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Slot wait</td><td>The wait for a slot is a separate workflow step. It ends before the model activity starts. The <code>model_request</code> timeout of the activity (10.7) does not include the wait.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Per-incident limit</td><td>An incident sends one model request at a time. The coordinator runs one agent at a time. Each agent waits for a model response before it sends the next request.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.1)</span></td></tr>
 <tr><td>Fairness</td><td>One incident must not take the capacity of the others. Incidents take turns in the queue.</td><td><span class="L D">Decision</span></td></tr>
 </table>
@@ -570,14 +570,14 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <text x="20" y="325" class="md" font-weight="600">Model request slot</text>
 <text x="20" y="343" class="lbl">a separate limit, a step before each call</text>
 <g text-anchor="middle" class="md">
-<rect x="400" y="335" width="200" height="64" rx="6" class="uc"/><text x="500" y="358">Wait for a slot</text><text x="500" y="375" class="lbl">limiter state in PostgreSQL</text><text x="500" y="389" class="lbl">ends before the 60 s timer</text>
-<rect x="640" y="335" width="170" height="64" rx="6" class="box"/><text x="725" y="358">Model call</text><text x="725" y="375" class="lbl">timeout: min(60 s,</text><text x="725" y="389" class="lbl">time left)</text>
+<rect x="400" y="335" width="200" height="64" rx="6" class="uc"/><text x="500" y="358">Wait for a slot</text><text x="500" y="375" class="lbl">limiter state in PostgreSQL</text><text x="500" y="389" class="lbl">ends before the call timer</text>
+<rect x="640" y="335" width="170" height="64" rx="6" class="box"/><text x="725" y="358">Model call</text><text x="725" y="375" class="lbl">timeout: min(180 s,</text><text x="725" y="389" class="lbl">time left)</text>
 <rect x="840" y="335" width="140" height="64" rx="6" class="box"/><text x="910" y="358">Inference service</text><text x="910" y="375" class="lbl">at most N in flight</text><text x="910" y="389" class="lbl">for each server</text>
 </g>
 <g class="ln"><path d="M600,367 H640" marker-end="url(#k1)"/><path d="M810,367 H840" marker-end="url(#k1)"/></g>
 </svg>
 </div>
-<p class="cap">Figure 5. Queue and active slots. Incident admission and the model slot are two separate limits. Three incidents run. The rest wait in the queue by severity, then age. A new SEV1 pre-empts a fix-phase job, which returns to the queue. A full queue hands the incident to humans. Each model call then waits for a slot before its 60 s timer starts.</p>
+<p class="cap">Figure 5. Queue and active slots. Incident admission and the model slot are two separate limits. Three incidents run. The rest wait in the queue by severity, then age. A new SEV1 pre-empts a fix-phase job, which returns to the queue. A full queue hands the incident to humans. Each model call then waits for a slot before its call timer starts.</p>
 
 <!-- ============ 10.7 ============ -->
 <h2><span class="sec">10.7</span>Retry and timeout policy</h2>
@@ -590,8 +590,8 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Whole incident</td><td>60 minutes (provisional).</td><td><span class="L A">Assumption</span> L4-A3 <span class="qs">source: Artifact 4 (NFR-05)</span></td></tr>
 <tr><td>Fix phase</td><td><b>Open:</b> not set yet. The experiments set it.</td><td><span class="L A">Assumption</span> L4-A3</td></tr>
 <tr><td>Deadline</td><td>The coordinator checks the limits after every step. The gateway refuses a call after the deadline. Then new calls stop, running calls end, reservations are released, and the incident escalates.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Model request timeout</td><td>60 seconds for one attempt (start-to-close). Schedule-to-close: 3 minutes. Schedule-to-start: 5 minutes. The timer starts when the activity starts, after the slot wait (10.6).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5), Artifact 4 (QR-03), provisional</span></td></tr>
-<tr><td>Call timeout</td><td>The timeout of each model call is the smaller of 60 seconds and the time left before the incident deadline.</td><td><span class="L D">Decision</span> <span class="qs">D4, approved by Dhanush, 2026-11-17. A8 8.5 updated.</span></td></tr>
+<tr><td>Model request timeout</td><td>The <code>model_request</code> timeout (system setting, default 180 s) for one attempt (start-to-close). Schedule-to-close: 2 attempts plus 1 minute. Schedule-to-start: 5 minutes. The timer starts when the activity starts, after the slot wait (10.6).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5), Artifact 4 (QR-03), provisional</span></td></tr>
+<tr><td>Call timeout</td><td>The timeout of each model call is the smaller of the <code>model_request</code> timeout (system setting, default 180 s) and the time left before the incident deadline.</td><td><span class="L D">Decision</span> <span class="qs">D4, approved by Dhanush, 2026-11-17. A8 8.5 updated.</span></td></tr>
 </table>
 <h3>Retry rules</h3>
 <table>
@@ -604,7 +604,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>If no worker takes the task (schedule-to-start timeout), the workflow escalates the incident and raises a platform alert.</td><td>The model request cannot start (Artifact 8, 8.5).</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 8 (8.5)</span></td></tr>
 </table>
 <h3>No automatic fallback (Q10.39)</h3>
-<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic fallback from one provider to another. A model server counts as down after the last attempt fails: 60 s timeout and 1 retry (Artifact 4, QR-03, NFR-12). Then the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model.</p>
+<p>Artifact 2 decides this (2.5). The platform has no CPU fallback and no automatic fallback from one provider to another. A model server counts as down after the last attempt fails: the model_request timeout and 1 retry (Artifact 4, QR-03, NFR-12). Then the platform halts. It escalates to a person with the alert and the evidence so far. Escalation is plain system logic. It needs no model.</p>
 <p>An automatic fallback has these risks:</p>
 <ul>
 <li>A different model behaves differently. Prompts for one model may fail on another.</li>
@@ -626,7 +626,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <polygon points="560,105 640,155 560,205 480,155" class="uc"/><text x="560" y="152">Attempts and</text><text x="560" y="168">time left?</text>
 <rect x="130" y="262" width="240" height="70" rx="6" class="box"/><text x="250" y="284">Malformed output: ask again</text><text x="250" y="302">with the parse error. Max 3</text><text x="250" y="320">output attempts, then escalate.</text>
 <rect x="700" y="125" width="280" height="60" rx="6" class="okb"/><text x="840" y="147">Temporal retries once (2 attempts):</text><text x="840" y="165">wait 1 s, double, at most 60 s.</text><text x="840" y="179" class="lbl">Count each call in the budget.</text>
-<rect x="700" y="214" width="280" height="66" rx="6" class="hum"/><text x="840" y="236">Server down: last attempt failed</text><text x="840" y="254">(60 s timeout, 1 retry). Halt.</text><text x="840" y="270">Escalate to a person (A2 2.5).</text>
+<rect x="700" y="214" width="280" height="66" rx="6" class="hum"/><text x="840" y="236">Server down: last attempt failed</text><text x="840" y="254">(180 s timeout, 1 retry). Halt.</text><text x="840" y="270">Escalate to a person (A2 2.5).</text>
 </g>
 <g class="ln">
 <path d="M150,155 H170" marker-end="url(#r1)"/>
@@ -669,7 +669,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <defs><marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
 <g text-anchor="middle" class="md">
 <rect x="20" y="115" width="150" height="60" rx="6" class="uc"/><text x="95" y="140">Reserve</text><text x="95" y="158" class="lbl">worst case, atomic</text>
-<rect x="215" y="115" width="140" height="60" rx="6" class="box"/><text x="285" y="140">Call runs</text><text x="285" y="158" class="lbl">min(60 s, time left)</text>
+<rect x="215" y="115" width="140" height="60" rx="6" class="box"/><text x="285" y="140">Call runs</text><text x="285" y="158" class="lbl">min(180 s, time left)</text>
 <polygon points="470,100 560,145 470,190 380,145" class="uc"/><text x="470" y="142">Usage</text><text x="470" y="158">reported?</text>
 <rect x="620" y="40" width="360" height="56" rx="6" class="okb"/><text x="800" y="64">Commit the real usage</text><text x="800" y="82" class="lbl">release the unused rest</text>
 <rect x="620" y="125" width="360" height="56" rx="6" class="hum"/><text x="800" y="149">Keep the reservation at the worst case</text><text x="800" y="167" class="lbl">commit an estimate, estimated = true</text>
@@ -974,6 +974,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>A7: model_call.result has three values: valid, malformed, timeout.</td><td>Decision D1: result has five values: valid, malformed, timeout, refused, error. The new column gateway_status holds the exact gateway status. Mapping: completed to valid; length_limit, interrupted, and invalid_output to malformed (cause in parse_error); refused to refused; error to error; deadline reached to timeout.</td><td>Explicit decision D1. Approved by Dhanush, 2026-11-17.</td></tr>
 <tr><td>A7 tables: model_call, budget_entry, evidence.</td><td>A7 changes in this layer. New columns: model_call.gateway_status; model_call.request_artifact_id (the redacted raw request in the artifact store); budget_entry.estimated (true when usage was estimated, not reported); evidence.index_revision and evidence.chunk_id (for retrieval hits); evidence.cited_incident_id (a past-incident hit cites the past incident).</td><td>Explicit A7 changes. Approved by Dhanush, 2026-11-17. A7 updated.</td></tr>
 <tr><td>A4 NFR-06, A5 SC-21: a budget limit is a hard stop.</td><td>Decision D2: no emergency budget reserve in V1. Hard caps only. At a limit, the incident escalates. L10-A5 is closed.</td><td>Explicit decision D2. Approved by Dhanush, 2026-11-17.</td></tr>
+<tr><td>A8 8.5 (revised 2026-11-22): the model request timeout is the system setting <code>timeouts.model_request</code>, default 180 s.</td><td>Every call timeout in 10.7 is min(<code>model_request</code>, time left). The 60 s value is replaced.</td><td><b>Explicit decision.</b> Dhanush, 2026-11-22.</td></tr>
 <tr><td>A8 8.5: 60 s start-to-close for a model request.</td><td>Decision D4: the timeout of each model call is the smaller of 60 s and the time left before the incident deadline.</td><td>Explicit decision D4. A8 8.5 updated. Approved by Dhanush, 2026-11-17.</td></tr>
 <tr><td>A9 9.1: the coordinator runs one agent at a time. Each agent waits for a model response before the next request.</td><td>Section 10.6 uses this as a Fixed requirement. L10-A11 is closed. A9 9.1 states the rule.</td><td>Consistent.</td></tr>
 <tr><td>A7: budget_entry with kinds and phases. A7 open item: budget estimate rule for each model.</td><td>Section 10.5 uses the ledger and defines the estimate rule.</td><td>Closes the open item.</td></tr>

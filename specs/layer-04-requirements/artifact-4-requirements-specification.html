@@ -174,7 +174,7 @@ svg .ac{fill:var(--muted)}
 <rect x="20" y="128" width="200" height="44" rx="6" class="bad"/><text x="28" y="148">Phase 1 (propose revert):</text><text x="28" y="164" font-weight="600">5 min (NFR-05)</text>
 <rect x="395" y="74" width="360" height="44" rx="6" class="hum"/><text x="405" y="94">Approval wait (not counted)</text><text x="405" y="110" class="lbl">revert valid 30 min; backup after 10 / 15 min (QR-05)</text>
 <rect x="770" y="74" width="360" height="44" rx="6" class="fx"/><text x="780" y="94">Fix phase: sandbox tests, patch</text><text x="780" y="110" class="lbl">fix approval valid 24 h (human wait, not counted) (QR-05)</text>
-<rect x="235" y="128" width="895" height="44" rx="6" class="okb"/><text x="245" y="148">Budget per incident (starting values): USD 10 cloud or 20 GPU-min self-hosted, 100 tool calls, 200k in / 64k out tokens.</text><text x="245" y="164">Each model call: 32k context, 60 s, then 1 retry. Malformed output: 3 attempts (NFR-06, QR-03, QR-04, QR-06)</text>
+<rect x="235" y="128" width="895" height="44" rx="6" class="okb"/><text x="245" y="148">Budget per incident (starting values): USD 10 cloud or 20 GPU-min self-hosted, 100 tool calls, 200k in / 64k out tokens.</text><text x="245" y="164">Each model call: 32k context, 180 s (setting), then 1 retry. Malformed output: 3 attempts (NFR-06, QR-03, QR-04, QR-06)</text>
 </g>
 <text x="20" y="200" class="lbl">Not to scale. Every value is provisional until the Q2.16 experiments measure it.</text>
 </svg>
@@ -220,7 +220,7 @@ svg .ac{fill:var(--muted)}
 <rect x="200" y="344" width="370" height="44" rx="6" class="box"/><text x="210" y="371">Restore the incident store from backup</text>
 <rect x="600" y="32" width="540" height="44" rx="6" class="okb"/><text x="610" y="51">A recovered; B cause ranks first; C "inconclusive", no cause</text><text x="610" y="67" class="lbl">FR-06, FR-08, FR-13</text>
 <rect x="600" y="84" width="540" height="44" rx="6" class="okb"/><text x="610" y="103">Resume, 0 duplicate actions; 0 writes, humans notified at 5 min</text><text x="610" y="119" class="lbl">NFR-02, NFR-03</text>
-<rect x="600" y="136" width="540" height="44" rx="6" class="okb"/><text x="610" y="155">Escalate after 60 s and 1 retry; stopped within 10 s, 0 pending writes</text><text x="610" y="171" class="lbl">NFR-12, QR-03, FR-14</text>
+<rect x="600" y="136" width="540" height="44" rx="6" class="okb"/><text x="610" y="155">Escalate after the model timeout (180 s, setting) and 1 retry; stopped within 10 s, 0 pending writes</text><text x="610" y="171" class="lbl">NFR-12, QR-03, FR-14</text>
 <rect x="600" y="188" width="540" height="44" rx="6" class="okb"/><text x="610" y="207">3 run, 2 wait; the 21st queued incident goes to humans</text><text x="610" y="223" class="lbl">NFR-07, QR-07</text>
 <rect x="600" y="240" width="540" height="44" rx="6" class="okb"/><text x="610" y="259">0 changes without human approval; the actor is never the agent</text><text x="610" y="275" class="lbl">FR-11, FR-12</text>
 <rect x="600" y="292" width="540" height="44" rx="6" class="okb"/><text x="610" y="311">0 seeded secrets or personal data found</text><text x="610" y="327" class="lbl">NFR-08</text>
@@ -292,7 +292,7 @@ svg .ac{fill:var(--muted)}
 <tr class="grp"><td colspan="7">Quantified requirements (rationale in the appendix)</td></tr>
 <tr><td>QR-01 (Q4.28)</td><td>API intake must answer fast. It only validates, saves, publishes, and returns the incident ID.</td><td><span class="P Pm">Must</span></td><td>p95 intake latency</td><td>p95 at most 200 ms <span class="pv">provisional</span>.</td><td>Load test</td><td>MS1</td></tr>
 <tr><td>QR-02 (Q4.29)</td><td>An accepted incident's event must become available to workers fast.</td><td><span class="P Pm">Must</span></td><td>p95 accepted-to-available time</td><td>p95 at most 1 s <span class="pv">provisional</span>.</td><td>Load test</td><td>MS1</td></tr>
-<tr><td>QR-03 (Q4.30)</td><td>One model call must not run too long.</td><td><span class="P Pm">Must</span></td><td>Model-call duration</td><td>At most 60 s, then 1 retry, then escalate <span class="pv">provisional</span>.</td><td>Fault test</td><td>MS2</td></tr>
+<tr><td>QR-03 (Q4.30)</td><td>One model call must not run too long.</td><td><span class="P Pm">Must</span></td><td>Model-call duration</td><td>At most the <code>model_request</code> timeout (system setting, default 180 s), then 1 retry, then escalate <span class="pv">provisional</span>.</td><td>Fault test</td><td>MS2</td></tr>
 <tr><td>QR-04 (Q4.31)</td><td>The platform must limit attempts after malformed model output. Each retry gets the parse error.</td><td><span class="P Pm">Must</span></td><td>Attempts for each step</td><td>At most 3 attempts, then escalate. Each attempt counts toward the budget <span class="pv">provisional</span>.</td><td>Simulation test (malformed output)</td><td>MS2</td></tr>
 <tr><td>QR-05 (Q4.32)</td><td>An approval request must expire, and must go to the backup approver when there is no answer.</td><td><span class="P Pm">Must</span></td><td>Validity time; time to backup</td><td>Revert approval valid 30 min, then re-check and ask again. Fix approval valid 24 h. Backup after 10 min (SEV1) or 15 min (others) <span class="pv">provisional</span>.</td><td>Simulation test</td><td>MS3</td></tr>
 <tr><td>QR-06 (Q4.33)</td><td>Each incident must have cumulative token caps, and each call a context cap.</td><td><span class="P Pm">Must</span></td><td>Tokens for each incident and each call</td><td>Starting values: 200k input, 64k output for each incident; 32k context for each call. Final value = measured baseline &times; 1.5 <span class="pv">provisional</span>.</td><td>Simulation test, metrics</td><td>MS2</td></tr>
@@ -320,7 +320,7 @@ svg .ac{fill:var(--muted)}
 <tr><th>ID</th><th>Value</th><th>Rationale</th></tr>
 <tr><td>QR-01</td><td>200 ms</td><td>Intake does no processing. All work after intake is asynchronous.</td></tr>
 <tr><td>QR-02</td><td>1 s</td><td>A small part of the 30 s acknowledgement budget (NFR-04).</td></tr>
-<tr><td>QR-03</td><td>60 s, 1 retry</td><td>The model service should answer in 5 to 30 s. Slower means degraded, and NFR-12 says escalate.</td></tr>
+<tr><td>QR-03</td><td>180 s default, 1 retry; a system setting (revised 2026-11-22)</td><td>A large-context call to a reasoning model can take 1 to 3 minutes, so 60 s was too short. Slower than the setting means degraded, and NFR-12 says escalate.</td></tr>
 <tr><td>QR-04</td><td>3 attempts</td><td>Feeding back the parse error usually fixes the format. More attempts waste the budget.</td></tr>
 <tr><td>QR-05</td><td>30 min / 24 h; 10 / 15 min</td><td>The evidence for a revert goes stale fast. A fix can wait, because the service is already recovered. The platform asks the backup approver sooner than the human path in Artifact 3 (SEV1: 10 min). Final values in Layer 11 (Rinisha).</td></tr>
 <tr><td>QR-06</td><td>200k / 64k / 32k</td><td>Measure first, then add a buffer (Artifact 2, Q2.16). Output default set by the team to 64k. The call cap stops one large log from filling the context.</td></tr>
