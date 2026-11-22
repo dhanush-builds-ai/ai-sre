@@ -162,7 +162,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <g class="sm">
 <text x="36" y="474">For each incident: 30 model requests &#183; 100 tool calls &#183; USD 10 (cloud) or 20 GPU-min (self-hosted) &#183; 200k in, 64k out tokens &#183; 32k context per call</text>
 <text x="36" y="492">Time: phase 1 = 5 min &#183; investigation = 20 min &#183; whole incident = 60 min &#183; one model call = min(180 s, time left), then 1 retry</text>
-<text x="36" y="510">Loop: up to 3 investigator rounds &#183; up to 2 revisions &#183; up to 3 output attempts for bad output &#183; 3 duplicate calls stop an agent</text>
+<text x="36" y="510">Loop: up to 3 investigator rounds &#183; 1 revision &#183; up to 3 output attempts for bad output &#183; a duplicate call returns the recorded result</text>
 <text x="36" y="528">Incident admission (a separate limit, before the gateway): 3 active incidents &#183; queue of 20</text>
 <text x="36" y="552">Not in V1: custom model (Tinker) &#183; agent write tools &#183; vector database &#183; decision model &#183; document-level permissions</text>
 </g>
@@ -224,7 +224,6 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Quality on our tasks</td><td>From the evaluation results (Layer 12)</td><td>Open</td><td>Open</td></tr>
 <tr><td>Native tool calling with a JSON schema</td><td>The investigator and the fixer need it (L9-A1). The reviewer does not.</td><td>Open</td><td>Not needed</td></tr>
 <tr><td>Structured output</td><td>Every role returns a typed output (Artifact 9, 9.3)</td><td>Open</td><td>Open</td></tr>
-<tr><td>Separate reasoning tokens</td><td>A model without them gets an optional reasoning field (Artifact 9, 9.1)</td><td>Open</td><td>Open</td></tr>
 <tr><td>Streaming</td><td>Time to first token</td><td>Open</td><td>Open</td></tr>
 <tr><td>Context window and maximum output</td><td>Limits for context assembly (10.11) and token caps (10.5)</td><td>Open</td><td>Open</td></tr>
 <tr><td>Price per call (cloud), or GPU memory and GPU time per call (self-hosted)</td><td>The cost limit and capacity for 3 concurrent incidents</td><td>Open</td><td>Open</td></tr>
@@ -299,7 +298,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>critic</td><td>None</td><td>A verdict, with one finding for each claim</td><td>Structured output</td><td>Reviewer (a different model)</td></tr>
 <tr><td>fixer</td><td>read_repo_file, search_repo</td><td>A patch: diff, rationale, undo path, test plan</td><td>Tool calling with a JSON schema. Structured output.</td><td>Main</td></tr>
 </table>
-<p>The main model must give valid JSON tool requests under a JSON schema. If it cannot, the coordinator asks for one structured output for each step, without native tool calling (<span class="L A">Assumption</span> L9-A1). The benchmark in 10.1 tests this.</p>
+<p>The main model must give valid JSON tool requests under a JSON schema. A model without native tool calling is not allowed for the investigator or the fixer. V1 has no fallback mode (<span class="L A">Assumption</span> L9-A1). The benchmark in 10.1 tests this.</p>
 
 <h3>ModelRequest (Q10.13)</h3>
 <table>
@@ -349,7 +348,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Tool and agent</td><td>The tool must be on the allow list of the agent. An unknown tool is rejected and logged.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 <tr><td>Arguments</td><td>They must match the input model. The window must end before now and last at most 2 hours. Limits and query length stay under their maximums.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 <tr><td>Service scope</td><td>Only the incident's service and its declared dependencies.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4), Artifact 5 (SC-05)</span></td></tr>
-<tr><td>Duplicates</td><td>A duplicate returns the recorded result with no outside call. Three duplicates in one run stop the agent.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4, 9.10)</span></td></tr>
+<tr><td>Duplicates</td><td>A duplicate returns the recorded result with no outside call. It counts toward the 100 tool calls.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 <tr><td>Result</td><td>A rejected call gets status <code>rejected</code>, a reason, and the event tool.rejected. It counts toward the 100 tool calls. A valid result is redacted, marked untrusted, and returned as a short summary.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.4)</span></td></tr>
 </table>
 <p>Agents have read tools only. A proposed action is not a tool call. It becomes an action record, and the policy gate checks it (Layer 11).</p>
@@ -413,7 +412,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <h3>Capability incompatibility (Q10.22)</h3>
 <p>The gateway keeps the capability matrix (10.1). Before it sends a request, it checks the capabilities that the role needs. If a model lacks one, the gateway follows these rules in order.</p>
 <ol>
-<li>Emulate the capability only where the configuration allows it. For example, ask for one structured output for each step (L9-A1), then apply the schema check.</li>
+<li>Emulate the capability only where the configuration allows it. Native tool calling is never emulated (L9-A1).</li>
 <li>Otherwise reject the configuration at start. The platform does not start with it.</li>
 </ol>
 <p>Emulation is explicit configuration. It is never silent. The gateway never sends a request to a model other than the one configured for the role. There is no automatic fallback (A2 2.5, A5 SC-24).</p>
@@ -476,7 +475,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Reservation</td><td>The gateway reserves the estimate in one atomic step. After the call, it commits the real usage and releases the rest. Parallel calls cannot exceed the budget together.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Short budget</td><td>If the budget cannot cover a call, the gateway refuses the call. The investigation ends with the best result so far, or it escalates to a person. A cap is a hard stop.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 4 (NFR-06)</span></td></tr>
 <tr><td>Expected range</td><td>A table of measured usage for each role gives an expected range. The platform raises an alert when a call or an incident leaves its range.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Cumulative tracking</td><td>Every call carries its role: investigator, diagnoser, critic, or fixer. The ledger sums all calls of an incident, with the retries, and splits the total by role. The coordinator checks the limits after every step. The loop has at most 3 investigator rounds and 2 revisions.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.9, 9.10)</span></td></tr>
+<tr><td>Cumulative tracking</td><td>Every call carries its role: investigator, diagnoser, critic, or fixer. The ledger sums all calls of an incident, with the retries, and splits the total by role. The coordinator checks the limits after every step. The loop has at most 3 investigator rounds and 1 revision.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 9 (9.9, 9.10)</span></td></tr>
 <tr><td>No emergency reserve</td><td>V1 has no budget pool outside the incident caps. Hard caps only. At a limit, the incident escalates.</td><td><span class="L D">Decision</span> <span class="qs">D2, approved by Dhanush, 2026-11-17</span></td></tr>
 </table>
 
@@ -938,8 +937,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>L6-A2</td><td>Inherited. An OpenAI-compatible server serves the chosen models.</td><td>Irfan</td><td>Test of the chosen serving engine.</td></tr>
 <tr><td>L4-A1</td><td>Inherited. The simulation set has at least 20 incidents.</td><td>Irfan</td><td>Count of simulated incidents (Layer 12).</td></tr>
 <tr><td>L4-A3</td><td>Inherited. Every provisional value can be measured on the dummy application.</td><td>Irfan</td><td>Q2.16 experiments.</td></tr>
-<tr><td>L9-A1</td><td>Inherited. The main model gives valid JSON tool requests.</td><td>Irfan</td><td>Model benchmark (10.1).</td></tr>
-<tr><td>L9-A7</td><td>Inherited. The stated confidence is calibrated.</td><td>Irfan</td><td>Layer 12 evaluation.</td></tr>
+<tr><td>L9-A1</td><td>Inherited. A main model with native tool calling gives valid JSON tool requests.</td><td>Irfan</td><td>Model benchmark (10.1).</td></tr>
 </table>
 
 <h3>B. Unresolved dependencies</h3>
@@ -950,7 +948,7 @@ An item that says <b>Open</b> has a written rule, but a value or a name comes la
 <tr><td>Which serving engine for the self-hosted option (10.1)</td><td>Irfan, with the team</td><td>Benchmark after the GPU inventory</td></tr>
 <tr><td>People to run the GPU serving software (self-hosted option), and CPU capacity for an embedding model (10.1, L10-A3, L10-A9)</td><td>Team</td><td>Before the V1 build</td></tr>
 <tr><td>The runbook set for the dummy application (10.9)</td><td>Team</td><td>Layer 12</td></tr>
-<tr><td>Native tool calling and the reasoning field of the main model (10.1, L9-A1)</td><td>Irfan</td><td>Model benchmark</td></tr>
+<tr><td>Native tool calling of the main model (10.1, L9-A1)</td><td>Irfan</td><td>Model benchmark</td></tr>
 <tr><td>Prefill and decode rates of each model, for the GPU-seconds estimate (10.5)</td><td>Irfan</td><td>Benchmark</td></tr>
 <tr><td>Final budget values, buffer size, and the hard cap during experiments (10.5)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
 <tr><td>Fix-phase time limit (10.7)</td><td>Irfan, Dhanush</td><td>Q2.16 experiments</td></tr>
