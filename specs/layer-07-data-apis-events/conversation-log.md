@@ -83,6 +83,7 @@ Focus: every object the platform and the agent produce must have a defined struc
 | Review 2026-11-22: timeouts setting | C | (this session) | `platform_setting.timeouts` replaces `source_timeouts`; `integration.timeout_ms` removed. One `source_read` value covers every read (A8 8.5). | None | 7.2 |
 | Review 2026-11-22: A9 reduction | C | (this session) | Follows the A9 cuts: 1 revision (diagnosis.revision 0 or 1); a duplicate returns the cached result and counts toward the 100 tool calls (no stop after 3); native tool calling required, no structured-output emulation; no reasoning field; L9-A7 removed. | None | Matching rows and figures |
 | Review 2026-11-22: critic verdict values | C | (this session) | `check_result.verdict` lists the values for each kind. Critic: accept / revise / escalate / no_verdict (A9 9.8). Policy and sandbox: pass / fail. Verification: recovered / not_recovered / inconclusive. The table reduction had left out the critic values. | None | Column table (check_result) |
+| Review 2026-11-22: evidence schema review | C | (this session) | `evidence.trust` removed: all evidence is untrusted (A9 9.4), a constant needs no column. `evidence.window_start` and `window_end` removed: the time window is part of `query`. ERD evidence box updated. | None | 7.2 |
 
 ## Assumptions (all provisional)
 

@@ -20,7 +20,7 @@ A layer cannot start until the artifacts it is built from exist (worksheet rule)
 | 7 | A7 Data and Interface | A4, A6 | 64 | Dhanush (from Manish) |
 | 8 | A8 Workflow | A6, A7 | 48 | Dhanush |
 | 9 | A9 Agent Design | A3, A7, A8 | 53 | Dhanush |
-| 10 | A10 Inference and Retrieval | A2, A9 | 64 | Irfan |
+| 10 | A10 Inference and Retrieval | A2, A9 | 64 | Dhanush (from Irfan) |
 | 11 | A11 Safe Remediation | A5, A8, A9 | 92 | Rinisha |
 | 12 | A12 Reliability and Evaluation | A3, A4, A10, A11 | 83 | all, by section |
 | 13 | A13 Implementation Plan | A1–A12 | 58 | **team** |

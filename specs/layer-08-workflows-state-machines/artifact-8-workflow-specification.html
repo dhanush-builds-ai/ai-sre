@@ -170,7 +170,7 @@ pre code{border:0;padding:0;background:none}
 <g text-anchor="middle" class="sm">
 <rect x="33" y="54" width="106" height="58" rx="6" class="box"/><text x="86" y="78">Baseline evidence</text><text x="86" y="94" class="lbl">code, tool layer</text>
 <rect x="149" y="54" width="106" height="58" rx="6" class="box"/><text x="202" y="78">Fixed rules</text><text x="202" y="94" class="lbl">rule hypotheses</text>
-<rect x="265" y="54" width="106" height="58" rx="6" class="box"/><text x="318" y="78">Investigator</text><text x="318" y="94" class="lbl">≤ 3 rounds</text>
+<rect x="265" y="54" width="106" height="58" rx="6" class="box"/><text x="318" y="78">Investigator</text><text x="318" y="94" class="lbl">tool loop</text>
 <rect x="381" y="54" width="106" height="58" rx="6" class="box"/><text x="434" y="78">Diagnoser</text><text x="434" y="94" class="lbl">≤ 1 revision</text>
 <rect x="497" y="54" width="106" height="58" rx="6" class="box"/><text x="550" y="78">Critic</text><text x="550" y="94" class="lbl">other model</text>
 <rect x="613" y="54" width="106" height="58" rx="6" class="box"/><text x="666" y="78">Propose actions</text><text x="666" y="94" class="lbl">recovery, fix</text>
@@ -358,7 +358,7 @@ pre code{border:0;padding:0;background:none}
 <tr><th>From</th><th>Trigger</th><th>Guard (all must be true)</th><th>To</th><th>Q</th></tr>
 <tr><td>(none)</td><td>Intake saves the incident</td><td>Request is valid; not a duplicate (A7 7.8)</td><td>queued</td><td>Q8.26</td></tr>
 <tr><td>queued</td><td>Admission loop starts the workflow</td><td>Fewer than 3 incidents run (A4 QR-07)</td><td>investigating</td><td>Q8.25</td></tr>
-<tr><td>investigating</td><td>Diagnosis made</td><td><code>result = cause_found</code>; the hypothesis has at least one supporting and no open contradicting evidence item; every required source is collected or marked missing; the critic review is recorded (shown, not a vote, A5 SC-12). Exact rule: A9 9.7 (L9-A4)</td><td>diagnosed</td><td>Q8.27</td></tr>
+<tr><td>investigating</td><td>Diagnosis made</td><td><code>result = cause_found</code>; the hypothesis has at least one supporting and no open contradicting evidence item; every required source is collected or marked missing; the critic review is recorded (shown, not a vote, A5 SC-12). Exact rule: the A9 9.7 evidence rule</td><td>diagnosed</td><td>Q8.27</td></tr>
 <tr><td>investigating</td><td>Diagnosis made</td><td><code>result = inconclusive</code> (a valid result, A1), or a model or source failure after its retries</td><td>escalated</td><td>Q8.27</td></tr>
 <tr><td>diagnosed</td><td>First action child starts</td><td>At least one action is proposed</td><td>remediating</td><td>Q8.25</td></tr>
 <tr><td>diagnosed</td><td>No action is proposed</td><td>The policy finds no safe action</td><td>escalated</td><td>Q8.25</td></tr>
